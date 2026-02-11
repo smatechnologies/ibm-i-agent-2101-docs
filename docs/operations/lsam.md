@@ -112,13 +112,13 @@ This display will show Load source: LI211043B PTF211043 when the LI211043B insta
                    OOO   pppp    CCC   ooo  n   n     xx     xx                 
                          p                           x       x                  
                          p                                                      
-                               by SMA Technologies                                 
+                               by Continuous                                 
                                                                                 
                                                             Version: 21.1       
  Load source:  LI211043B PTF211079                          PTF LVL: 079      
                                                              DB LVL: 005        
  F3=Exit   F5=Animate   F12=Cancel   Enter=Menu                                 
- Copyright (C) SMA Technologies 2005, 2021. ARR.                                
+ Copyright (C) Continuous 2005, 2021. ARR.                                
 ```
 
 1. Press the <**Enter**> key to continue to the IBM i LSAM Main Menu.

@@ -6,7 +6,8 @@ sidebar_label: 'Version 21.1 New Features'
 ## What's New with LSAM Version 21.1
 This topic summarizes enhancements to the OpCon Agent for IBM i. The summaries explain design changes that affect more than one of the Agent's automation toolkit features.
 
-Some of these enhancements were introduced as part of the new Agent version, so they do not appear in the Version 21.1 Fixes list that shows all LSAM PTFs. On the other hand, some of the enhancements listed here will also appear in the Fixes list as part of the serial list that is sorted by the LSAM PTF Number.
+Some of these enhancements were introduced as part of the new Agent version, so they do not appear in the Version 21.1 Fixes list that shows all LSAM PTFs. On the other hand, some of the enhancements listed here will also appear in the Fixes list as part of the serial list that is sorted by the LSAM PTF Name
+.
 
 ### Enhancements to Dynamic Variables
 The following list of enhancements is discussed in detail within the Dynamic Variables chapter at [Recent Enhancements to Dynamic Variables](/dynamic-variables/overview.md#recent-enhancements-to-dynamic-variables).
@@ -55,7 +56,7 @@ The most pervasive changes are these:
 >> In past versions of this Agent documentation, these reserved variable name strings were referred to as $-Special variables.  But since they are, in many cases, identical to the OpCon System-defined variables, this Agent's documentation now uses the same term of "System" to indicate that these are pre-defined, reserved character strings supported by the computer system and not subject to user redefinition.
 
 ### Interactive Master File Maintenance Programs Divided into Multiple Display Formats
-SMA continues to divide some of the complex Agent Master File Maintenance displays into multiple, separate display formats.  This relieves congestion of an over-populated single display, while also avoiding the display of control fields that a given master record is not using, so that time and key strokes are not wasted and demands on the host computer is reduced.
+Continuous continues to divide some of the complex Agent Master File Maintenance displays into multiple, separate display formats.  This relieves congestion of an over-populated single display, while also avoiding the display of control fields that a given master record is not using, so that time and key strokes are not wasted and demands on the host computer is reduced.
 
 #### Dynamic Variable numeric editing fields moved to a second page
 Moving the long list of numeric value editing fields to a second display format made room for enhancements to the basic master record definition, such as fields that identify multi-instance variables.  A new character/numeric value type field shows on page 1 whether there will be a page 2 for numeric value definition and editing.  The previous separate display formats for certain value calculation Function Codes remain as separate displays that will appear as may be required after either page 1 or page 2.
@@ -70,7 +71,6 @@ This enhancement adds support for two categories of variables to the Job Trackin
 
 *Wild Cards:* 
 The IBM i Job ID filter parameters (six fields at the top of the Parameters maintenance display) can support 1 to 9 question marks (?) as wild card characters, used to assign a single generic job profile for use by multiple similar jobs.  The wild card character parameters can be used as a prefix or a suffix, part of the parameter(s) that use them.
-
 
 *New $-system Variables:* 
 When wild card characters are used for the Job Name, the OpCon Schedule Name and, optionally, the Frequency Name can contain either of the new $-system variables added to the LSAM:  $PREFIX or $SUFFIX.  These variables represent the characters that are stripped off an actual IBM i Job Name (1 to 9 characters) so that unique Schedule Names (and/or Frequency Names) can be specified to match the unique IBM i Job Name.
@@ -101,6 +101,58 @@ This list shows the enhancements that were added to the OpCon Agent for IBM i as
 |IBMI-841 |A new, optional LSAM server job named JOBSTS is added to the Agent.  This system monitor job watches up to 25 IBM i subsystems the user may register for any jobs that are stuck in a MSGW (message wait) status.  The JOBSTS server replaces the IBM i Monitor capability that was discontinued in IBM's latest Navigator for i, which was previously documented in this Agent user help with recommended methods for linking the IBM Monitor output to the OpCon network via this Agent's Message Management feature.  The new JOBSTS server notifications are designed to be compatible with the previously recommended solutions for the interface with OpCon. 
  | | |
 |IBMI-1006, -1023 |This enhancement adds support for two categories of variables to the Job Tracking Parameters master records: Wild Cards for IBM i Job ID fields, and $-system Variables for Schedule ID fields.  This new feature can greatly reduce the number of Job Tracking Parameter records in data centers where multiple copies of the same basic Schedule are then able to run separately.|
- 
 
+### Agent Enhancements by Project ID, LSAM PTFs at Version 21.1.195
+
+This continuation of the Enhancements List shows enhancements that were added to the OpCon Agent for IBM i as the LSAM was updated with a Cumulative PTF Cut-Off Release, as of version 21.1.195.
+
+For additional information about some of these enhancements, after installing the LSAM PTFs for this version, please enter the LSAM PTF list display (LSAM menu 9, option 1) and use function key F15=Subset.  The select subset # 5 to limit the list display to only those PTFs that are accompanied by Post-Install Instructions.  Some of these instructions merely summarize the enhancement, and more information might be found in this LSAM User Help under the related automation feature.  Occasionally, the post-install instructions might advise the user about manual maintenance steps that would be required to activate the enhancement.
+
+#### DB LVL # 21.1.007
+
+| Project | LSAM PTF | Description |
+| :------- | :--------- | :----------- |
+| IBMI-1027 | PTF211148 PTF211149 PTF211150 | Add Job Tracking trace logging diagnostic tool : *See Post-Install Instructions*. A simple new control feature can now be used to produce a large amount of detailed, technical trace data that can help diagnose problems with Job Tracking in case jobs are not being tracked and there is no information appearing in the Job Tracking Log display (LSAM menu 1, option 2). PTF # 211148 adds file TRKLOGF10 to the LSAM database, bumping the DB Level to 007.  PTF # 211150 includes some small, technical fixes that prevent a failure to qualify certain jobs for tracking and also improve the accuracy of the Job Tracking activity log file content. |
+ | | | |
+| IBMI-1041 | PTF211153 | Add GETDVRVALR utility: *See User Help* - [Utility Commands for Manipulating Dynamic Variables](/dynamic-variables/manipulation-commands). This PTF adds a utility program to the LSAM that can be used by programs to fetch just the value of any given Dynamic Variable, including multi-instance variables, without the variable attributes.  It also changes the ACTGRP for some DynVar utilities. |
+ | | | |
+| IBMI-1041 | PTF211155 | Fix VARTYP value prompt for DSPDYNVAR:  The VARTYP value of U in the DSPDYNVAR command is no longer supported, due to an improvement in the ability to display Type-L variables.  Use the OUTPUT parameter set to LINE24MSG to view just one sequence number for a group of Type-L variables @ same job. |
+ | | | |
+| IBM-1049 | PTF211159, PTF211160 | Add OPRLOGF44 file: F2=Select JOBNBR:  The LSAM general inquiry program that shows just Captured Data entries (separate from the Captured Data Debug display) is improved with F2 = Select JOBNBR.  This function that appears in other inquiries limits the list display to entries from just one job. As the list of isolated Captured Data is enhanced with the subset capability appearing in other LSAM inquiries: F2=Subset by JobID, the list display also needed a fix to correct the function key legend appearing below the log entries list. |
+ | | | |
+| IBMI-1052 | PTF211161, PTF211162 | Edit prevents prefix to Type-L DynVars:  This PTF adds a message to the SMAMSGF message file, as part of an edit to prevent applying a multi-instance prefix to Type-L (Local Data Area) variables.  See the IBM i Agent User Help, chapter [Managing the Local Data Area](/dynamic-variables/local-data-area) for various methods and examples for providing values to Type-L DynVars.  PTF211162 adds an edit to prevent applying a multi-instance prefix to Type-L (Local Data Area) variables to the variables maintenance command and program. |
+ | | | |
+| IBMI-1060 | PTF211163 | Bypass SMA0106 connect retry if TLS:  *See Post-Install Instructions* The error SMA0106 reports unable to connect to a virtual display device.  The Operator Replay script driver has a built-in retry loop that will attempt to connect up to 3 times before failing the job.  A new option prevents the connect retry if TLS active. |
+ | | | |
+| IBMI-1061 | PTF211164, PTF211165 | Improve RESET response to BELL signal: *See Post-Install Instructions* When the 5250 display device (emulated via VT100) protects from invalid keyboard input with a BELL signal, normally accompanied by an Input Inhibited keyboard status, the Operator Replay function key RESET is used to clear the keyboard. When the RESET function will be the next Operator Replay Script Step to process, following a Step that generated a BELL keyboard input error, the Operator Replay visual capture log will no longer show the unsent Function Key of the failed step. |
+ | | | |
+| OC-1881 | PTF211169, PTF211170 | Update LSAM table ctl file for JORLOGF00:  File JORLOGF00 control now registers preferred size(\*NOMAX), which prevents program failures in high volume environments, in case the file would get very full in between LSAM database reorganization by the SMARGZ command. Change JORLOGF00 to size(\*NOMAX) for high-volume environments that might have filled the size-limited file in between cycles of database reorganization that is performed by a properly scheduled execution of this LSAM's SMARGZ utility. |
+ | | | |                                                
+| OC-2781 | PTF211174 | Expand JORS for extreme SPLF count:  The LSAJOR server job was unable to accommodate more than 99,999 spool files that were produced by the same Job Name in IBM i partitions that had retained aged spool files. |
+ | | | |                                                
+| OC-2896 | PTF211175 | Control SCANSPLF dumps with data area:  The LSAM report management utilities SCANSPLF and SCANOUTQ are enhanced with more carefully managed options to dump the program contents in case of an unexpected error, but only when the new data area LSAUTLU1 is set to a value of 'U1*YES'. Instructions to Continuous internal technical staff are provided at [How to Produce a Formatted Program Dump for Failure Diagnosis of SCANSPLF](/events-utilities/scansplf-scanoutq#how-to-produce-a-formatted-program-dump-for-failure-diagnosis-of-scansplf). |
+
+#### DB LVL # 21.1.008
+
+| Project | LSAM PTF | Description |
+| :------- | :--------- | :----------- |
+| OC-1931 | PTF211178, PTF211179 |  User Matrix master file change key field type to INST(3.A): The User Matrix master file and maintenance are changed to support 3 characters instead of limiting the Institution ID to just numeric digits. |
+ | | | |
+| OC-3322 | PTF211180 | Add DV token replace for func code \*DB2:  Add Dynamic Variable token replace for the SQL query fields when the function code *DB2 is assigned. |
+ | | | |
+| OC-3492 | PTF211182 | Export/Import include DynVar @ \*DB2 SQL:  The LSAM Export/Import tools needed enhancement to include the newly supported option to insert Dynamic Variable {TOKENS} into the SQL Query definition fields that support the Dynamic Variable Function Code (\*DB2): Include when LSAM scripts are Exported. |
+ | | | |
+| OC-3553 | PTF211183 | Support DV \*DB2 SQL QRY FLDS {TOKENS}:  The various LSAM list displays that support option 7 = Capt Chart are updated to also include Dynamic Variable {TOKENS} that can be inserted in the SQL Query definition fields when a Variable uses Function Code (\*DB2). |
+ | | | |
+| OC-4450 | PTF211187 |  Add Resp Seq# to Capt Data Debug Log:  Add Resp Seq# to Capt Data Debug Log view.  The redundant data column labelled "T" (for entry Type) is removed because the sub-title on line 2 of the list display reveals the strict limit of which type of captured data is presented in the list. |
+ | | | |
+| OC-4584 | PTF211189 |  Retro-fit loading JOBDTE, JOBTME to Dynamic Variables @ LSAM version 21.1:  The full support for Job Entry Date and Time is retro-fitted from pending version LSAM 23.1 (wherever this can be supported) back to 21.1 in order to enable full support for multi-instance Dynamic Variables, especially for the IU.instance.  Avoids temporary assignment of zeros to Date & Time. |
+ | | | |
+| OC-4603 | PTF211190 |  Adapt Dynamic Variables to retrieve larger data areas via function code *DTAARA:  Dynamic Variables using the Function Code of *DTAARA can now extract up to 1024 bytes of data from anywhere within a data area of larger size. This PTF also fixes a flaw in data area value extraction that was introduced in a recent older LSAM PTF. |
+ | | | |
+| OC-4458 | PTF211191 |  Add AbortLoc code to record the point of a File Arrival failure:  New support has been added to the File Arrival jobs executed by the IBM i Agent, providing a program location whenever the LSAM commands CHKFILE or CHKIFSFIL might fail.  In such cases, a simplified program dump report points to the location of failure. |
+ | | | |
+| OCAG-447 | PTF211194 |  SMASUP utility save operations enhanced for *NOCMTBDY; add LSAVARF10 to SMASUP:  The \*NOCMTBDY option for saves of objects or libraries has been added to the SMASUP command. This "ragged save" supports file journaling added by clients for mirroring.  The SMASUP command was also fixed to save the Dynamic Variable auxiliary data file named LSAVARF10. |
+ | | | |
+| OCAG-447 | PTF211195 | OCAG-447  Add *NOCMTBDY to save of daily logs:  The \*NOCMTBDY command option for save-while-active has been added to the daily LSAM log file backup performed before aged records are deleted.  This "ragged save" method allows the LSAM saves to accommodate file journalling added by sites using mirroring. |
 

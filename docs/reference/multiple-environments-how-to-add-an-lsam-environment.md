@@ -32,6 +32,7 @@ This procedure requires that the user is logged on to the IBM i partition as eit
 7. Press **Enter** to continue with data entry of the new library list.
 8. Type the library names and optional descriptions that describe the library list for the new environment.
 9. **Type field**: Type one of the three values listed at the top of the screen to designate which library represents each of these three library roles: SMADTA, SMAPTF and SMAPGM. Each Type value may be used only once, and all three values must be assigned. The values must be listed in order (1=SMADTA, 2=SMAPTF, 3=SMAPGM) somewhere in the library list. There will be more than three libraries in the list. All the other library names should have blanks under the Type column.
+
 :::tip
 Libraries do not have to exist at the time they are added to this list, but they must
 exist when the LSAM environment is entered or started. Do not forget to include the designated
@@ -42,28 +43,55 @@ SMAGPL library (or libraries, if UTL not equal GPL) at or near the top of the li
 11. If all data entry edits were passed, press **Enter** to store the new library list in the control tables.
 12. Press **F3** (Exit) to leave the SMALIBMGT function.
 13. From command entry, create duplicates of the original LSAM libraries that were installed by using the following four commands, substituting the correct names for the TOLIB parameter according to the Type values assigned in step 8, above. (A sample value of SMAGPL1 is used in the following steps to represent the new SMAGPL library, but use the name provided in the CPYLIB command in place of the mnemonic "my_gpl".)
+
 ```
 CPYLIB FROMLIB(SMAGPL) TOLIB(my_gpl) CRTLIB(*YES)
 CPYLIB FROMLIB(SMADTA) TOLIB(my_dta) CRTLIB(*YES)
 CPYLIB FROMLIB(SMAPTF) TOLIB(my_ptf) CRTLIB(*YES)
 CPYLIB FROMLIB(SMAPGM) TOLIB(my_pgm) CRTLIB(*YES)
 ```
-14. In order to support the following steps, change the library list of the current interactive job to the new LSAM environment library list, using the following command:
+
+14. In order to support the following steps, use the IBM i command EDTLIBL to set the interactive workstation job library list to match the new LSAM environment's library list.  In the example that follows, be sure to change the library names that appear with "n" as a model designation for this document, to match the actual library names specified in the CPYLIB TOLIB parameter from step 13, above.  After typing correct library names in the list as illustrated below, press the Enter key once to perform the update, and press Enter again to leave the completed display.
+
 ```
-SMAGPL1/SMASETLIBL ENV(alt_environment_name)
+                              Edit Library List
+                                               
+Type new/changed information, press Enter.     
+
+Sequence             
+ Number   Library    
+     0               
+    10    QTEMP      
+    20    SMAGPLn    
+    30    SMADTAn    
+    40    SMAPTFn    
+    50    SMAPGMn    
+    60    QGPL       
+    70               
 ```
-15. It is required to execute the following command to initialize, configure and audit the new, alternate LSAM environment:
+
+15. It is required to execute the following command to initialize, configure and audit the new, alternate LSAM environment.  Be sure to change the name of the library that qualifies the LSAINIT command and is named in the GPL( ) command parameter (illustrated as "SMAGPLn"), so that it matches the SMAGPL library actual name in the newly cloned LSAM environment.
+
 ```
-LSAINIT ENV(alt_environment_name) GPL(SMAGPLn)
+SMAGPLn/LSAINIT ENV(alt_environment_name) GPL(SMAGPLn)
 ```
 
 - Instructions for the prompt screen that will appear are provided below, under the Screens and Windows section of this topic. More information about these required configuration field values can be found in the Configuration topic of this documentation.
 
 16. Delete the subsystem description that was duplicated from SMADTA (but do not delete the subsystem description that would have been created during a new installation of this alternate environment):
+
 ```
 DLTSBSD SBSD(my_dta/SMASBS)
 ```
-17. Enter the menu system for the new environment just created using one of the following commands:
+
+17. Change the Test environment Default flag: In order to avoid any conflict between the original source LSAM environment and this newly created clone LSAM environment, execute the SMALIBMGT command as shown below.  Remove the 'Y' as the Dft indicator from the original source LSAM (typically this would be the SMADEFAULT environment) and then type a 'Y' next to the name of the newly cloned Test environment.  Press Enter to complete this change.
+
+```
+SMALIBMGT GPL(SMAGPLn)
+```
+
+18. Enter the menu system for the new environment just created using one of the following commands.  Note that if the interactive job's library list was already set in step 14 above, it is not necessary to qualify either of the following two commands with their library location.  However, for future reference once there are two different LSAM environments installed within the same IBM i partition, using the correct library qualifier would assure that the correct instance of the LSAM menu system is being entered.
+
 ```
 SMAGPLn/STRSMA ENV(alt_environment_name)
 ```
@@ -73,29 +101,36 @@ SMAGPn/LSAMENU
 ```
 ...where "SMAGPLn" represents the alternate name for the SMAGPL library that belongs to the new LSAM environment.
 
-18. Press **Enter** to continue past the OpCon welcome screen, if the STRSMA command was used.
-19. Select function 7: LSAM Parameters by typing a **7** on the Selection line and pressing **Enter** to continue. Review and revise the LSAM general control parameters, as necessary. For example, LSAM log file purging controls might be different for a test environment.
-20. For each LSAM sub-menu, where option 7 is used to configure the feature, review the configuration options to make sure they are appropriate for the new LSAM environment. However, do not configure test LSAM environments to use Job Tracking or Restricted Mode functions, unless during special test circumstances it is well understood how to avoid conflicts with a production LSAM environment.
+19. Press **Enter** to continue past the OpCon welcome screen, if the STRSMA command was used.
+20. Select function 7: LSAM Parameters by typing a **7** on the Selection line and pressing **Enter** to continue. Review and revise the LSAM general control parameters, as necessary. For example, LSAM log file purging controls might be different for a test environment.
+21. For each LSAM sub-menu, where option 7 is used to configure the feature, review the configuration options to make sure they are appropriate for the new LSAM environment. However, do not configure test LSAM environments to use Job Tracking or Restricted Mode functions, unless during special test circumstances it is well understood how to avoid conflicts with a production LSAM environment.
 
 #### The next step requires an understanding of how to configure OpCon options at the SAM console. 
 
-21.  **Add a new machine definition** to the machine table at the OpCon User Interface (EM, SM), using the new LSAM Name.
+22.  **Add a new machine definition** to the machine table at the OpCon User Interface (EM, SM), using the new LSAM Name.
     
        - Specify that the machine type is IBM i.
 
-22. Enter the new LSAM environment in the IBM i partition using the **STRSMA** command or the **LSAMENU** command. For more information, refer to the [STRSMA Command](../operations/lsam.md#the-strsma-command). Be sure to specify the new environment name for the ENV parameter of this command:
+23. Enter the new LSAM environment in the IBM i partition using the **STRSMA** command or the **LSAMENU** command. For more information, refer to the [STRSMA Command](../operations/lsam.md#the-strsma-command). Be sure to specify the new environment name for the ENV parameter of this command:
+
 ```
-STRSMA ENV(alt_environment_name)warning
+STRSMA ENV(alt_environment_name)
 ```
 or
 ```
 Use the ENV(*SELECT) keyword value to select the environment from a list.
 ```
 
-23. Select **sub-menu 6**. LSAM Management Menu in the LSAM Main Menu.
-24. Select **function 1**. Start LSAM (STRSMASYS) in the LSAM Management Menu.
-25. When the start process has completed, select function 3. Check LSAM subsystem status, to confirm that the new LSAM environment server jobs are running without error (no job has a status of **MSGW**) under the unique subsystem name was created.
-26. It is now possible to use the OpCon User Interface console to start communications with the new LSAM environment. Please consider the warning below.
+24. Change the daily Maintenance Hour in the LSAM Parameters, under Database Maintenance on the second display page:
+       - From the LSAM main menu, select option **7. LSAM Parameters**.
+       - Press **PageDown** to move to the second display page.
+       - Under "LSAM Database Maintenance", update the "Maintenance hour" that appears on the right side at the top of the list of maintenance options.
+       - The hour selected for the Test LSAM must be different from the Production LSAM (and/or any other instances of the LSAM software installed within the same IBM i partition).  The reason for this unique setting is that the system clock time is being used to name the backup save files created by the Agent's LSAMNG server job, as it creates a backup of log file data before the daily purge of outdated records is performed.
+
+25. Select **sub-menu 6**. LSAM Management Menu in the LSAM Main Menu.
+26. Select **function 1**. Start LSAM (STRSMASYS) in the LSAM Management Menu.
+27. When the start process has completed, select function 3. Check LSAM subsystem status, to confirm that the new LSAM environment server jobs are running without error (no job has a status of **MSGW**) under the unique subsystem name was created.
+28. It is now possible to use the OpCon User Interface console to start communications with the new LSAM environment. Please consider the warning below.
 
 :::warning
 

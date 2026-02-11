@@ -123,7 +123,7 @@ An example of the STRSMA splash display follows.
  Load source:  LI181027U PTF181027                          PTF LVL: 100        
                                                              DB LVL: 002        
  F3=Exit   F5=Animate   F12=Cancel   Enter=Menu                                 
- Copyright (C) SMA Technologies 1995, 2018. ARR.                                
+ Copyright (C) Continuous 1995, 2018. ARR.                                
 ```
 
 ## LSAMENU Command

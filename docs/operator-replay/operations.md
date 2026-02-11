@@ -50,7 +50,7 @@ Information and instructions from IBM about "Securing Telnet with SSL" can be fo
 The web link above may change, as IBM continually revises their published documentation.  In this case, navigate to IBM i Documentation and then search for the topic "Securing Telnet with SSL".  The title may sometime be changed to refer to "TLS" instead of the deprecated SSL methods.
 :::
 
-SMA Technologies does not normally provide training about the IBM i operating system or its feature configuration, and SMA Technologies does not provide support for the IBM i operating system. It is entirely the responsibility of the user to correctly configure the operating system requirements mentioned in this documentation. The correct operation of OpCon Agent for IBM i -- Operator Replay feature depends on a correct configuration of the operating system, and this OpCon Agent's logging features for Operator Replay are able to demonstrate and prove that it is performing correctly. The Agent's logs may or may not provide helpful hints, as error codes reported by the operating system are captured in those logs. However, due to the necessary secretive nature of TLS Security, not every incorrect IBM i configuration problem will be detected by this OpCon Agent's programs.
+Continuous does not normally provide training about the IBM i operating system or its feature configuration, and Continuous does not provide support for the IBM i operating system. It is entirely the responsibility of the user to correctly configure the operating system requirements mentioned in this documentation. The correct operation of OpCon Agent for IBM i -- Operator Replay feature depends on a correct configuration of the operating system, and this OpCon Agent's logging features for Operator Replay are able to demonstrate and prove that it is performing correctly. The Agent's logs may or may not provide helpful hints, as error codes reported by the operating system are captured in those logs. However, due to the necessary secretive nature of TLS Security, not every incorrect IBM i configuration problem will be detected by this OpCon Agent's programs.
 
 :::tip
 The IBM i DCM handles Client and Server digital certificates, themselves, in the same way. The way in which a Client/Server certificate will be used is determined when a certificate is assigned to an application. The DCM presents separate lists for Server and Client applications.
@@ -64,7 +64,7 @@ To enable TLS Security when communicating with the IBM i Telnet Server, it is ne
 
 #### IBM i LSAM Telnet Client
 
-A TLS Client application must be registered in the DCM. It is critical that this application name matches exactly with the TLS Application name registered in the IBM i LSAM Operator Replay Configuration function. The default Application ID suggested by SMA Technologies is: 
+A TLS Client application must be registered in the DCM. It is critical that this application name matches exactly with the TLS Application name registered in the IBM i LSAM Operator Replay Configuration function. The default Application ID suggested by Continuous is: 
 ```
 SMA_IBM_I_OPERATOR_REPLAY
 ```
@@ -110,30 +110,51 @@ When the normal script logging option is set to the value of "D", the workstatio
 Preparing to run Replay scripts begins with registering user profiles to tell the LSAM they are valid for running Replay script jobs. Any valid IBM i user profile may be used as long the user has been granted privileges to perform every step that is included in the step records of the scripts.
 
 :::warning
-It is very important to carefully secure access to the maintenance and use of Operator Replay scripts. Depending on the user profiles registered, this form of OpCon job could create security risks for the system.
+It is very important to carefully secure access to the maintenance and use of Operator Replay scripts. Depending on the user profiles registered, this form of OpCon job could create security risks for the system. As this IBM i Agent software is installed, most of the database tables (in libraries SMADTA and SMAGPL) are owned by the secured SMANET user profile,and PUBLIC authority is REVOKED.  The same is true of the Agent's program objects in libraries SMAPGM and SMAGPL.  
+
+Changes to these object authorities should be accomplished using the LSAM Object Authority management tool, found in the LSAM sub-menu 9. PTF and Security Menu, option 8. 
+
+Similarly, an IBM i user profile that will be used to execute Operator Replay scripts could be assigned a high level of authority in order to complete some kinds of interactive tasks via the virtual workstation.  Consider revoking for \*PUBIC users, authority for using this \*USRPRF object, to prevent other system users from engaging this user profile to run jobs.
 :::
 
 :::tip
 The User management function supports other features available with the LSAM software, besides Operator Replay. For example, FTP jobs defined in OpCon for execution in IBM i require that the FTP user be registered using this maintenance function.
 :::
 
-Next, make sure that the SMANET user profile has been granted privileges to use every user profile that will be used with Operator Replay. Follow the steps below to set up a user profile for use with Operator Replay.
+Next, make sure that the SMANET user profile has been granted privileges to use every user profile that will be used with Operator Replay. By default, the Agent's primary user profile SMANET has \*ALLOBJ authority, though it lacks \*SECADM authority.  This normal configuration standard should be sufficient for reliable operation of the Operator Replay Scripts. Continuous strongly recommends to retain this authority, because otherwise configuring all the detailed authorities required for reliable operation of the IBM i Agent automation tools would be a very difficult task. For more information about this topic, see [LSAM Security and Object Authority](../security/strategy).
+
+Follow the steps below to set up a user profile for use with Operator Replay.
 
 ### Set Up an Operator Replay User
 
 1. Create the required user profile under IBM i using processes defined by the site.
-2. Grant *USE privileges to the SMANET user for the IBM i user profile created.
+    - a. Continuous recommends specifying this parameter value for Operator Replay users to prevent having the workstation dialog interrupted by STATUS messages, which are sometimes unpredictable as to the number of such messages that programs might display while conducting their task.
+      ```
+      OPTIONS(*NOSTSMSG)
+      ```
+
+    - b. Consider also whether it is desirable to suppress display of BREAK messages.  Sometimes, certain workstation activities could depend on the appearance of messages that a program wants to present to the workstation user.  But otherwise, these messages can be suppressed to keep the Operator Replay Script Steps less complicated and less susceptible to unexpected appearance of messages.  This can be set as a permanent option for the Operator Replay user profile by including the following parameter during execution of a CRTUSRPRF or CHGUSRPRF command.
+
+      ```
+      DLVRY(*HOLD)
+      ```
+
+
+2. If necessary when sites choose to revoke \*ALLOBJ authority for the Agent's default operational user profile SMANET (not recommended), grant \*USE privileges to the SMANET user for the IBM i user profile created. 
+
 3. In the command line, enter **SMAGPL/STRSMA**. For more information on **STRSMA** command parameters, refer to the [STRSMA Command](../operations/lsam.md#the-strsma-command).
 4. Enter **4** to choose the **Operator Replay menu** in the SMA Main Menu.
 5. Enter **1** to choose **User management** in the Operator Replay Menu.
 6. Press <**F6**> on the User management menu.
+
 7. On the Add User screen, <**Tab**> to the following fields and type data for each:  
     - a. In the **User Name** field, type the User Profile to use when running Operator Replay scripts (up to 10 characters - a longer name could be entered, but Operator Replay is restricted to 10).
     - b. In the **Password** field, type the user profile's password (up to 10 characters, unless the IBM i password option has been set to allow longer passwords to be used).
     - c. In the **Password (to verify)** field, retype the user profile's password to verify the password.
     - d. In the **Description** field, type a text description for the user (up to 40 characters).
-    - e. In the **Device Name** field, optionally assign this user to a specific virtual display device.
-    - f. In the **IP Address** field, if a Device Name was specified, also enter here the IP Address that will be associated with this device. (The LSAM's Telnet exit program uses the IP Address to force selection of the device. SMA recommends using a \*LOOPBACK type of Interface for this IP Address, which avoids having to create a line description.)
+    - e. In the **Device Name** field, *optionally* assign this user to a specific virtual display device. \*
+    - f. In the **IP Address** field, if a Device Name was specified, also enter here the IP Address that will be associated with this device. (The LSAM's Telnet exit program uses the IP Address to force selection of the device. SMA recommends using a \*LOOPBACK type of Interface for this IP Address, which avoids having to create a line description.) 
+    > \* For more information about managing assigned virtual devices, see [Managing Virtual Devices](./virtual-devices)
 8. Press <**Enter**> to complete the process of adding a new user.
 
 ## Creating an Operator Replay Script
@@ -172,7 +193,7 @@ There are two ways to create new scripts: Either create a new script from scratc
     :::info example
     Entering the string SMAGPL/STRSMA takes the Replay job to the LSAM Main Menu.
     :::
-
+  
     :::caution
     When using the STRSMA command in an Operator Replay script, it is important to specify the correct value for the ENV (environment) parameter. It is also advisable to specify (*NO) for the ANIMATE parameter to avoid an unexpected delay in processing of the next screen that follows the STRSMA command. When using the STRSMA command in Operator Replay, it must be followed by a second step record that requires a second press of <**Enter**> in order to bypass the LSAM sign on splash display. The command LSAMENU is a simpler way to enter the LSAM menus, but it must be qualified by its library location and it must specify the environment: 
     ```

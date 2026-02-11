@@ -10,7 +10,7 @@ This sub-chapter explains how to manage the installation of all available PTFs (
 
 This sub-chapter replaces the former stand-alone "PTF README" PDF document that was previously stored with the LSAM PTF cumulative save files in the SMA FILES ftp server under /OpCon Releases/Agents/IBM i/.
 
-In the chapter [LSAM Software Maintenance](../maintenance/ptf.md#lsam-program-temporary-fixes) there are instructions for clients about the different options available for obtaining LSAM PTFs from SMA.  The options include both direct access from the IBM i partition to the SMA ftp server and a variety of indirect access methods.  This document assumes that a client may not be configured for direct access to an SMA ftp server, and that an indirect method will likely be the most convenient and efficient method for applying all the PTFs available just after a new installation of the LSAM has been completed. 
+In the chapter [LSAM Software Maintenance](../maintenance/ptf#introduction-to-lsam-ptfs) there are instructions for clients about the different options available for obtaining LSAM PTFs from SMA.  The options include both direct access from the IBM i partition to the SMA ftp server and a variety of indirect access methods.  This document assumes that a client may not be configured for direct access to an SMA ftp server, and that an indirect method will likely be the most convenient and efficient method for applying all the PTFs available just after a new installation of the LSAM has been completed. 
 
 SMA recommends the “IFS” method for indirect installs, as explained next in the procedure summary that follows. 
 
@@ -20,9 +20,9 @@ The user can jump right into the procedure just below, but there is important in
 
 ### PTF Installation Prerequisites
 
-Please be careful to distinguish between SMA Technologies software patches for different versions of the IBM i LSAM. At SMA Technologies' secure ftp server there are different sub-directories for all resources pertaining to each version. Although the LSAM PTF save file names are similar (LSCTLDTA and LSCUMPTF), they are NOT interchangeable.
+Please be careful to distinguish between Continuous software patches for different versions of the IBM i LSAM. At SMA Technologies' secure ftp server there are different sub-directories for all resources pertaining to each version. Although the LSAM PTF save file names are similar (LSCTLDTA and LSCUMPTF), they are NOT interchangeable.
 
-Using the wrong LSAM PTF files for a version will corrupt the LSAM software and require a restoration from the most recent backup of the LSAM libraries. SMA Technologies advises clients to always backup the LSAM libraries before attempting any patching or upgrading of the software.
+Using the wrong LSAM PTF files for a version will corrupt the LSAM software and require a restoration from the most recent backup of the LSAM libraries. Continuous advises clients to always backup the LSAM libraries before attempting any patching or upgrading of the software.
 
 ## PTF Pre-Installation Requirements
 
@@ -190,7 +190,7 @@ Repeat the application process for each LSAM environment.  If there are two copi
 ### Obtaining IBM i LSAM PTF resources
 
 The resources used for software patches (PTFs, program temporary fixes) for SMA’s IBM i LSAM include two IBM i save files and this document.
-SMA Installers should always check before going to a client site that they have access to the latest IBM i LSAM PTF resources.  The SMA ftp server location for IBM i LSAM PTFs is the only place to look for the latest versions.  The ftp server can be accessed either directly using a URL (changes sometimes occur – please contact SMA Support or your Solutions Consultant for instructions) or by using the SMA Support Portal from the SMA Technologies web site at www.smatechnologies.com .
+SMA Installers should always check before going to a client site that they have access to the latest IBM i LSAM PTF resources.  The SMA ftp server location for IBM i LSAM PTFs is the only place to look for the latest versions.  The ftp server can be accessed either directly using a URL (changes sometimes occur – please contact SMA Support or your Solutions Consultant for instructions) or by using the SMA Support Portal from the Continuous web site at www.smatechnologies.com .
 
 The SMA "FILES" ftp server supports a primary and a secondary directory structure for the maintenance and support of the OpCon Agent for IBM i.
 

@@ -31,7 +31,7 @@ The LSAM does not need to be started or stopped at this point.
 
     a.  It is possible to type "**1**" next to logging functions one at a time, then press <**Enter**> to update the Pending status, until the correct logging profile is shown. Pressing <**Enter**> does not initiate any Start or End actions.
 :::warning
-Do not enter "1" next to any line that is titled "trace logging" unless instructed to do so by SMA Technologies Support. This function is only for programmer diagnosis. Using this feature may have an impact on LSAM communications performance and it will utilize much extra disk space. 
+Do not enter "1" next to any line that is titled "trace logging" unless instructed to do so by Continuous Support. This function is only for programmer diagnosis. Using this feature may have an impact on LSAM communications performance and it will utilize much extra disk space. 
 :::
 
 6. Press <**F7**> (= STRSMALOG) to immediately start the selected logging.

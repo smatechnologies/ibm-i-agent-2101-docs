@@ -8,7 +8,7 @@ This topic shows a combined list of the LSAM fixes and enhancements that have be
 
 ## IBM i LSAM 21.1 PTFs
 
-The PTF Level is the value that clients and SMA Support will use to confirm the software level of each LSAM installation.  View the PTF List display from LSAM menu 9, option 1, to identify the PTF Level of each PTF.  It may or may not be the same as the last three digits of the PTF Names shown in the following list.
+The PTF Level is the value that clients and Continuous Support will use to confirm the software level of each LSAM installation.  View the PTF List display from LSAM menu 9, option 1, to identify the PTF Level of each PTF.  It may or may not be the same as the last three digits of the PTF Names shown in the following list.
 
 ### LSAM DB LVL # 21.1.003
 
@@ -46,9 +46,9 @@ The PTF Level is the value that clients and SMA Support will use to confirm the 
 
 - Fixed (# 211056) The LSAM menu 6, option 6, uses the WRKSMASVR command and program to support a user interface to the Agent tools for starting/stopping parts of the LSAM server jobs.  Option 6=STRGRP for JORS was not working to start that Group's server jobs.
 
-- **Enhanced** (# 211057, 211058) Add User Env Matrix utility control: A control data area (USRMTXCTL) will be present if the User Environment Matrix maintenance function is installed in an LSAM environment.  This function may be customized and the driver program name changed, depending on SMA client site requirements.                                                    
+- **Enhanced** (# 211057, 211058) Add User Env Matrix utility control: A control data area (USRMTXCTL) will be present if the User Environment Matrix maintenance function is installed in an LSAM environment.  This function may be customized and the driver program name changed, depending on Continuous client site requirements.                                                    
 
-    Fix Operator Replay menu opt # 12: A control data area (USRMTXCTL) will contain the custom maintenance program name for a User Environment Matrix feature that may be installed and customized for an SMA client site.  PTF211058 adds the proposed DB files and fixes LSAM menu 4, option 12 name.
+    Fix Operator Replay menu opt # 12: A control data area (USRMTXCTL) will contain the custom maintenance program name for a User Environment Matrix feature that may be installed and customized for an Continuous client site.  PTF211058 adds the proposed DB files and fixes LSAM menu 4, option 12 name.
 
 - Fixed (# 211059) Remove function key F7 from the Operator Replay master file maintenance display format OPRRPYR10-4B, since it is not supported from this display. 
 
@@ -93,7 +93,7 @@ Add messages that log when a connect request is rejected by the LSAM Job Schedul
 
 **IBMI-892:** PTF211088  Add Operator Replay error report for MLTJOB script
 
-An Operator Replay script can be executed from the Agent's Multi-Step Job Scripts, but previously the failure of the Operator Replay Script was not being reported to the OpCon server's job that started the Multi-Step Job Script execution. For more information, see the [Operator Replay user help](../operator-replay/additional-info#managing-operator-replay-exit-codes-via-multi-step-job-scripts).
+An Operator Replay script can be executed from the Agent's Multi-Step Job Scripts, but previously the failure of the Operator Replay Script was not being reported to the OpCon server's job that started the Multi-Step Job Script execution. For more information, see the [Operator Replay user help](/operator-replay/additional-info#configuration-of-multi-step-scripts-for-sending-operator-replay-exit-codes-to-opcon-detailed-job-messages).
 
 **IBMI-893:** PTF211097  Add 5 field codes to SM File Arrival job
 
@@ -207,14 +207,14 @@ need maintenance.
 - Fixed (# 211123) IBMI-933: Fix F4=Prompt on OPRRPY10-3, W8: Copy Application.                     
 During the process of copying an Operator Replay Script, if a choice is made to copy an existing link to a Capture Data Application, the window that supports selecting the same, or new Capture Application ID was not supporting the F4=Prompt function key.                                               
 
-### LSAM PTF release 21.1.144 (DB LVL # 21.1.006)
+### LSAM PTF release 21.1.146 (DB LVL # 21.1.006)
 
 #### ENHANCEMENTS
 ##### LSAM DB LVL # 21.1.005
 
 **DE5779:**  PTF211124  Add SMAFT setting file auth @ new files
 
-The SMA File Transfer jobs, both the on-demand Agent job and the inter-LSAM Server job, are enhanced to assign the Destination User Profile authority to new files added to the DB2 database or an IFS stream file system, per the new SMAFT Control option.
+The Continuous File Transfer jobs, both the on-demand Agent job and the inter-LSAM Server job, are enhanced to assign the Destination User Profile authority to new files added to the DB2 database or an IFS stream file system, per the new SMAFT Control option.
 
 **IBMI-997:**  PTF211128  Extend Oper Replay Top/Bottom string
 
@@ -241,7 +241,6 @@ The Job Tracking Parameters maintenance display now only shows F10=$VAR if/where
 **IBMI-1017:**  PTF211141  Enhance LSAM gen log search to LC:
 
 The LSAM "Submitted Job Log" file, which has become a general purpose log file for LSAM tools that span features, such as Dynamic Variables, has its list of log codes expanded with code LC: which logs any command executed by the LSAM utility LSAMCMD.
-
 
 #### FIXES
 
@@ -283,7 +282,7 @@ The LSAM Data Import processing programs were not showing valid totals.  The Imp
 
 - Fixed (# PTF211134) IBMI-1012: Prevent Non-numeric data errors in SMAFT programs
 
-The SMA File Transfer programs would sometimes generate a "Non-numeric data error" when there was a slight pause during the reception of a very long data transaction (near the limit of 32000 bytes).  Controls added 
+The Continuous File Transfer programs would sometimes generate a "Non-numeric data error" when there was a slight pause during the reception of a very long data transaction (near the limit of 32000 bytes).  Controls added 
 to retry once after a read with no data.
 
 - Fixed (# PTF211135) IBMI-1001: Prevent CPF3EC2 error at Job Track exit
@@ -309,8 +308,199 @@ When an existing LSAM enironment's libraries are copied to a new LSAM environmen
 
 - Fixed (# PTF211145) IBMI-1017A  Redistribute Job Tracking interception program with late fix from PTF211140.
 
-The Job Tracking program TRKJOBR00 was revised during the beta site testing phase, but after public distribution of the final version of this program there were complications with PTF administration at the beta site.  The easiest remedy for this obstacle was to re-issue the beta site program fix as a new, separate LSAM PTF that can easily be applied at the beta site and all SMA client sites.
+The Job Tracking program TRKJOBR00 was revised during the beta site testing phase, but after public distribution of the final version of this program there were complications with PTF administration at the beta site.  The easiest remedy for this obstacle was to re-issue the beta site program fix as a new, separate LSAM PTF that can easily be applied at the beta site and all Continuous client sites.
  
 - Fixed (# PTF211146) IBMI-1027  Fix truncated IBM i Job Entry Date and Time.
 
 The Dynamic Variable Multi-Instance keys were showing a truncated IBM i Job Entry Date and Time in the Dynamic Variable instance log display  and the Instance Key displays from the LSAM Submitted Job (general purpose) Log display.
+
+
+### LSAM PTF release 21.1.195 (DB LVLs # 21.1.007, 21.1.008)
+
+#### DB LVL # 21.1.006 (continued)
+
+- Fixed (# PTF211147) SI-2389  Job Status log shows 26 of 28 IBM i JobID.
+
+DSPIDXR2, R3, R4, R5 and R6 show only 26 of 28 IBM i Job ID. This also disabled function key F21=WRKJOB whenever a complete Job ID exceeds 26 characters in length in its edited form of 123456/USERNAME/JOBNAME.  
+
+#### DB LVL # 21.1.007
+
+- **Enhanced** (# PTF211148, PTF211149, PTF211150) IBMI-1027 Add Job Tracking trace logging diagnostic tool       
+
+*See Post-Install Instructions*
+
+A simple new control feature can now be used to produce a large amount of detailed, technical trace data that can help diagnose problems with Job Tracking in case jobs are not being tracked and there is no information appearing in the Job Tracking Log display (LSAM menu 1, option 2). PTF # 211148 adds file TRKLOGF10 to the LSAM database, bumping the DB Level to 007.  PTF # 211150 includes some small, technical fixes that prevent a failure to qualify certain jobs for tracking and also improve the accuracy of the Job Tracking activity log file content.
+
+- Fixed (# PTF211151) IBMI-1040  Operator Replay attempt to write log to closed file
+
+A log write early in OPRRPYR01 was not being controlled by the required test for the Operator Replay logging file to be open.               
+
+- Fixed (# PTF211152) IBMI-1038  Fix *HEX and LDA Dynamic Variable management bugs
+
+The *HEX function code was not storing the correctly entered hexadecimal values into the Dynamic Variable master file.  The Type L (LDA content) variables showed incorrect formatting by the DSPDYNVAR command.  Add instructions to DSPDYNVAR full display and offer a prompted DSPDYNVAR command to override output format when option 6=DSPDYNVAR is used from the LSAM menu list of Dynamic Variables.                                                 
+
+- Fixed: (# PTF211153) IBMI-1041  Remove SMAGPL after Job Track process
+
+The library SMAGPL was being left in the submitting job's library list, in error.  The registered LSAM Job Tracking exit program (TRKJOBR10) is updated to restore the accidentally lost step to remove the SMAGPL library that it had added to the job. This malfunction was preventing job users with limited authority from submitting their jobs.
+
+- **Enhanced** (# PTF211154) IBMI-1041  Add GETDVRVALR utility
+
+*See User Help* - [Utility Commands for Manipulating Dynamic Variables](/dynamic-variables/manipulation-commands)
+
+This PTF adds a utility program to the LSAM that can be used by programs to fetch just the value of any given Dynamic Variable, including multi-instance variables, without the variable attributes.  It also changes the ACTGRP for some DynVar utilities.                                                  
+
+- **Enhanced** (# PTF211155) IBMI-1041  Fix VARTYP value prompt for DSPDYNVAR
+
+The VARTYP value of U in the DSPDYNVAR command is no longer supported, due to an improvement in the ability to display Type-L variables.  Use the OUTPUT parameter set to LINE24MSG to view just one sequence number for a group of Type-L variables @ same job.
+
+- Fixed (# PTF211156) IBMI-1045  Fix DynVar value error; change DSPDYNVAR
+
+The Dynamic Variable token replacement module enhancement for Type L variables in PTF # 211152 caused incorrect value replacement for Type V variables.  The PTF list option 6=DSPDYNVAR is now accompanied by 7=DSPDYNVAR(F4) for prompting the command.
+
+- Fixed (# PTF211157) IBMI-1047  *DB2 DynVar erases SQL: replace program
+
+When function code *DB2 was assigned to a Dynamic Variable, and the WHERE clause of the SQL definition included a Dynamic Variable token, the value of the token was replacing the whole SQL statement.  This was fixed at PTF211156, but one program missed.
+
+- Fixed (# PTF211158) IBMI-1050  Dynamic Variable Numeric value string error
+
+The numeric value type of Dynamic Variables was producing an error following recent PTFs that improved support for different types of variables with character (not numeric) values.  Added code to assure that value, start and length are always correct.
+
+- **Enhanced** (# PTF211159, PTF211160) IBMI-1049  Add OPRLOGF44 file: F2=Select JOBNBR
+
+The LSAM general inquiry program that shows just Captured Data entries (separate from the Captured Data Debug display) is improved with F2 = Select JOBNBR.  This function that appears in other inquiries limits the list display to entries from just one job. As the list of isolated Captured Data is enhanced with the subset capability appearing in other LSAM inquiries: F2=Subset by JobID, the list display also needed a fix to correct the function key legend appearing below the log entries list.
+
+- **Enhanced** (# PTF211161, PTF211162) IBMI-1052  Edit prevents prefix to Type-L DynVars
+
+This PTF adds a message to the SMAMSGF message file, as part of an edit to prevent applying a multi-instance prefix to Type-L (Local Data Area) variables.  See the IBM i Agent User Help, chapter [Managing the Local Data Area](/dynamic-variables/local-data-area) for various methods and examples for providing values to Type-L DynVars. 
+
+PTF211162 adds an edit to prevent applying a multi-instance prefix to Type-L (Local Data Area) variables to the variables maintenance command and program. 
+ 
+- **Enhanced** (# PTF211163) IBMI-1060  Bypass SMA0106 connect retry if TLS		
+
+*See Post-Install Instructions*
+
+The error SMA0106 reports unable to connect to a virtual display device.  The Operator Replay script driver has a built-in retry loop that will attempt to connect up to 3 times before failing the job.  A new option prevents the connect retry if TLS active.
+
+- **Enhanced** (# PTF211164, PTF211165) IBMI-1061  Improve RESET response to BELL signal
+
+*See Post-Install Instructions*
+
+When the 5250 display device (emulated via VT100) protects from invalid keyboard input with a BELL signal, normally accompanied by an Input Inhibited keyboard status, the Operator Replay function key RESET is used to clear the keyboard.
+
+When the RESET function will be the next Operator Replay Script Step to process, following a Step that generated a BELL keyboard input error, the Operator Replay visual capture log will no longer show the unsent Function Key of the failed Step.
+
+- Fixed (# PTF211166, PTF211167) IBMI-1065  Job Tracking error RNX0100 when $SUFFIX option is used, for non-generic job names
+
+The Job Tracking feature supporting generic job names, when active, can cause a failure of program TRKJOBR01, which does job detection for tracking, for certain sizes of job names. This PTF also adds an edit to Job Tracking Parameters for generic names.
+
+- Fixed (# PTF211168) IBMI-1068  CHKIFSFIL fails if space in path name
+
+A PATH name is allowed to have spaces between characters with in the name of a directory.  The LSAM CHKIFSFIL command uses a CL program to execute QSHELL commands, and those commands needed single quotes around a PATH name that includes space characters.                                                
+
+- **Enhanced** (# PTF211169, PTF211170) OC-1881  Update LSAM table ctl file for JORLOGF00
+
+File JORLOGF00 control now registers preferred size(*NOMAX), which prevents program failures in high volume environments, in case the file would get very full in between LSAM database reorganization by the SMARGZ command.
+
+Change JORLOGF00 to size(*NOMAX) for high-volume environments that might have filled the size-limited file in between cycles of database reorganization that is performed by a properly scheduled execution of this LSAM's SMARGZ utility.
+
+- Fixed (# PTF211171) OC-2146  SCANSPLFR fails: OCCUR value out of range
+
+The SCANSPLF command was failing when any more than 299 instances of a given spool file name matched the Scan Rule search criteria.  There are strategies for using SCANSPLF parameters to limit the search results.  But the program is expanded to 499 files.
+
+- Fixed (# PTF211172) OC-2694  LSATBLCSIR force blanks for PFSIZE2, PFSIZE3 if PFSIZE1=*NOMAX
+
+The LSAM database table parameters control assignment program LSATBLCSIR must set PFSIZE2 and PFSIZE3 to blanks when PFSIZE1 is *NOMAX.  These three fields represent three segments of the SIZE() parameter in the CHGPF and CRTPF IBM i commands.                                                          
+
+- Fixed (# PTF211173) OC-2766  MLTJOB Log display function keys F16, F17, F18 not working
+
+The Multi-Step Script job log list display, format R2, is not supporting the display function keys 16=Search, F17=Top and F18=Bottom.  The program had never been updated to respond to these listed function keys which are important for studying script steps.
+                                                
+- **Enhanced** (# PTF211174) OC-2781  Expand JORS for extreme SPLF count
+
+The LSAJOR server job was unable to accommodate more than 99,999 spool files that were produced by the same Job Name in IBM i partitions that had retained aged spool files. 
+                                                
+- **Enhanced** (# PTF211175) OC-2896  Control SCANSPLF dumps with data area
+
+The LSAM report management utilities SCANSPLF and SCANOUTQ are enhanced with more carefully managed options to dump the program contents in case of an unexpected error, but only when the new data area LSAUTLU1 is set to a value of 'U1*YES'.   
+
+Instructions to Continuous internal technical staff are provided at [How to Produce a Formatted Program Dump for Failure Diagnosis of SCANSPLF](/events-utilities/scansplf-scanoutq#how-to-produce-a-formatted-program-dump-for-failure-diagnosis-of-scansplf).
+
+- Fixed (# PTF211176) OC-2917  SCANOUTQ temp debug code removed
+
+The SCANOUTQ utility began displaying a temporary debug message after changes made by PTF211175.  This code is no longer necessary so it is completely removed.
+
+- Fixed (# PTF211177) OC-2940  Support *APPKEY as SCANOUTQ APPID value
+
+The special value of *APPKEY was supposed to be added to the  SCANOUTQ command prompt of the APPID keyword.  At the same time, the parameter rule that was causing a false error that APPID cannot be blank has been removed.  The APPKEY is the critical key.
+
+#### DB LVL # 21.1.008
+
+- **Enhanced** (# PTF211178, PTF211179) OC-1931  User Matrix master file change key field type to INST(3.A)
+
+The User Matrix master file and maintenance are changed to support 3 characters instead of limiting the Institution ID to just numeric digits.
+
+- **Enhanced** (# PTF211180) OC-3322  Add DV token replace for func code *DB2
+
+Add Dynamic Variable token replace for the SQL query fields when the function code *DB2 is assigned.
+
+- Fixed (# PTF211181) OC-3467  LSAM Export wrong values in new batch
+
+The LSAM Export program that builds new batch control records assigned wrong values to new records because the program's initial list display leaves the last previously created record values instead of clearing the record before creating a new one.
+
+- **Enhanced** (# PTF211182) OC-3492  Export/Import include DynVar @ *DB2 SQL
+
+The LSAM Export/Import tools needed enhancement to include the newly supported option to insert Dynamic Variable {TOKENS} into the SQL Query definition fields that support the Dynamic Variable Function Code (*DB2): Include when LSAM scripts are Exported.
+
+- **Enhanced** (# PTF211183) OC_3553  Support DV *DB2 SQL QRY FLDS {TOKENS}
+
+The various LSAM list displays that support option 7 = Capt Chart are updated to also include Dynamic Variable {TOKENS} that can be inserted in the SQL Query definition fields when a Variable uses Function Code (*DB2).
+
+- Fixed (# PTF211184) OC-3595  Disable diagnostic counter "StackCnt"
+
+Disables diagnostic counter "StackCnt" because it was not being reset to zero as anticipated.  It is not needed for production use of the Dynamic Variable token replacement module.  Failure to reset the counter caused the LSAM Job Scheduler to fail.
+
+- Fixed (# PTF211185) OC-3960  Oper Replay Step copy: Show Application ID & Key
+
+When copying an Operator Replay Step record, the window that prompts the From and To Application ID and Key values was failing to include the Capture Application ID and Key of the From-Step record.                        
+
+- Fixed (# PTF211186) OC-4369  Fix second Search for many list displays
+
+Requesting a second Search value from the same session of many different LSAM menu function list displays was causing error "Length or start position is out of range for the string operation."
+
+- **Enhanced** (# PTF211187) OC-4450  Add Resp Seq# to Capt Data Debug Log
+
+Add Resp Seq# to Capt Data Debug Log view.  The redundant data column labelled "T" (for entry Type) is removed because the sub-title on line 2 of the list display reveals the strict limit of which type of captured data is presented in the list.                  
+
+- Fixed (# PTF211188) OC-4451  Report Oper Replay loop error as SMA010F
+
+Previously, whenever an Operator Replay script would loop back to the same step label more than the configured general limit, the Script driver job would fail and report Error14 using message ID SMA0107. This is corrected to use SMA010F (code F). 
+
+- **Enhanced** (# PTF211189) OC-4584  Retro-fit loading JOBDTE, JOBTME to Dynamic Variables @ LSAM version 21.1
+
+The full support for Job Entry Date and Time is retro-fitted from pending version LSAM 23.1 (wherever this can be supported) back to 21.1 in order to enable full support for multi-instance Dynamic Variables, especially for the IU.instance.  Avoids temporary assignment of zeros to Date & Time.                                             
+
+- **Enhanced** (# PTF211190) OC-4603  Adapt Dynamic Variables to retrieve larger data areas via function code *DTAARA
+
+Dynamic Variables using the Function Code of *DTAARA can now extract up to 1024 bytes of data from anywhere within a data area of larger size. This PTF also fixes a flaw in data area value extraction that was introduced in a recent older LSAM PTF.                                                     
+
+- **Enhanced** (# PTF211191) OC-4458  Add AbortLoc code to record the point of a File Arrival failure
+
+New support has been added to the File Arrival jobs executed by the IBM i Agent, providing a program location whenever the LSAM commands CHKFILE or CHKIFSFIL might fail.  In such cases, a simplified program dump report points to the location of failure.                                                
+
+- Fixed (# PTF211192) OCAG-440  Add LSAVARF10 Dynamic Variable Auxiliary file to the SMASUP LSAM log extract utility
+
+The Dynamic Variable Auxiliary master file with definitions for Function Code operations was never added to the SMASUP log extract utility.  This is always required whenever an LSAM feature uses Dynamic Variables.
+
+NOTE:  The LSAM PTF published PTF control file list display incorrecly shows the JIRA rask as OC-440 (as was also incorrectly registered in the LSAM PTF production database). The Continuous internal PTF control master file is updated with a note referring to the correct JIRA Task ID.
+ 
+- Fixed (# PTF211193) OCAG-393  Fix SMA File Transfer target file overwrite option
+
+Under certain SMA File Transfer job configurations, the setting of the Overwrite File option could cause a program failure.
+
+- **Enhanced** (# PTF211194) OCAG-447  SMASUP utility save operations enhanced for *NOCMTBDY; add LSAVARF10 to SMASUP
+
+The *NOCMTBDY option for saves of objects or libraries has been added to the SMASUP command. This "ragged save" supports file journaling added by clients for mirroring.  The SMASUP command was also fixed to save the Dynamic Variable auxiliary data file named LSAVARF10.
+
+- **Enhanced** (# PTF211195) OCAG-447  Add *NOCMTBDY to save of daily logs
+
+The *NOCMTBDY command option for save-while-active has been added to the daily LSAM log file backup performed before aged records are deleted.  This "ragged save" method allows the LSAM saves to accommodate file journalling added by sites using mirroring.

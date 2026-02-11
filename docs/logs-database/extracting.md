@@ -17,8 +17,8 @@ As an IBM i command, the SMASUP command can be executed from anywhere that IBM i
 :::info example
 ```
 SMAPGM/SMASUP LOGLIB(SEL) CLRLOG() RESTART() SEL_OPTS__() JOBTRK(0) 
-MSGMGT(0) UTIL(0) OPRRPY(0) RSTMOD(0) JOBSCH(0) JORS(0) SPLF(0) 
-SMAFT(0) FTPJOB(0) EXPIMP(0)]
+MSGMGT(0) UTIL(0) OPRRPY(0) RSTMOD(0) JOBSCH(0) JORS(0) JOBSTS(0) SPLF(0) 
+SMAFT(0) FTPJOB(0) GENEML(0) EXPIMP(0)
 ```
 :::
 
@@ -30,36 +30,34 @@ The keywords for each parameter shown in the following two figures are listed ab
 
 #### Prompted SMASUP Command (Default)
 ```
-       Extract LSAM Logs and Files (SMASUP)
+                    Extract LSAM Logs and Files (SMASUP)
           
-            Type choices, press Enter.
+Type choices, press Enter.
           
-           Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
-          Save selected, logs or library     LOG           SEL, LOG, LIB
-         Clear (not used) . . . . . . . .                 (No longer used)
-         Restart (not used) . . . . . . .                 (No longer used)
-            SEL log file options:     
+Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
+Save selected, logs or library     LOG           SEL, LOG, LIB
+Clear (not used) . . . . . . . .                 (No longer used)
+Restart (not used) . . . . . . .                 (No longer used)
+                                                   SEL log file options:     
           
           
-      Bottom
-     
-
+                                                                         Bottom
 F3=Exit   F4=Prompt   F5=Refresh   F12=Cancel   F13=How to use this display  
-   F24=More keys
+F24=More keys
 ```
 To view and manage the SEL (selection) parameters, type the letters "SEL" in the field "Save selected, logs or library" and then press <**Enter**>. When this LOGLIB() parameter has been changed from LOG or LIB to SEL, pressing Enter will not cause the command to execute but will only redisplay the command prompt with additional keywords.
 
 #### Prompted SMASUP Command (SEL Fields)
 ```
-     Extract LSAM Logs and Files (SMASUP)
+                     Extract LSAM Logs and Files (SMASUP)
         
-          Type choices, press Enter.
+Type choices, press Enter.
         
-         Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
-        Save selected, logs or library     SEL           SEL, LOG, LIB
-       Clear (not used) . . . . . . . .                 (No longer used)
-       Restart (not used) . . . . . . .                 (No longer used)
-          SEL log file options:      
+Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
+Save selected, logs or library     SEL           SEL, LOG, LIB
+Clear (not used) . . . . . . . .                 (No longer used)
+Restart (not used) . . . . . . .                 (No longer used)
+                                                   SEL log file options:      
 Save Job Track/Capture logs? . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr 
 Save Message Management logs?  .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save Utility/SCANSPLF logs?  . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
@@ -67,18 +65,19 @@ Save Operator Replay logs? . . .   0             0=no, 1=Logs, 2
 Save Restricted Mode logs? . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save Job Schedule logs?  . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save JORS server logs? . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
+Save Job Status Monitor logs?  .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save SPLF server logs? . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save SMA File Transfer logs? . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save simple FTP job logs?  . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save GENEMLREQ logs? . . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-   More\...
+                                                                       More...
         
-(after pressing PageDown to see More\...)
+(after pressing PageDown to see More...)
 
+Save GENEMLREQ logs? . . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
 Save Export/Import logs? . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-       Bottom
+                                                                        Bottom
 
-  F3=Exit   F4=Prompt   F5=Refresh   F12=Cancel   F13=How to use this display
+ F3=Exit   F4=Prompt   F5=Refresh   F12=Cancel   F13=How to use this display
  F24=More keys
 ```
 

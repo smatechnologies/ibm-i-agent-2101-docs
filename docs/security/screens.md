@@ -37,7 +37,7 @@ Main Menu > PTF and Security menu (#9) > Work with object authority (#8)
 - **3=Copy**: Select an object whose authority profile will be copied to a new object that is being added to the list.
 - **4=Delete**: Remove an object (and any associated external commands) from the LSAM master file.
 :::caution
-Do not remove objects that SMA Technologies has designated in the distributed version of this file, in order to avoid disabling certain LSAM functions. This option should only be used for objects that the Security Officer at the site had added to the file.
+Do not remove objects that Continuous has designated in the distributed version of this file, in order to avoid disabling certain LSAM functions. This option should only be used for objects that the Security Officer at the site had added to the file.
 :::
 
 - **5=Display**: Display all the details of the object authority profile (except not the external commands - refer to option 7).

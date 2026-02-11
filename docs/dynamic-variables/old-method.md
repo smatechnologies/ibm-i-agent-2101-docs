@@ -69,7 +69,7 @@ If the utility program fails, it will log messages in the LSALOGF30 LSAM log fil
 /*                                                               */
 /* COPYRIGHT (C) 2019 SMA Technologies. All rights reserved.     */
 /*                                                               */
-/* SMA Technologies grants a limited right to licensed users of  */
+/* Continuous grants a limited right to licensed users of  */
 /* this software to copy and adapt this model program only for   */
 /* the purpose of implementing automation by OpCon and its Agent */
 /* software.                                                     */

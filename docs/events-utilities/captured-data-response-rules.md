@@ -286,26 +286,27 @@ Refer to the How To discussions above in this topic for more information about w
 Main Menu \> Operator replay menu (#4) \> Display Captured Data log (#8).
 
 ##### Fields
-
 - **Subset to Type**: When this list display has been called directly from the menu, the LSAM menu passes a parameter to signal the program whether the call came from the Operator Replay menu (Type = Screen), or from the Events and Utilities Menu (Type = SCANSPLF). Function key F15 can be used to force a change to the Subtype, or to remove subsetting and show all Response rules of both types.
 - **Search content**: Type a value in this field and press <**Enter**> or <**F16**> to initiate a search for a record that has matching data anywhere in the record, including data that might not appear on the list display (but the matching data would appear in the display of the detail of the record). When <**F16**> is pressed a second time, the search continues from after the last matching record, using the same Search content data. Press <**Enter**> a second time (with no options typed), or press <**F5=Refresh**> to start a new search.
 - **Opt**: Type option from list displayed near the top of this screen. Refer to options definitions, below.
 - **APPKEY**: The permanent numeric key value that identifies a Data Capture Application and groups together a set of Data Capture Rules.
-- **Capture ID**: A label that describes the Data Capture Application.  
+- **APP ID(9)**: A label that describes the Data Capture Application.  
   :::warning
   Agent software versions prior to 21.1 used the Application ID text string as the actual key to organize data capture rules.  Since version 21.1, the APPKEY value is the only permanent key value, and the ID text string could be updated at will.  However, any Agent automation configurations constructed before version 21.1 would still be using the Application ID text string in its former record key mode, so before changing the Application ID text, be sure that executions of the LSAM commands SCANSPLF and SCANOUTQ have been updated to use the APPKEY() command parameter instead of the APP() parameter.
   :::
 - **Seq**: The sequence of the data capture rule. This number determines the order in which data capture rules are executed. The effect of this sequence number is more noticeable when there are captured data response rules associated with each data capture definition, in that it imposes a high level of control over the sequence of response rules that might apply to a given screen format (or to a SCANSPLF spool file).
+- **Rsp**: The sequence of the Response Rule linked to the data capture rule identified by the Seq number. This number determines the order in which data capture Response Rules are executed, within the Sequence of the data capture rule.
 - **MM-DD-HH.MM**: A portion of the time stamp of the log entry, showing the month, day, hours and minutes.
-- **T**: Type: C = screen capture, S = SCANSPLF data capture, M - Message Management
 - **Script/SPLF**: The name of the Operator Replay Script, or the name of the spool file that was processed by the SCANSPLF command. The value shown here is defined by the value in the T (Type) field.
 - **Number**: For an Operator Replay Script, the Sequence number of the step when the screen data was captured. For a spool file, the spool file number within the job where the spool file was found.
 - **JobNbr**: The IBM i Job Number of the job that executed the Operator Replay script or the SCANSPLF command. This number helps to distinguish among list entries that belong to the same, or to different jobs.
 
 ##### Functions
 
+- **F2=Select/Clear Job**: Branches to a display that lists one line per IBM i Job contained in the Captured Data Log.  Strongly recommended to limit the list display to only the entries belonging to one job at a time.  While it the subset-by-job mode, press F2 to return to the list of jobs and from their press F2 again to clear the subset rule.
 - **F3=Exit**: Return to the LSAM menu.
 - **F5=Refresh**: Reload the list display with the latest data from the master file.
+- **F11=Sort Key, Dte, ID**: Press F11 to rotate the list display among three different data sort orders.
 - **F12=Cancel**: Return to the LSAM menu.
 - **F15=Subset**: Supports a change to the type of captured data entries appearing in the list. The Subset window offers a choice of Type C = screen capture response rules, or S = SCANSPLF data capture response rules.
 - **F16=Search next**: When a search argument has been entered in the Search content field, pressing F16 can either start a new search (if the content value was changed) or it can continue a search to look for the next list entry that matches the search argument, starting with the first record after the last match found.

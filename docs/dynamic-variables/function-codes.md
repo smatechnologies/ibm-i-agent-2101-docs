@@ -146,13 +146,20 @@ Characters representing hex values are limited to '0 - 9' and/or 'A - F'. For ex
 
 Before the official designation of multiple Function Codes for Dynamic Variables, there was a prototype method for fetching data from a DB2 data area that was based on users modifying a model program provided by SMA. With the new Function Code method it is much easier to define DB2 value fetch rules by using the second page of Dynamic Variable Maintenance to define the name, location and character string trimming rules that will fetch and format the Value returned for a \*DTAARA {TOKEN}.
 
+### Managing Large Data Areas
+
+Prior to LSAM PTF # 211190, Dynamic Variables could only retrieve data from data areas that were no larger than 1024 bytes.  Now, the second display in Maintain Dynamic Variables, which appears as the Function Code of \*DTAARA is registered, enables the Trim Start and Length fields to be used to specify any start location within a data area 
+even when the data area is larger than 1024 bytes, up to a starting value of 9999.  (Thus, any data within a data area beyond 11,023 bytes cannot be retrieved by a Dynamic Variable.  For this case, specify a User Program and the program Library location on page one of the Dynamic Variable definition, in the Function Code fields.)
+                                                                     
+Regarless of how large a data area may be, the Trim Length will always be limited to 1024 characters because this is the maximum size of a data string that can be stored as the Value for any Dynamic Variable.  To retrieve all the contents of a very large data area it would become necessary to define multiple separate Dynamic Variables until segments of up to 1024 bytes from each variable will total the entire length of the large data area.  Later, those variables could be concatenated if necessary to refer to the entire large data area content, but in this case, great care must be taken to specify the Charater Trim Start and Length values on the first page of the Dynamic Variable master record, so that any space characters appearing within the the 1024 byte segment variables at the begining or the end of the 1024 character string would be preserved.
+
 ### Trimming Data Area Values
 
-When \*DTAARA is specified for the Dynamic Variable Function Code, the second display format will be format R7, with fields that can be used to name the data area and its library location. The only other values that can be defined for data areas are the trim control numbers. A starting location and a length value can be typed. If both fields are left at zero, the value returned for the Dynamic Variable token will be the first 1024 characters of the data area.
+When \*DTAARA is specified for the Dynamic Variable Function Code, the second display format will be format R7, with fields that can be used to name the data area and its library location. The only other values that can be defined for data areas are the trim control numbers. A starting location and a length value can be typed. If both fields are left at zero, the value returned for the Dynamic Variable token will be the first 1024 characters of the data area (or all of the data area contents when the data area is smaller than 1024 bytes).
 
 If either of the Data Area Trim control fields is set to a non-zero value, the other field could be left set to zero with the following results:
 
-- Start = 1, Length = 0: The whole data area, up to 1024 bytes.
+- Start = 1, Length = 0: Up to 1024 bytes, depending on how large is the whole data area, and/or what amount of data remains to be retrieved beginning with the Start position.
 - Start = 0, Length = >0: The trim will start with byte 1, then include only as many characters as the Length specifies.
 
 :::tip

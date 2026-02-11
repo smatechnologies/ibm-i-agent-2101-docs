@@ -19,7 +19,7 @@ Main Menu > Operator replay menu (#4) > Operator Replay configuration (#5)
   - The list of optional Telnet device modes is introduced by the F1=Help text, and it is fully explained in the [Managing Virtual Devices](../operator-replay/virtual-devices.md) section near the end of the Operator Replay Scripts chapter.
   - NOTE**: MODEs 2-4: Use F1=Help to view an introduction to the Telnet Exit Program use and configuration. See [Managing Virtual Devices](../operator-replay/virtual-devices.md) near the end of the Operator Replay Scripts chapter for complete instructions.
 - **IP Address**: 
-  - This address is used to start an emulated interactive user session, using IP Telnet protocol. The default value for this field is the typical *LOOPBACK interface address of 127.0.0.1. Use F4=Prompt to see a list of valid values that IBM i supplies from existing configured IP lines. SMA Technologies recommends using loopback interfaces instead of physical line descriptions for Operator Replay Script jobs to ease the configuration and improve system efficiency.
+  - This address is used to start an emulated interactive user session, using IP Telnet protocol. The default value for this field is the typical *LOOPBACK interface address of 127.0.0.1. Use F4=Prompt to see a list of valid values that IBM i supplies from existing configured IP lines. Continuous recommends using loopback interfaces instead of physical line descriptions for Operator Replay Script jobs to ease the configuration and improve system efficiency.
   - An IP Address is always required by the Operator Replay Script driver program. However, the IP Address might be provided from either User Management, from the OpCon job start request (as an extension to the Script name) or from the STROPRRPY command when it is used for testing. When an alternate source for the IP Address has been configured, this field value in the Configuration screen is usually ignored, unless it may be used by reference to a *DEFAULT value in the IPADDR( ) parameter of the STROPRPRY command.
 - **Telnet port**: 
   - The default telnet port of 23 should be specified, unless IBM i has been configured to support Telnet services at a different port. This is the port where the emulated interactive user session will be started by the Operator Replay control program.
@@ -44,10 +44,13 @@ Main Menu > Operator replay menu (#4) > Operator Replay configuration (#5)
   - For use by technical support personnel only. This option causes additional log entries to be added to a special trace file, OPRLOGF20. Refer to more information about this function under the F17 and F18 function key descriptions.
 - **Telnet exit pgm trace log**:
   - For use by technical support personnel only. This option causes additional log entries to be added to a special trace file, OPRLOGF20. Refer to more information about this function under the F19 and F20 function key descriptions.
+- **Block SMA0106 retry if TLS**
+  - When the error SMA0106 reports unable to connect to a virtual display device the Operator Replay script driver executes a built-in retry loop that will attempt to connect up to 3 times before failing the job.  The retries are often able to work around a temporary situation where no virtual display device is available. The default value of 'Y' in this control field indicates that the retry loop will be blocked whenever TLS security is enabled. If there is a reason to disable this block, such as the script driver program performance is incorrect, change this option to 'N' to change the program logic so the block option is ignored, which means that the retries for error SMA0106 will continue to be engaged regardless of the TLS security option. 
+  - However, debugging studies demonstrate that when an attempt to connect to a virtual display device fails (such as when the device is varied off), the TLS security handshake becomes invalid, and an error code 5 (message ID SMA0105) is returned, indicating the TLS security is rejecting the device connection.  In this case, the script driver job must be completely ended and then restarted fresh, after first confirming that a virtual display device is available.  If an IBM i partition often becomes very busy, it might sometimes be useful to create a pause in OpCon automation logic in between two or more consecutive executions of Operator Replay scripts, to allow the operating system enough time to restore the availability of a recently used virtual display device.
 - **Post-send delay**:
   - The number of microseconds to wait after sending a reply to a screen format, before attempting to read the system response to the sent data. A tuning option for the script execution program, this value should only be changed by trained technical support personnel.
 - **Inter-read delay**:
-  - The number of microseconds to wait in between reading segments of the screen buffer that the system is writing. A tuning option for the script execution program, this value should only be changed by trained technical support personnel. SMA Technologies recommends using 0.1 seconds for this field (instead of a whole 1 second, previously offered as the default value).
+  - The number of microseconds to wait in between reading segments of the screen buffer that the system is writing. A tuning option for the script execution program, this value should only be changed by trained technical support personnel. Continuous recommends using 0.1 seconds for this field (instead of a whole 1 second, previously offered as the default value).
 - **Receiving data timeout**:
   - The number of microseconds to wait before deciding that the system is no longer replying to the script execution. A tuning option for the script execution program, this value should only be changed by trained technical support personnel.
   :::tip
@@ -78,7 +81,7 @@ managed by the script execution program.
 
 **Displayed Data Translation**
 - **Displayed data translation**:
-  - Refer to the discussion below about the purpose for these table names. Note the option to use CCSID character set numbers instead of translations; this option may produce better results in countries outside of the United States of America. SMA Technologies Support can help with the analysis of any translation problems.
+  - Refer to the discussion below about the purpose for these table names. Note the option to use CCSID character set numbers instead of translations; this option may produce better results in countries outside of the United States of America. Continuous Support can help with the analysis of any translation problems.
 
 **"Attempt to Recover Interactive Job" Display -- Local Language**
 - **Instructions**: 
@@ -137,9 +140,9 @@ However, LSAM installations that were upgraded to version 04.00.03 from prior ve
 - **F16=Bypass conversion**: This function key allows all control file changes to be committed but it does not perform the automatic scan and replace function for the Script Steps. This option is not recommended in most cases because the actual Script Step content must always match the control file values in order for Script execution to be successful.
 
 :::caution
-Do NOT change the settings for the Token/variable separator or the Cursor control separators without first learning all about them. Please consult with SMA Technologies Support before attempting this change to be sure that Scripts will continue to execute as expected. 
+Do NOT change the settings for the Token/variable separator or the Cursor control separators without first learning all about them. Please consult with Continuous Support before attempting this change to be sure that Scripts will continue to execute as expected. 
 
-***However***: LSAM installations upgraded to version 04.00.03 from prior versions are advised to change the Cursor control separator characters to the new LSAM default values of X'A1' and X'79'. Please contact SMA Technologies Support for more information.
+***However***: LSAM installations upgraded to version 04.00.03 from prior versions are advised to change the Cursor control separator characters to the new LSAM default values of X'A1' and X'79'. Please contact Continuous Support for more information.
 :::
 
 ## Operator Replay Script List
@@ -416,7 +419,7 @@ The screen denotes the functions Add, Change, Copy or Display in the title line.
 |                 |               |               | This field can be left blank so that blanks will be used for the comparison if the Length is specified. The Length field determines how many blank characters will be compared. |
 |                 |               |               | This field supports a Dynamic Variable token.  Press **F13** to work with a larger data entry display if a long key-qualified multi-intance Dynamic Variable token is required. |
  | R: (row)       |                | N             | Type a value from 1 to 24 to designate the vertical row of the display that should be searched for the Control string. |
-|                 |               |               | **Note**: There may be row numbers higher than 24 when alternate display formats are being used, however, screen formats other that *DS3 (24 rows by 80 columns) are not supported at this time. Contact SMA Technologies Support if support for 27 X 132 formats is required. |
+|                 |               |               | **Note**: There may be row numbers higher than 24 when alternate display formats are being used, however, screen formats other that *DS3 (24 rows by 80 columns) are not supported at this time. Contact Continuous Support if support for 27 X 132 formats is required. |
 | C: (column)    |                | N             | Type a value from 1 to 80 to designate the horizontal column position where the Top string must begin. |
 |                 |               |               | **Note:** Refer to the note on R: (row) about value limits. |
 | L: (length)    |                | N             | Type a length up to 30 characters that indicates how many characters should be used for the comparison. |
@@ -539,7 +542,7 @@ F12=Cancel
 - **Enter**: Returns the currently highlighted variable as a token and inserts it into the supported field where the cursor was last positioned.
 - **F12=Cancel**: Quits the window and returns to the step details screen without selecting a variable.
 :::tip
-The special characters that are reserved to designate the original token/variable fields and cursor control characters are specified in the Operator Replay Configuration display (LSAM sub-menu 4, option 7).  The "Token/variable Separator" and the "Cursor Control Separator" characters can be maintained by the Operator Replay Configuration function, however, SMA Technologies recommends against changing these characters (except for the one-time conversion recommended after upgrading to LSAM version 04.00.03 from a prior version). If these special characters must be changed, it is required to observe the following caution. Also, please contact SMA Technologies Support for advice. 
+The special characters that are reserved to designate the original token/variable fields and cursor control characters are specified in the Operator Replay Configuration display (LSAM sub-menu 4, option 7).  The "Token/variable Separator" and the "Cursor Control Separator" characters can be maintained by the Operator Replay Configuration function, however, Continuous recommends against changing these characters (except for the one-time conversion recommended after upgrading to LSAM version 04.00.03 from a prior version). If these special characters must be changed, it is required to observe the following caution. Also, please contact Continuous Support for advice. 
 :::
 :::caution
 If these special characters are changed in the control file, then every existing Operator Replay script that uses them must also be updated. The Operator Replay script execution program relies on the contents of the LSAM control file to recognize which characters designate token/variable fields and cursor control characters. A special warning screen appears after pressing <**Enter**> on the Operator Replay configuration maintenance screen, if any of the three Separator hex character sequences has changed. Use the function key <**F14**> to confirm the change and allow a conversion program to scan all Script Step records, replacing the old separator characters with the new characters. This keeps the control file synchronized with the Step record content, which is required for successful execution of an Operator Replay Script.
@@ -728,7 +731,7 @@ The Operator Replay Display Log function is explained in detail above under OR S
 
 ## Tokens and Variables Management
 :::tip
-SMA Technologies recommends using Dynamic Variables instead of the older, simple Operator Replay token/variables. Documentation of this older variable type is retained to support existing users. Dynamic Variables are explained in detail in their own chapter of this Agent documentation: [Dynamic Variables](../dynamic-variables/overview.md).
+Continuous recommends using Dynamic Variables instead of the older, simple Operator Replay token/variables. Documentation of this older variable type is retained to support existing users. Dynamic Variables are explained in detail in their own chapter of this Agent documentation: [Dynamic Variables](../dynamic-variables/overview.md).
 
 The terms Token and Variable may be used interchangeably, but the actual meaning assigned to these terms is: A Variable is an entry in the LSAM table of Operator Replay Variables, and it includes its name, a description and its current value setting. A Token represents the Variable in the one of the Operator Replay Step detail record fields. The format of a Token is |variable_name|, where the vertical bars (pipes) are the special character used to separate the Token from other text in the string to send field. The special character assigned to denote Operator Replay Tokens is specified in the Operator Replay configuration function, LSAM menu 4, option 7.
 :::

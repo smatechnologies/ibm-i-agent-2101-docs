@@ -5,25 +5,26 @@ sidebar_label: 'IBM i LSAM Administration'
 
 # IBM i LSAM Administration
 
-Copyright © 2022 SMA Technologies
-All rights reserved.
+Version 21.1.195
+
+Copyright © 2022 Continuous (f/k/a SMA Technologies) All rights reserved.
 
 No part of this publication may be reproduced, transmitted, transcribed, stored in retrieval system or translated into any language or computer language, in any form or by any means, electronic, mechanical, optical, chemical, manual or otherwise, without specific prior written permission from SMA Technologies. 
 
-SMA Technologies makes no representation or warranties with respect to contents hereof. This manual is designed as a user's resource guide to the functions of OpCon. SMA Technologies reserves the right to revise this publication in the future without obligation by SMA Technologies to notify any person in advance of such revisions.
+Continuous makes no representation or warranties with respect to contents hereof. This manual is designed as a user's resource guide to the functions of OpCon. Continuous reserves the right to revise this publication in the future without obligation by Continuous to notify any person in advance of such revisions.
 
-For further information about SMA Technologies' documentation, please contact:
+For further information about Continuous' documentation, please contact:
 
-| SMA Technologies |
+| Continuous |
 | :--------------: |
-| 1201 Fannin St |
-| Suite #202 |
-| Houston, Texas 77002 |
+| 1321 Upland Dr |
+| PMB 21014 |
+| Houston, Texas 77043 |
 | Tel: 281-446-5000 |
 | Toll Free: 877-762-6584 |
 | Fax: 281-446-7492 |
-| Email: (<a href="mailto:support@smatechnologies.com">Email Support at support@smatechnologies.com</a>) |
-| Website: [smatechnologies.com](https://smatechnologies.com/) |
+| Email: (<a href="mailto:support@continuous.com">Email Support at support@continuous.com</a>) |
+| Website: [continuous.com](https://continuous.com/) |
 
 
 IBM PC is a trademark of International Business Machines.

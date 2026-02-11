@@ -61,7 +61,7 @@ The term API means application program interface. This term refers to points in 
   - A data viewer that displays and interprets the Job Scheduler communications program transaction log file. This file is used to track transactions until they are acknowledged and turned over to LSAM transaction processing. The log file is always in use by the LSAM. The viewer also supports inspection of the Yesterday version of this log file.
 - **SMADSPUSP**: Display SMA User Space
   - A support utility command to view the content of the LSACONU01 user space where the User Name and Password for OpCon external event commands is stored. This encrypted content may be viewed only with security officer authority.
-- **SMASUP**: Extract debug log files to IBM i save file for delivery to SMA Technologies Support.
+- **SMASUP**: Extract debug log files to IBM i save file for delivery to Continuous Support.
   - This command performs the same function as F15=Extract log files. Refer to Viewing the LSAM Log Files. Also refer to SMARGZ, below.
 - **DSPSUPDTA**: Display Agent Support Data
   - This command displays the profile of the Agent that is shared with the OpCon server and included in SMASUP log file extracts. The SMASUP command must be run once before the data is available to display, and SMASUP is used to refresh the data to current levels.
@@ -239,7 +239,7 @@ The commands could also be executed by Step records of an IBM i LSAM Multi-Step 
 - **SMAPTFINS**: Master PTF installation
   - Starts an all-in-one procedure to obtain the latest PTF information, load it to the LSAM environment and then apply the cumulative collection of any PTFs not already installed.
 - **SMAPTFREQ**: Request PTF information
-  - Contact an SMA Technologies source point to obtain the latest LSAM PTF information.
+  - Contact an Continuous source point to obtain the latest LSAM PTF information.
 - **SMAPTFLOD**: Load PTF information to LSAM control files
   - Reads the PTF control information obtained by SMAPTFREQ and loads the information into the LSAM control files.
 - **SMAPTFAPY**: Apply a single PTF

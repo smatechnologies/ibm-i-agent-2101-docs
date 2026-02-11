@@ -61,7 +61,7 @@ Main Menu > PTF and Security menu (#9)
 
 The PTF Options Configuration function must be reviewed and possibly updated before attempting to use any of the other PTF functions in LSAM Menu # 9. The impact of the control values maintained by this function is discussed above, among the operational guidance topics.
 
-Special attention is called to the first data entry field on this display: PTF Source. Although there are four different methods supported for distributing and installing LSAM PTFs, most clients of SMA Technologies are using the "IFS" method because it does not require penetration of firewalls protecting the IBM i
+Special attention is called to the first data entry field on this display: PTF Source. Although there are four different methods supported for distributing and installing LSAM PTFs, most clients of Continuous are using the "IFS" method because it does not require penetration of firewalls protecting the IBM i
 partition, and because this well-documented installation method is fast and easy to use. However, sites that operate a large number of IBM i partitions inside of a secured local network could take advantage of the fully automated distribution and installation method that is supported by the PTF source of "FTP."
 
 #### Menu Pathways
@@ -69,12 +69,12 @@ partition, and because this well-documented installation method is fast and easy
 Main Menu > PTF and Security menu (#9) > PTF options configuration (#7)
 
 #### Fields
-- **PTF Source**: LSAM PTF installation files can be distributed and made available to the IBM i partition in four different ways. SMA Technologies recommends using the IFS method. Refer to "Options for PTF Distribution" in this section for an explanation of the requirements for using any of these options.
+- **PTF Source**: LSAM PTF installation files can be distributed and made available to the IBM i partition in four different ways. Continuous recommends using the IFS method. Refer to "Options for PTF Distribution" in this section for an explanation of the requirements for using any of these options.
   -   FTP = LSAM PTF installation save files can be downloaded directly from an ftp server operated by SMA Technologies, as a first step in a fully automated solution for obtaining and then installing the LSAM PTFs. 
-  -   OPT = On demand, SMA Technologies can prepare an optical disk that contains the LSAM PTF save files. The LSAM administrator would insert the optical disk into a drive that is attached to the IBM i partition, before starting the LSAM PTF installation process.
+  -   OPT = On demand, Continuous can prepare an optical disk that contains the LSAM PTF save files. The LSAM administrator would insert the optical disk into a drive that is attached to the IBM i partition, before starting the LSAM PTF installation process.
   -   IFS = LSAM PTF installation save files are manually transferred by the LSAM administrator to a directory of the /root file system in the IBM i partition's Integrated File System (IFS), before starting the LSAM PTF installation process.
   -   NTC = It is possible to utilize the IBM i NetServer service which enables a connection between the IBM i partition and directories located on a Microsoft Windows ™ server or personal computer. For this method, the LSAM PTF save files would first be transferred to a designated MS Windows location, and that location would be entered into the Source directory or path field, before starting the LSAM PTF installation process. 
-- **SMA ftp user**: For the PTF source "FTP" enter the user ID required for the client to log into the SMA Technologies secure ftp server.
+- **SMA ftp user**: For the PTF source "FTP" enter the user ID required for the client to log into the Continuous secure ftp server.
 - **ftp password**: For the PTF source "FTP" enter the password associated with the ftp user into this hidden data value field.
 - **Confirm pwrd**: Type the same password value as in the field ftp password. This field confirms that the masked value typed into the ftp password field is  what the user believes was typed into the other field.
 - **FTP URL or IP address**: For the PTF source "FTP" enter the URL or IP address of the [SMA Technologies]{.GeneralCompanyName} secured ftp server, or of a local network ftp server. The LSAM software is distributed with the actual correct value for the [SMA Technologies]{.GeneralCompanyName} secured ftp server location; however, if the connection address does not work, please contact SMA Support to confirm if the server address may have changed.

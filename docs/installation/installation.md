@@ -7,16 +7,17 @@ sidebar_label: 'IBM i Agent 21.1 Installation/Upgrade Instructions'
 
 The actual process of installing a new copy of the IBM i Agent (also referred to as the LSAM = Local Schedule Activity Monitor for OpCon) can take as little as 15 minutes or less, not counting the recommended study time. An upgrade, including all considerations, could occupy 2 to 4 hours, where the actual processing will vary depending on the size of the LSAM database tables.
 
-SMA Support and the SMA Technologies Consultants are standing by to assist. Please notify SMA Support in advance of plans to upgrade a live production installation to the new version so that appropriate human resources will be available to respond quickly, if necessary.
+Continuous Support and the Continuous Consultants are standing by to assist. Please notify Continuous Support in advance of plans to upgrade a live production installation to the new version so that appropriate human resources will be available to respond quickly, if necessary.
 
-SMA recommends studying this installation documentation before attempting an install or an upgrade to avoid mistakes and to be prepared for making sound decisions in case of an unexpected circumstance.
+Continuous recommends studying this installation documentation before attempting an install or an upgrade to avoid mistakes and to be prepared for making sound decisions in case of an unexpected circumstance.
 
 These are the phases of the installation/upgrade process:
 
 - Determine the installation strategy that is appropriate for the site's circumstances.
-- Perform appropriate Pre-Installation Checklist actions.
+- Perform appropriate Pre-Installation Checklist actions (based on the prerequisites listed below).
 - If upgrading, prepare the existing environment with file purging and backups.
   - Optionally, clone an LSAM environment to safely perform a test upgrade.
+  - The upgrade from LSAM version 18.1 requires execution of a pre-upgrade audit program, due to one complex database table expansion.  Instructions are provided below.
 - Transfer the LSAM install file to the IBM i partition and restore the install library.
 - Launch the install command SMASETUP and respond to initial control value prompts.
   - Pay attention to the ALTENV parameter of the SMASETUP command.
@@ -25,15 +26,15 @@ These are the phases of the installation/upgrade process:
 
 ## Introduction to Installation Strategies
 
-New clients of SMA can skip ahead to the Pre-Installation Checklist and then perform the New Install Instructions.
+New clients of Continuous can skip ahead to the Pre-Installation Checklist and then perform the New Install Instructions.
 
-Clients of SMA who are installing the OpCon Agent for IBM i (also referred to as the LSAM in this document) for the first time in an IBM i partition (LPAR) can skip ahead to the section describing how to perform a new installation, bypassing the instructions for cloning an existing environment and bypassing the upgrade instructions.
+Clients of Continuous who are installing the OpCon Agent for IBM i (also referred to as the LSAM in this document) for the first time in an IBM i partition (LPAR) can skip ahead to the section describing how to perform a new installation, bypassing the instructions for cloning an existing environment and bypassing the upgrade instructions.
 
 Clients who will be upgrading an existing IBM i LSAM should consider the following optional strategies that can be used to test the new version of the LSAM and experiment with the new features before deciding to upgrade the previous LSAM version in place.
 
 - Best practice: Clone the existing 18.1 SMADEFAULT production LSAM environment to an Alternate LSAM Environment, then upgrade the Alternate Environment as a first test.
-- Optional second choice: Install a new copy of the 21.1 version of the LSAM as a New Install, but if installing in the same LPAR as an existing 18.1 version, be sure to use a different Environment name and unique names for the four LSAM libraries.
-- Not recommended: Perform an upgrade in place of the existing LSAM environment without first testing by one of the two previous methods. SMA will always support the upgrade of the LSAM software itself, but SMA cannot guarantee that all of the client's automation strategies will still work exactly as before the upgrade -- although most of the LSAM automation toolkit features have not changed enough to cause much concern.
+- Optional second choice: Install a new copy of the 21.1 version of the LSAM as a New Install, but if installing in the same LPAR as an existing 18.1 version, be sure to use a different Environment name and unique names for the four LSAM libraries. If the alternate LSAM environment will be connected to an OpCon server, unique ports numbers are required.
+- Not recommended: Perform an upgrade in place of the existing LSAM environment without first testing by one of the two previous methods. Continuous will always support the upgrade of the LSAM software itself, but Continuous cannot guarantee that all of the client's automation strategies will still work exactly as before the upgrade -- although most of the LSAM automation toolkit features have not changed enough to cause much concern. But the upgrade from LSAM version 18.1 requires execution of a pre-upgrade audit program, due to one complex database table expansion.  Instructions for executing the audit are provided below.
 
 :::caution
 Regardless of the strategy chosen, remember to make a complete backup copy of the four LSAM libraries before performing any upgrade. The database upgrade process cannot be reversed in place. The only recovery method available in case an upgrade fails and cannot be repaired is to restore from backups.
@@ -41,12 +42,12 @@ Regardless of the strategy chosen, remember to make a complete backup copy of th
 
 The choice of upgrade strategies may depend on the configuration of one or more IBM i LPARs.
 
-When the client operates only one IBM i LPAR, the only option for testing automation before putting it into production is to install a second copy of the LSAM into the same partition but using a unique Environment name and unique names for the four LSAM libraries.
+When the client operates only one IBM i LPAR, the only option for testing automation before putting it into production is to install a second copy of the LSAM into the same partition but using a unique Environment name and unique names for the four LSAM libraries, in addition to unique port numbers for a connection to the OpCon server.
 
-For single LPAR environments, SMA recommends cloning the production copy of the LSAM (the SMADEFAULT environment). After following the cloning instructions below, complete the configuration steps to make sure the cloned environment is working at the original 18.1 level. Then use the version 21.1 Upgrade procedure to advance the test LSAM environment to the new version and perform a review of the LSAM functions to make sure the test environment is working as expected.
+For single LPAR environments, Continuous recommends cloning the production copy of the LSAM (the SMADEFAULT environment). After following the cloning instructions below, complete the configuration steps to make sure the cloned environment is working at the original 18.1 level. Then use the version 21.1 Upgrade procedure to advance the test LSAM environment to the new version and perform a review of the LSAM functions to make sure the test environment is working as expected.
 
 :::tip
-The licensing of the Agents (LSAMs) installed under any operating system is managed according to how many instances of that operating system Agent are actively connected to the OpCon application server at once. This means that if the client had only one IBM i LSAM license, it will not be possible to connect both the production copy of the LSAM and a test copy of the LSAM to the OpCon server at the same time. In this case, the client should contact their SMA sales or account representative to request an additional IBM i LSAM license.
+The licensing of the Agents (LSAMs) installed under any operating system is managed according to how many instances of that operating system Agent are actively connected to the OpCon application server at once. This means that if the client had only one IBM i LSAM license, it will not be possible to connect both the production copy of the LSAM and a test copy of the LSAM to the OpCon server at the same time. In this case, the client should contact their Continuous sales or account representative to request an additional IBM i LSAM license.
 :::
 
 Single LPAR clients may already be operating a Production and a separate Test copy of the LSAM. In this case, it might be acceptable to upgrade the Test copy directly, as long as a complete backup of the Test environment is completed first. However, if the Test environment will still be needed to pre-stage new automation that must be exported to the Production environment, then it would be necessary to clone the Test environment into a separate Test181 environment and use the Test181 environment for a first run of the LSAM 21.1 upgrade procedure.
@@ -57,38 +58,41 @@ Whenever executing the LSAM 21.1 upgrade within an LPAR that is also executing t
 
 The ideal circumstance is to have a separate IBM i LPAR that is dedicated to Production, keeping all test procedures isolated in a different IBM i LPAR. In this case, the test copy of the IBM i LSAM will often use the same LSAM environment and library names as the production copy of the LSAM, given only that the Test LSAM must use a unique machine name (= the LSAM name in the LSAM Parameters on the green screen maintenance display).
 
-When test operations are isolated in a separate IBM i LPAR, best practice suggests that a complete backup should be made of the test LSAM environment before starting any cloning or upgrade testing. It is possible to proceed with a direct upgrade of the existing test LSAM environment. But if time and resources permit, the safest practice would probably be to clone the 18.1 TEST LSAM to a TEST211 LSAM environment with unique library names and then perform the first test run the upgrade against the TEST211 environment. This strategy would become a requirement as long as the original TEST LSAM is needed to feed updates to the Production LSAM in the other LPAR. It is not possible to use the LSAM Export/Import tools to exchange data between the versions 18.1 and 21.1.
+When test operations are isolated in a separate IBM i LPAR, best practice suggests that a complete backup should be made of the test LSAM environment before starting any cloning or upgrade testing. It is possible to proceed with a direct upgrade of the existing test LSAM environment. But if time and resources permit, the safest practice would probably be to clone the 18.1 TEST LSAM to a TEST211 LSAM environment with unique library names and then perform the first test run the upgrade against the TEST211 environment. This strategy would become a requirement as long as the original TEST LSAM is needed to feed updates to the Production LSAM in the other LPAR. It is not possible to use the LSAM Export/Import tools to exchange data between the versions 18.1 and 21.1.  The Export/Import service only works when both LSAM instances are using the same LSAM version AND the same database level for the LSAM.
 
+**===================================================================================**
 ## Pre-Installation Checklist
 
 Whether installing a new LSAM or upgrading an existing LSAM, it may be necessary to consider the following comments and the Pre-Installation Checklist that follows. Any of the points in this list of requirements and conditions could prevent a successful installation.
 
 ### OpCon Versions Supported by LSAM 21.1
 
-Good news! IBM i LSAM version 21.1 is compatible with all currently supported versions of OpCon. It is not necessary to upgrade OpCon to take advantage of many of the latest LSAM enhancements, but some of the newest features added to the LSAM may only work (or work best) with OpCon version 17.1.3 or newer. Some of the newer LSAM features might require a manual update to the SQL Server database supporting an older version of OpCon. SMA recommends that clients using versions of OpCon older than 17.1.3 should discuss the circumstances with their SMA Technologies Consultant or contact SMA Support for advice.
+Good news! IBM i LSAM version 21.1 is compatible with all currently supported versions of OpCon. It is not necessary to upgrade OpCon to take advantage of many of the latest LSAM enhancements, but some of the newest features added to the LSAM may only work (or work best) with OpCon version 17.1.3 or newer. Some of the newer LSAM features might require a manual update to the SQL Server database supporting an older version of OpCon. Continuous recommends that clients using versions of OpCon older than 17.1.3 should discuss the circumstances with their Continuous Consultant or contact Continuous Support for advice.
 
 :::tip
-In particular, the configurations for supporting TLS Secured communication links are sensitive to the version of OpCon, and the OpCon database will likely require execution of an SQL update procedure to activate support for TLS security of the SMA File Transfer jobs.
+In particular, the configurations for supporting TLS Secured communication links are sensitive to the version of OpCon, and the OpCon database may require execution of an SQL update procedure to activate support for TLS security of the SMA File Transfer jobs.
 
-There is a Post-Install Instruction below that explains how to complete this update.
+The newest available version of the OpCon server provides the best support for TLS 1.3 standards of data communication links.  This is the only known TLS level that is considered fully secure, as of the data of publication for the LSAM version 21.1.195.  The LSAM PTFs for this level are also preferred for best operation of TLS-secured communcations with the OpCon server.
+
+There is a Post-Install Instruction below that explains how to complete this update.  However, due to very recent testing and updates for supporting TLS 1.3 data communication security, the SQL Server database update may not be required.
 :::
 
-### IBM i Operating System Versions Supported by 21.1
+### IBM i Operating System Versions Supported by LSAM 21.1
 
 The IBM i operating system must be at version V7R2 (i7.2) or higher to use the IBM i LSAM version 21.1. Correct operation of the LSAM version 21.1 is also certified for IBM i7.3, i7.4 and i7.5.
 
 As of the date of this publication, only in rare circumstances will IBM still be supporting IBM i versions V6R1 (i6.1) or V5R4. Clients who are unable to upgrade to i7.2 or newer can still use OpCon to automate their operations within IBM i, but those clients can only use:
 - LSAM version 18.1 can run under i7.1
-- LSAM version 04.00.03 with all the latest LSAM software patches (LSAM PTFs) applied can run under IBM i version V5R4 and newer versions.
+- LSAM version 04.00.03 with all the latest LSAM software patches (LSAM PTFs) applied can run under IBM i version V5R4 and newer versions.  However, that retired version of the LSAM is no longer supported.  Any use of that old version 04.00.03 or 04.00.04 will be done at the user's own risk.  Continuous warrantees and client service are not offered for this retired version of the LSAM.
 
-IBM i LSAM version 04.00.03 is frozen in its range of features. SMA can no longer provide emergency fixes for this old LSAM version because SMA no longer operates Power Processor partitions that can compile to an operating system level older than i7.1.
+IBM i LSAM version 04.00.03 is frozen in its range of features. Continuous can no longer provide emergency fixes for this old LSAM version because Continuous no longer operates Power Processor partitions that can compile to an operating system level older than i7.1.
 
-All clients who might still be using LSAM version 04.00.03 who want LSAM software support, new features and future available software fixes must first upgrade to LSAM version 18.1.  There is no support for upgrading directly from version 04.00.03 to version 21.1.
+All clients who might still be using LSAM version 04.00.03 or 04.00.04 who want LSAM software support, new features and future available software fixes must first upgrade to LSAM version 18.1, followed by a second upgrade to LSAM version 21.1.  There is no support for upgrading directly from version 04.00.03 to version 21.1.
 
 Versions of i5/OS or OS/400 older than i7.1 are not supported at all, either by IBM or by SMA.
 
 :::warning
-Whenever the IBM i operating system has been upgraded to a new release version (e.g., from i7.3 to i7.4) it is necessary to execute the IBM i LSAM utility command LSAINIT.  This requirement exists as long as the LSAM is still using clones of the IBM i command "SBMJOB."  SMA will notify users if and when the LSAM stops using these cloned commands.  Meanwhile, here are the steps for using LSAINIT.
+**Whenever the IBM i operating system has been upgraded to a new release version (e.g., from i7.3 to i7.4) it is necessary to execute the IBM i LSAM utility command LSAINIT.  This requirement exists as long as the LSAM is still using clones of the IBM i command "SBMJOB."  Continuous will notify users if and when the LSAM stops using these cloned commands.  Meanwhile, here are the steps for using LSAINIT.**
 :::
 
   1.  Log into the LSAM menu system.
@@ -97,7 +101,7 @@ Whenever the IBM i operating system has been upgraded to a new release version (
       - A convenient way to do this is from the LSAM sub-menu 6, option 2.  
       - Automating this step can be accomplished using a batch job that runs in a subsystem other than SMASBS, such as QBATCH, to execute the command SMAGPL/ENDSMASYS SMADEFAULT.  For alternate LSAM environments, replace the name "SMADEFAULT" with the actual LSAM name for that environment.
 
-  3.  From the IBM i command line in the LSAM menu system (or from any IBM i QCMD entry in a job that is set to use the LSAM library list) execute the LSAINIT command as follows, paying close attention to the required two parameter values:
+  3.  From the IBM i command line in the LSAM menu system (or from any IBM i QCMD entry in a job that is set to use the LSAM library list) execute the LSAINIT command as follows, paying close attention to the required two parameter values.  Continuous strongly recommends prompting the LSAINIT command using function key F4, in order to assure that both of the command parameters are correctly specified.
 
        **LSAINIT ENV(SMADEFAULT) GPL(SMAGPL)**
       
@@ -109,11 +113,11 @@ For new installations, the instructions explain that the IBM i user profiles SMA
 
 However, for all practical purposes, it is acceptable to allow the SMASETUP command(s) to create those user profiles automatically. The LSAM installation tools will be removed from the system after all installs or upgrades are completed.
 
-Please note that the default authority assigned to the LSAM server user profile SMANET is very powerful. This is considered safe because this user profile must not be assigned a password, and public use of this profile is revoked. However, high security sites may need to consider the discussions in the Post-Install Instructions and the LSAM Security and Object Authority topic about LSAM authorities in order to determine an appropriate alternative strategy for managing the authority of this user profile.
+Please note that the default authority assigned to the LSAM server user profile SMANET is very powerful. This is considered safe because this user profile must not be assigned a password, and public use of this profile is revoked. However, high security sites may need to consider the discussions in the Post-Install Instructions and the [LSAM Security and Object Authority](/security/strategy) topic about LSAM authorities in order to determine an appropriate alternative strategy for managing the authority of this user profile.
 
-### IBM i System Value Management
+### [ ] IBM i System Value Management
 
-#### QALWOBJRST - Allow Restore of Objects Using Adopted Authority
+#### [ ] QALWOBJRST - Allow Restore of Objects Using Adopted Authority
 
 It may be necessary to change this system value for the IBM i operating system to permit the installation program to restore program objects that use adopted authority. This is a common strategy, and IBM provides the following guidelines for managing the installation of new software.
 
@@ -121,7 +125,7 @@ The Allow Restore of security sensitive Objects (QALWOBJRST) system value specif
 
 - Installing a new release of the operating system.
 - Installing new licensed programs.
-- Applying program temporary fixes (PTFs).
+- Applying program temporary fixes (PTFs) - both for the IBM i LSAM, as also required for IBM i PTFs.
 - Recovering your system.
 
 These activities can fail if the value of QALWOBJRST is not set to \*ALL. 
@@ -138,7 +142,7 @@ These activities can fail if the value of QALWOBJRST is not set to \*ALL.
 IBM i LSAM administrators must remember to manage this system value also during application of LSAM software patches (PTFs).
 :::
 
-#### QALWUSRDMN - Allow User Domain Objects
+#### [ ] QALWUSRDMN - Allow User Domain Objects
 
 Rarely, some IBM i partitions with high security requirements engage the strategy of managing the User Domain of objects.  Information from IBM about this system value is copied below, for convenience.
 
@@ -182,60 +186,60 @@ Some systems have application software that relies on object types \*USRSPC, \*U
 **Note:** If you run the Reclaim Storage (RCLSTG) command, user domain objects might need to be moved in and out of the QRCL (reclaim storage) library. To run the RCLSTG command successfully, you might need to add the QRCL library to the QALWUSRDMN system value. To protect system security, set the public authority to the QRCL library to \*EXCLUDE. Remove the QRCL library from the QALWUSRDMN system value when you have finished running the RCLSTG command.
 :::
 
-### System Resource Requirements
+### [x] System Resource Requirements
 
 The initial system resource requirements of this LSAM software can be specified, however, the LSAM requirements are dynamic, based on the average profile of the work load assigned to the LSAM via OpCon scheduled jobs.
 
-### Main Memory
+### [x] Main Memory
 
 The program objects of the basic LSAM server programs require about 9 MB of main memory. However, more memory is typically required because some of these 8 LSAM server jobs call sub-programs or spawn additional, temporary tasks.
 
-### Disk Utilization
+### [ ] Disk Utilization
 
 The installation file LI211043B occupies about 85 MB of disk space. This space will be returned to the system after the installation is completed and the install file (LI211043B, or newer name) is deleted.
 
 The initial disk space temporarily occupied by the installation library (LI211043) is 92.4MB.  Adding the restored temporary LSAM environment libraries results in a total of temporarily used disk space of 372 MB.  Adding the original installation save file (85 MB) results in a final total of temporarily used disk space of **457 MB**.
 
-### Database Mirroring Considerations
+### [ ] Database Mirroring Considerations
 
 If database replication (mirroring) is not being used, then skip to the next checklist item.
 
 Please refer to the unified discussion of [Managing Database Mirroring](../reference/database-mirroring#managing-database-mirroring-1).
 
-### Upgrading from an LSAM Version Older than 18.1
+### [ ] Upgrading from an LSAM Version Older than 18.1
 
 Upgrades from LSAM versions older than 04.00.03 require the use of the LI040003 install file to convert existing LSAM database tables up to the 04.00.03 level. The upgrade to LSAM version 18.1 does not support a direct upgrade from any version older than 04.00.03.
 
 :::warning
-Clients who might still be using LSAM version 04.00.03, who have never applied LSAM PTFs (such as right after an upgrade from an even older version of the LSAM), should ask the Support team at SMA for assistance installing a manual fix to the 04.00.03 product before you attempt to install cumulative PTFs for the first time. The fix was contained in PTF # 403033 and the solution is to replace the program UPRCASR. This program can be replaced manually before starting the LSAM version 04.00.03 PTF application process.
+Clients who might still be using LSAM version 04.00.03, who have never applied LSAM PTFs (such as right after an upgrade from an even older version of the LSAM), should ask the Support team at Continuous for assistance installing a manual fix to the 04.00.03 product before you attempt to install cumulative PTFs for the first time. The fix was contained in PTF # 403033 and the solution is to replace the program UPRCASR. This program can be replaced manually before starting the LSAM version 04.00.03 PTF application process.
 :::
 
 After upgrading to version 04.00.03, it is necessary to apply all of the last cumulative PTFs to that version of the LSAM. The upgrade to version 18.1 has potential deficiencies when updating some database table characteristics. LSAM version 21.1 is not able to upgrade from LSAM version 04.00.03, so the next step would be to upgrade to 18.1 using the latest LI181027n installation save file (where "n" might be a letter such as "U").
 
-### Instructions for Upgrading from 04.00.03 to 18.1
+### [ ] Instructions for Upgrading from 04.00.03 to 18.1
 
 Please refer to this same section of documentation within the Version 18.1 of the document for details about upgrading to version 18.1.
 
-### Instructions for Upgrading from 18.1 to 21.1
+### [ ] Instructions for Upgrading from 18.1 to 21.1
 
 The general strategies for this level of updates starts with the following:
 
   - Verify that the LSAM version 18.1 has been upgraded to at least database level (002).  If not, then it is necessary to apply the latest cumulative LSAM PTFs for the LSAM version 18.1 before attempting to upgrade to the next level.
   - If the LSAM version 18.1 is already at DB LVL(002) then the SMASETUP command for the upgrade to version 21.1 will catch up any database updates that might have been released at a later level.
 
-### Using Library Cloning to Create a Test Upgrade Environment
+### [ ] Using Library Cloning to Create a Test Upgrade Environment
 
-As the Installation Strategy suggests, SMA recommends performing an isolated upgrade test. This safety measure will prove if there are any exceptional circumstances in a client's environment that were not anticipated by SMA during the development, internal QA testing or external beta site testing of the newest LSAM version.
+As the Installation Strategy suggests, Continuous recommends performing an isolated upgrade test. This safety measure will prove if there are any exceptional circumstances in a client's environment that were not anticipated by Continuous during the development, internal QA testing or external beta site testing of the newest LSAM version.
 
 For details about Cloning an LSAM environment see [Clone an Existing Environment](../reference/multiple-environments-how-to-add-an-lsam-environment#method-2-clone-an-existing-environment) which includes details about how to use the LSAINIT command that is required to complete alignment and configuration of a cloned LSAM environment.
 
-### Preparing an LSAM Environment for Upgrade
+### [ ] Preparing an LSAM Environment for Upgrade
 
 :::warning
 An audit program is available that must be executed before starting an upgrade of the LSAM from version 18.1 to 21.1.  This audit checks for an unsupported connection between any Operator Replay Script Step that has been linked to more than one unique Capture Data Applications.  Failing to correct data identified by the audit report will result in corrupted automation rules for the affected Operator Replay Scripts.  Please follow the instructions below to [Auditing the LSAM for Data That Cannot Be Converted](#auditing-the-lsam-for-data-that-cannot-be-converted).
 :::
 
-#### Purging the LSAM database log files and deleted records
+#### [ ] Purging the LSAM database log files and deleted records
 
 Both the backup steps and the upgrade steps can be completed much more quickly if the LSAM database in the SMADTA library has been effectively purged using the LSAM Parameters database maintenance values (LSAM main menu, option 7).
 
@@ -248,22 +252,23 @@ If changes are required to make the LSAM log file purging more effective, it wil
 
 The other LSAM maintenance process that is critical is to reorganize the LSAM database using the SMARGZ command. This command and its operation are explained in detail in the [Log File and Database Management](../logs-database/overview.md) section.
 
-The SMARGZ command will either be executed automatically during the next Maintenance Hour, if the LSAM Parameters controlling this option are set accordingly, or else the SMARGZ command can be executed either from the IBM i command entry line (within the LSAM menu system so that the LSAM library list is in effect), or by configuring an OpCon IBM i Batch Job with the SMARGZ command in the "CALL" box. Details about how to use these strategies are documented in the [Log File and Database Management](../logs-database/overview.md) section of the **IBM i LSAM** documentation.
+The SMARGZ command will either be executed automatically during the next Maintenance Hour, if the LSAM Parameters controlling this option are set accordingly, or else the SMARGZ command can be executed either from the IBM i command entry line (within the LSAM menu system so that the LSAM library list is in effect), or by configuring an OpCon IBM i Batch Job with the SMARGZ command in the "CALL" box. Details about how to use these strategies are documented in the [Log File and Database Management](../logs-database/overview.md) section of this User Help document.
 
-#### Suspending LSAM Server Operations Before Starting an Upgrade
+#### [ ] Suspending LSAM Server Operations Before Starting an Upgrade
 
 The LSAM database purging procedures mentioned above may require that the LSAM server jobs remain active at least until the last daily log file purges are completed.  However, before starting the actual execution of the SMASETUP command for upgrading an existing LSAM, it is required to suspend the following LSAM services:
 
-- Stop the LSAM server jobs.
-  - If used, this process will also stop the Alternate Job Notify service.
-  - If used, this process will also stop the LSAM Message Management service.
+- Stop the LSAM server jobs.  If used, each optional service will also be stopped:
+  - Alternate Job Notify service.
+  - Message Management service.
+  - SMA File Transfer server job.
 - Use LSAM menu 2 to deactivate (stop) the LSAM Job Tracking service.
   - Job Tracking operations can be interrupted by the upgrade process.
   - Restarting the Job Tracking service after an upgrade performs a critical check of certain Job Tracking configuration parameters.
 
-### Backing Up the LSAM Environment
+### [ ] Backing Up the LSAM Environment
 
-Existing users of the IBM i LSAM are advised to use the following steps, or a similar procedure, to create a backup of the existing LSAM installation. Although SMA has invested great effort to ensure that the install procedure will perform a proper upgrade of existing installations, it is wise to protect the existing LSAM database in case some unexpected circumstance may arise that is unique to a client site.
+Existing users of the IBM i LSAM are advised to use the following steps, or a similar procedure, to create a backup of the existing LSAM installation. Although Continuous has invested great effort to ensure that the install procedure will perform a proper upgrade of existing installations, it is wise to protect the existing LSAM database in case some unexpected circumstance may arise that is unique to a client site.
 
 :::tip
 It is required to manually stop the LSAM server jobs before starting the upgrade installation. For many backup strategies it is also necessary to remove object locks by ending the LSAM server jobs. This can be done using the LSAM sub-menu 6, option 2. There is also the LSAM utility command SMAGPL/ENDSMASYS that can be executed, specifying the LSAM environment name after the command name, such as:
@@ -273,7 +278,7 @@ SMAGPL/ENDSMASYS SMADEFAULT
 For alternate LSAM environments, change the name of the SMAGPL library and specify the actual LSAM environment name instead of the default value shown above.
 :::
 
-### Back Up LSAM Libraries and Delete Obsolete Objects
+### [ ] Back Up LSAM Libraries and Delete Obsolete Objects
 
 Choose 1) or 2):
 
@@ -309,11 +314,12 @@ The SMABAK and SMALOG libraries do not require a backup if they exist as a resul
 
 It is not necessary to delete any LSAM utility objects that were previously (optionally) installed in QGPL. These utilities will be updated as necessary by the SMASETUP installation procedure.
 
-If LSAM objects were previously installed in the IBM library QGPL, review the discussion below (following the step-by-step instructions) to evaluate the available options for installing the upgraded LSAM utilities in either the current location of library QGPL, or in the LSAM standard (non-IBM) library called SMAGPL. SMA recommends utilizing the upgrade option that can automatically migrate LSAM objects and environment control data out of the QGPL library, that is, whenever upgrading the Production copy of the LSAM.
+If LSAM objects were previously installed in the IBM library QGPL, review the discussion below (following the step-by-step instructions) to evaluate the available options for installing the upgraded LSAM utilities in either the current location of library QGPL, or in the LSAM standard (non-IBM) library called SMAGPL. 
+- Continuous recommends utilizing the upgrade option that can automatically migrate LSAM objects and environment control data out of the QGPL library, that is, whenever upgrading the Production copy of the LSAM.
 
-Proceed to the New Install Instructions. These instructions include any exceptional steps that might be required when upgrading an existing LSAM environment.
+For new installs: Proceed to the [New Install Instructions](#new-install-instructions). These instructions also include any exceptional steps that might be required when upgrading an existing LSAM environment.  However, when upgrading from LSAM version 18.1 it is important to continue with the next Auditing step.
 
-### Auditing the LSAM for Data That Cannot Be Converted
+### [ ] Auditing the LSAM for Data That Cannot Be Converted
 
 New installations that are not upgrading from a previous release should skip this section and proceed with [New Install Instructions](#new-install-instructions).
 
@@ -325,9 +331,9 @@ The audit report is produced by two program objects:
 - AUDRPYR40:  An RPG program that evaluates the LSAM database
 - AUDRPYP40:  An IBM i printer file that contains the audit report format
 
-As SMA discovered an open door that allowed unexpected multiple data relationships, action was taken to provide an immediate remedy to clients who are ready to upgrade from LSAM version 18.1 to 21.1.  One of the following resources can be used to find the audit report program objects.  These are listed in the chronological order in which they were distributed:
+As Continuous discovered an open door that allowed unexpected multiple data relationships, action was taken to provide an immediate remedy to clients who are ready to upgrade from LSAM version 18.1 to 21.1.  One of the following resources can be used to find the audit report program objects.  These are listed in the chronological order in which they were distributed:
 
-- At the secured SMA ftp server (files.smatechnologies.com), an IBM i save file (in binary stream file format) and a PDF document of instructions can be downloaded from this web location:
+- At the secured Continuous ftp server (files.smatechnologies.com), an IBM i save file (in binary stream file format) and a PDF document of instructions can be downloaded from this web location:
 
   - https://files.smatechnologies.com/files/IBMiLSAMptf/IBM%20i%20LSAM%2018.1%20PTF%20emergency%20releases/AUDRPYR40%20pre-upgrade%20audit%20programs%20and%20instructions?sortColumn=path&sortDirection=desc
   
@@ -336,7 +342,7 @@ As SMA discovered an open door that allowed unexpected multiple data relationshi
 #### Executing and Reviewing the Data Audit Report
 
 If the audit program objects are not installed by the LSAM 18.1 PTFs, then plan to copy them to the SMAPGM library of the LSAM environment that will be upgraded.  (Test environments will typically use a variation of the SMAPGM library name, unless the test environment is isolated within a test IBM i partition.)
-- If downloading the program objects from the SMA FILES server, follow the instructions in the PDF document provided with the objects.
+- If downloading the program objects from the Continuous FILES server, follow the instructions in the PDF document provided with the objects.
 
 Execution of the audit program requires access to the SMADTA library to find the file OPRRPYF40. The RPG program must also be able to find the printer file AUDRPYP40 in the SMAPGM library (or in some other library that is part of the library list of the job that executes the audit).
 
@@ -406,7 +412,7 @@ The LSAM database in version 21.1 supports only one Application Key (newly assoc
 The manual procedure outlined below is fairly easy and effective, and it will carry the Response Rules associated with a copied Capture Data Rule, so that only two maintenance operations are required per Captured Data Rule to be changed.  Here is an outline of the maintenance steps required, and it is followed by detailed operational step instructions:
 - First, decide which Capture Data Rule(s) will be changed.  Take note of the Sequence Numbers assigned to each Rule record.  The Sequence Numbers among all the current Capture Data Rules control the order in which the Capture Data Rules and their associated Response Rules are executed.
 - Choose one of the steps below that navigate to the list display where Capture Data Rules can be copied with option 3=Copy.  Navigating to Capture Data Rules from the Operator Replay Step maintenance might be the more obvious and safest way to navigate to that list display.
-- Note that before LSAM 21.1, the Capture Data Application IDs could not be changed.  That means option 2=Change will not work to update the Application ID text in the LSMA 18.1 database.  Instead, the existing Capture Data Rule (along with its attached Response Rules) must be copied using option 3=Copy.
+- Note that before LSAM 21.1, the Capture Data Application IDs could not be changed.  That means option 2=Change will not work to update the Application ID text in the LContinuous 18.1 database.  Instead, the existing Capture Data Rule (along with its attached Response Rules) must be copied using option 3=Copy.
 - After the new copy is made of a Capture Data Rule, then the old version of that Rule must be deleted (along with its attached Response Rules, which are handled as a window opens to offer the option of also deleting them).
 - Following completion of all corrective maintenance, run the audit report again to be sure that there are no mistakes or further errors reported.  Please look closely at the Sequence Numbers assigned to the Capture Data Rules, to make sure that all Rules within a Capture Application appear to be in the correct sequence.
 
@@ -416,7 +422,7 @@ The first step in revising the Capture Data Rules Application IDs is to navigate
 
 ##### Access to Capture Data Rules Maintenance via Operator Replay Step Maintenance
 
-SMA recommends this path to Capture Data Rules maintenance because navigating through the Operator Replay Step record(s) assures that only the Capture Data Rules for the Step will appear in the maintenance list.
+Continuous recommends this path to Capture Data Rules maintenance because navigating through the Operator Replay Step record(s) assures that only the Capture Data Rules for the Step will appear in the maintenance list.
 
 - From LSAM menu 4, choose option 2 to list Operator Replay Scripts.
 - Use option 1 to select the Script requiring maintenance.
@@ -429,7 +435,7 @@ SMA recommends this path to Capture Data Rules maintenance because navigating th
 
 ##### Access to Capture Data Rules Maintenance from the LSAM Menu
 
-SMA recommends the previously outlined process for navigating to the Capture Data Rules maintenance list display, since the method that follows requires more careful attention and is less well protected from errors.
+Continuous recommends the previously outlined process for navigating to the Capture Data Rules maintenance list display, since the method that follows requires more careful attention and is less well protected from errors.
 
 - From the LSAM menu 4, select option 5. Work with Screen Capture definitions.
 - The initial list that appears shows all registered Capture Application IDs for the Operator Replay feature.  Only option 7 is available to select the Application ID that should be maintained.  Type 7 next to the Application of choice and press Enter.
@@ -465,19 +471,20 @@ It is important to delete the Screen Capture Definitions that have already been 
 
 After the copies and deletions are completed, re-run the audit report to assure that there are no more errors encountered.
 
-In case of unexpected results, please contact SMA Support for assistance.  It is important to achieve a clean audit report before proceding with an LSAM Upgrade to release 21.1.
+In case of unexpected results, please contact Continuous Support for assistance.  It is important to achieve a clean audit report before proceding with an LSAM Upgrade to release 21.1.
 
+**===================================================================================**
 ## New Install Instructions
 
 ### The LSAM Installation Save File
 
-From time to time, SMA may produce updated versions of the LSAM installation save file, to include previously released software patches (LSAM PTFs). This technique reduces the time required for an installation by eliminating a separate step to apply several older software patches.
+From time to time, Continuous may produce updated versions of the LSAM installation save file, to include previously released software patches (LSAM PTFs). This technique reduces the time required for an installation by eliminating a separate step to apply several older software patches.
 
 A unique name is assigned to each new version of the LSAM installation save file, matching the software patch level (also referred to as the LSAM PTF Level). For example, if the installation save file includes PTF # 211043 (that is, patch level 043 for version 21.1 of the LSAM), then the installation save file will be named LI211043.
 
-Sometimes when the temporary installation programs need updating the LSMA install/upgrade save file may have a letter added to the base name of the file version, such as LI211043B.  However, the content of the installation save file will always be contained in the original version build library name, for example, LI211043.
+Sometimes when the temporary installation programs need updating the LContinuous install/upgrade save file may have a letter added to the base name of the file version, such as LI211043B.  However, the content of the installation save file will always be contained in the original version build library name, for example, LI211043.
 
-After the LSAM installation or upgrade is complete, using the Agent command SMAGPL/STRSMA will produce a splash display that shows the "load source" information. The display will show, for example, "LI211043 PTF211043" to represent that the base Agent version was 21.1 and the latest LSAM PTF contained in the install file was PTF # 211043. This is the profile that would be expected when using an IBM i LSAM Installation Save File named LI211043B.
+After the LSAM installation or upgrade is complete, using the Agent command SMAGPL/STRContinuous will produce a splash display that shows the "load source" information. The display will show, for example, "LI211043 PTF211043" to represent that the base Agent version was 21.1 and the latest LSAM PTF contained in the install file was PTF # 211043. This is the profile that would be expected when using an IBM i LSAM Installation Save File named LI211043B.
 
 ## Install the LSAM
 
@@ -568,9 +575,9 @@ D:\Install\LSAM\IBM i LSAM>exit
 ```
 :::
 
-### Create SMA User Profiles
+### Create Continuous User Profiles
 
-16. When installing the IBM i LSAM for the first time, SMA recommends creating the required two user profiles manually to preserve the object authority of the installation tool software that will be restored to your system in the next step. Enter the following two commands.
+16. When installing the IBM i LSAM for the first time, Continuous recommends creating the required two user profiles manually to preserve the object authority of the installation tool software that will be restored to your system in the next step. Enter the following two commands.
 
 >> Optionally, this step may be skipped because the SMASETUP command below will create the user profiles if they do not exist, and the LSAM installation tools will still operate correctly. Creating the user profiles in advance presents an opportunity to customize the user profiles according to local standards.
 
@@ -579,12 +586,12 @@ It is normally possible to copy the following text and paste it into the IBM i w
 :::
 ```
 CRTUSRPRF USRPRF(SMANET) PASSWORD(*NONE) INLPGM(*NONE)
-  INLMNU(*SIGNOFF) TEXT('SMA IBM i LSAM server user profile')
+  INLMNU(*SIGNOFF) TEXT('Continuous IBM i LSAM server user profile')
   SPCAUT(*JOBCTL *SPLCTL *ALLOBJ)
 ```    
 ```
 CRTUSRPRF USRPRF(SMASAV) PASSWORD(smasav_password) INLPGM(*NONE)
-  INLMNU(*SIGNOFF) TEXT('SMA restricted mode user profile')
+  INLMNU(*SIGNOFF) TEXT('Continuous restricted mode user profile')
   SPCAUT(*JOBCTL *SPLCTL *SAVSYS)
 ```
 :::tip
@@ -599,7 +606,7 @@ The *ALLOBJ special authority granted to user SMANET is discussed below under th
   ```
 
   :::tip
-  Messages are displayed indicating the results of the restoration. Disregard messages about security or data format changes. If messages appear at the bottom of the command entry display, a white plus sign (+) is displayed in the lower right-hand corner indicating if there are additional messages about the current command. Place the cursor on the message line and press the ***PageDown*** button to view any additional messages. Please report any  unexpected messages to the SMA Technologies Support team for assistance.
+  Messages are displayed indicating the results of the restoration. Disregard messages about security or data format changes. If messages appear at the bottom of the command entry display, a white plus sign (+) is displayed in the lower right-hand corner indicating if there are additional messages about the current command. Place the cursor on the message line and press the ***PageDown*** button to view any additional messages. Please report any  unexpected messages to the Continuous Support team for assistance.
     
     ***Do not continue with this install procedure if there are unexpected messages.***
   :::
@@ -627,11 +634,11 @@ This note is especially important for these types of users:
   - Clients who had previously configured the LSAM to share the SMAGPL library among multiple LSAM Environments.
   - Clients who do not have or intend to configure either of these conditions can skip the remainder of this notice.
 
-SMA no longer supports sharing an SMAGPL library between LSAM Environments. Some functions may not behave as expected, and it is especially difficult to properly synchronize LSAM PTF application when the SMAGPL is being shared. Contact SMA Support for assistance with separating LSAM Environments.
+Continuous no longer supports sharing an SMAGPL library between LSAM Environments. Some functions may not behave as expected, and it is especially difficult to properly synchronize LSAM PTF application when the SMAGPL is being shared. Contact Continuous Support for assistance with separating LSAM Environments.
 
 During the interactive installation process, the program will present an initial prompting screen that requires careful decisions about whether to use SMAGPL or use (or retain) the IBM library QGPL.
 
-SMA strongly recommends against installing LSAM software into the IBM i library QGPL. SMA recommends taking advantage of this opportunity to automatically migrate LSAM functions out of QGPL and into the SMAGPL library dedicated to the LSAM Environment that will be upgraded. For assistance with managing multiple LSAM Environments that may share the QGPL contents, please contact SMA Support.
+Continuous strongly recommends against installing LSAM software into the IBM i library QGPL. Continuous recommends taking advantage of this opportunity to automatically migrate LSAM functions out of QGPL and into the SMAGPL library dedicated to the LSAM Environment that will be upgraded. For assistance with managing multiple LSAM Environments that may share the QGPL contents, please contact Continuous Support.
 
 More information on this subject is offered in the LSAM Environment Management section of the IBM i LSAM documentation.
 :::
@@ -647,7 +654,7 @@ More information on this subject is offered in the LSAM Environment Management s
     Type the **SMASETUP** command and then press function key **F4** to view and enter the ALTENV parameter value correctly. Then press **Enter** to continue.
 
   :::warning
-  Please consider contacting SMA Technologies Support before attempting to use the ALTENV(\*YES) option for the first time. There are additional installation and configuration steps required when multiple environments are set up. These steps are documented in the LSAM Environment Management section of the IBM i LSAM documentation. However, if there are any questions about this process SMA Technologies wants to consult with clients who plan to use multiple environments before they attempt to install them.
+  Please consider contacting Continuous Support before attempting to use the ALTENV(\*YES) option for the first time. There are additional installation and configuration steps required when multiple environments are set up. These steps are documented in the LSAM Environment Management section of the IBM i LSAM documentation. However, if there are any questions about this process Continuous wants to consult with clients who plan to use multiple environments before they attempt to install them.
   :::
 
 22. As objects are restored from the installation save file, there are status messages displayed at the bottom of the screen to indicate the progress of the installation. The display screen may also appear blank for some time. <u>No action is required</u>. 
@@ -658,7 +665,7 @@ More information on this subject is offered in the LSAM Environment Management s
     **\*\*\* IBM i LSAM installation completed normally \*\*\***
 
   :::warning
-  If the message indicating that the installation completed normally does not appear, or if the process ends with some other message, please contact SMA Technologies Support for assistance. Do not attempt to use the LSAM installation until the errors have been resolved. During the installation, or following an abnormal end of the command, it is very important not to reply to any error messages, should one appear, until the meaning and effect of the reply can be understood. Please contact SMA Technologies Support for advice, and leave the error message on display so that the circumstances of the error can be evaluated. Failure to follow this instruction will produce unpredictable results.
+  If the message indicating that the installation completed normally does not appear, or if the process ends with some other message, please contact Continuous Support for assistance. Do not attempt to use the LSAM installation until the errors have been resolved. During the installation, or following an abnormal end of the command, it is very important not to reply to any error messages, should one appear, until the meaning and effect of the reply can be understood. Please contact Continuous Support for advice, and leave the error message on display so that the circumstances of the error can be evaluated. Failure to follow this instruction will produce unpredictable results.
   :::
 25. Perform the Post-Install Instructions and review the information topics that follow the Post-Install Instructions, as they may apply.
 
@@ -678,9 +685,9 @@ library QPGL as long as each command is preceded by its library location, for ex
 These options that can be used to migrate LSAM utilities from QGPL to SMAGPL are more fully explained in LSAM Environment Management, but the installation control fields are explained in the next section.
 
 :::caution
-SMA no longer recommends installing the LSAM utilities to the IBM i library QGPL. Instead, only certain simple LSAM management commands could be copied to the QGPL library, if sites prefer the convenience of not having to specify the library name when using commands such as STRSMA (to enter the LSAM menu system) or the STRSMASYS and ENDSMASYS commands (to start or stop the LSAM server jobs).
+Continuous no longer recommends installing the LSAM utilities to the IBM i library QGPL. Instead, only certain simple LSAM management commands could be copied to the QGPL library, if sites prefer the convenience of not having to specify the library name when using commands such as STRContinuous (to enter the LSAM menu system) or the STRSMASYS and ENDSMASYS commands (to start or stop the LSAM server jobs).
 
-SMA also strongly recommends that the SMAGPL (or QGPL) library should not be shared between two LSAM environments. Experience proves that it becomes difficult to apply cumulative PTFs when the *GPL library is shared. Existing clients may contact the Support team at SMA to obtain the recommended procedure for separating two LSAM environments that are sharing a single *GPL environment.
+Continuous also strongly recommends that the SMAGPL (or QGPL) library should not be shared between two LSAM environments. Experience proves that it becomes difficult to apply cumulative PTFs when the *GPL library is shared. Existing clients may contact the Support team at Continuous to obtain the recommended procedure for separating two LSAM environments that are sharing a single *GPL environment.
 :::
 
 ### First Interactive Installation Prompt Screen
@@ -692,7 +699,7 @@ The following installation prompt screen example shows the default values that a
 SMASETR1              Install/Upgrade IBM i Agent (LSAM)              00/00/00
 USERNAME               Installing version: 21.1                       00:00:00
  Type options and press Enter to continue.                                    
- SMA now recommends to NOT share the SMAGPL or QGPL library.                  
+ Continuous now recommends to NOT share the SMAGPL or QGPL library.                  
 Installation source library . : LI211043B                                      
 Use alternate environment name: *NO           *YES, *NO=use default           
 SMAGPL alternate library name : SMAGPL        For PTF tools (do NOT use QGPL) 
@@ -723,7 +730,7 @@ When the LSAM is being installed to an alternate LSAM environment, or an alterna
 
 Depending on the choice of environment configurations explained below, the alternate LSAM environment library list must be built or updated to include the named SMAGPL library, and optionally, another library used for LSAM environment management (which previously might have been the library QGPL, if SMAGPL is not used for this purpose).
 
-The SMA Installer should advise the client about selecting from the following three options for installing the IBM i LSAM version 18.1. This choice must be thought through for both initial installations and for upgrades, although whenever the SMA-supplied defaults will be used, no special procedures are required.
+The Continuous Installer should advise the client about selecting from the following three options for installing the IBM i LSAM version 18.1. This choice must be thought through for both initial installations and for upgrades, although whenever the SMA-supplied defaults will be used, no special procedures are required.
 
 ### LSAM Utility Library Options
 
@@ -733,9 +740,9 @@ In the example of the first prompt screen from the SMASETUP command, shown above
 - **SMAGPL** = LSAM environment tools library: SMAGPL, QGPL, test library
 - **CONVERT** = Convert any QGPL content?: Y=Convert, N=Ignore QGPL
 
-The library label SMAUTL refers to the SMAGPL contents that are dedicated to PTF tools (PTFs are program temporary fixes from SMA - the same acronym as IBM uses, but these are only for the LSAM software).
+The library label SMAUTL refers to the SMAGPL contents that are dedicated to PTF tools (PTFs are program temporary fixes from Continuous - the same acronym as IBM uses, but these are only for the LSAM software).
 
-The library label SMAGPL refers to the LSAM environment management tools. These reside in the SMAGPL library, along with the PTF tools, by default. However, clients may select to install (or retain) these tools in IBM's QGPL library. (SMA recommends against using the QGPL library.) 
+The library label SMAGPL refers to the LSAM environment management tools. These reside in the SMAGPL library, along with the PTF tools, by default. However, clients may select to install (or retain) these tools in IBM's QGPL library. (Continuous recommends against using the QGPL library.) 
 
 The IBM i LSAM database library (SMADTA) contains two data areas called SMAUTL and SMAGPL that store the real value used for each of these two symbolic library locations.
 
@@ -761,7 +768,7 @@ Remember, using this default installation of the LSAM may require that LSAM envi
 
 The PTF control objects will be installed, as always, in the SMAGPL library. The LSAM environment utilities will be installed (or upgraded) in the IBM library QGPL. For this option, the CONVERT flag will be ignored because there is no need to remove objects or convert data out of the QGPL library.
 
-This installation option offers the convenience of easy access to LSAM environment management commands, since the QGPL library is typically included in every system, user and job description library list. However, SMA recommends against installing the LSAM utilities to the QGPL library. Instead, the client may choose to copy only certain convenience commands, such as STRSMA, from SMAGPL to QGPL.
+This installation option offers the convenience of easy access to LSAM environment management commands, since the QGPL library is typically included in every system, user and job description library list. However, Continuous recommends against installing the LSAM utilities to the QGPL library. Instead, the client may choose to copy only certain convenience commands, such as STRSMA, from SMAGPL to QGPL.
 
 #### 3. For Testing and Development: Alternate Location for SMAGPL {#for-testing-and-development-alternate-location-for-smagpl style="font-weight: bold;"}
 
@@ -771,13 +778,13 @@ This installation option offers the convenience of easy access to LSAM environme
 
 Both the PTF control objects and the LSAM environment utilities will be installed in the single library SMAGPL1.
 
-This style of naming convention and library assignment should be used by clients (or SMA internal staff) who do not have a separate IBM i partition for testing, where it is necessary to install a second copy of the LSAM within the same partition as the production LSAM.
+This style of naming convention and library assignment should be used by clients (or Continuous internal staff) who do not have a separate IBM i partition for testing, where it is necessary to install a second copy of the LSAM within the same partition as the production LSAM.
 
-SMA now recommends against the old concept of sharing a SMAGPL library between two environments. LSAM environments should always use a completely different library list (to avoid potential difficulties with LSAM PTF management). 
+Continuous now recommends against the old concept of sharing a SMAGPL library between two environments. LSAM environments should always use a completely different library list (to avoid potential difficulties with LSAM PTF management). 
 
-The CONVERT flag should be set to N = no for this installation option. An isolated test environment should normally not remove the LSAM environment management objects from library QGPL because they might still be required for a production LSAM (or within SMA internal operations for the purpose of supporting previous versions of the LSAM).
+The CONVERT flag should be set to N = no for this installation option. An isolated test environment should normally not remove the LSAM environment management objects from library QGPL because they might still be required for a production LSAM (or within Continuous internal operations for the purpose of supporting previous versions of the LSAM).
 
-Although the example above shows only one library for both SMAUTL and SMAGPL, it is also possible to divide the PTF objects from the LSAM environment objects by specifying a different library for each purpose. This option would normally only be selected by SMA internal staff for the purpose of testing LSAM software to prove that different control values for each symbolic library location are working correctly. SMA does not recommend this option to clients.
+Although the example above shows only one library for both SMAUTL and SMAGPL, it is also possible to divide the PTF objects from the LSAM environment objects by specifying a different library for each purpose. This option would normally only be selected by Continuous internal staff for the purpose of testing LSAM software to prove that different control values for each symbolic library location are working correctly. Continuous does not recommend this option to clients.
 
 ### Second Interactive Installation Prompt Screen - if ALTENV(*YES)
 
@@ -833,15 +840,15 @@ If the IP address for communicating with OpCon has not yet been configured, the 
 
 The three port numbers on this parameters screen must be unique per LSAM environment. If the current installation is for an alternate LSAM environment, change the port numbers to values that are different from any other LSAM environment, such as 3101, 3111, and 3301. These port values will also be entered into the OpCon machine record that defines communication with this LSAM.
 
-The LSAM (machine) name value must be all capital letters for IBM i, and it must match exactly the machine name registered in OpCon. Some clients like to use their IBM i partition serial number in this field. SMA recommends using a name that is easily recognized by operations staff.
+The LSAM (machine) name value must be all capital letters for IBM i, and it must match exactly the machine name registered in OpCon. Some clients like to use their IBM i partition serial number in this field. Continuous recommends using a name that is easily recognized by operations staff.
 
 ## Batch Installation Command (SMASETUPB)
 
-It is possible to complete the installation of a new LSAM environment, or to upgrade an existing LSAM environment, in a batch job that does not require interactive prompting. This installation procedure is not recommended for most sites or for clients, it was developed for use by experienced SMA installation specialists in conjunction with other installation tool sets. For this reason, the batch installation process is not documented here in full detail.
+It is possible to complete the installation of a new LSAM environment, or to upgrade an existing LSAM environment, in a batch job that does not require interactive prompting. This installation procedure is not recommended for most sites or for clients, it was developed for use by experienced Continuous installation specialists in conjunction with other installation tool sets. For this reason, the batch installation process is not documented here in full detail.
 
 Anyone installing or upgrading an LSAM using the batch installation command, SMASETUPB, must already understand the LSAM software and the IBM i operating system.
 
-When installing or upgrading an LSAM using the batch command, SMA recommends that the job description selected to define the installation job include the following settings that will produce the greatest possible detail in the job log (also allowing for a possible job message queue overflow):
+When installing or upgrading an LSAM using the batch command, Continuous recommends that the job description selected to define the installation job include the following settings that will produce the greatest possible detail in the job log (also allowing for a possible job message queue overflow):
 
 ```
 LOG(4 00 *SECLVL) LOGCLPGM(*YES) JOBMSGQFL(*PRTWRAP)
@@ -851,7 +858,7 @@ Following is an example of the command prompt screens that appear if the SMASETU
 
 #### Batch Install Command Prompt - Screen 1 of 2
 ```
-                 Install SMA IBM i LSAM - Batch (SMASETUPB)
+                 Install Continuous IBM i LSAM - Batch (SMASETUPB)
 
 Type choices, press Enter.
 
@@ -878,7 +885,7 @@ F24=More keys
 
 #### Batch Install Command Prompt - Screen 2 of 2
 ```
-                  Install SMA IBM i LSAM - Batch (SMASETUPB)
+                  Install Continuous IBM i LSAM - Batch (SMASETUPB)
 
 Type choices, press Enter.
 
@@ -935,6 +942,7 @@ SMAPGM(SMAPGM1)
 To use the batch installation command for installing an alternate LSAM environment, the environment's library list must be defined in the keywords SMADTA, SMAPTF and SMAPGM. In the example above, the suffix "1" is used to designate the LSAM environment library names for the proposed IBMILSAM1 environment.
 :::
 
+**===================================================================================**
 ## Post-Install Instructions
 
 Provided here are the steps to follow after installation.
@@ -943,7 +951,7 @@ Provided here are the steps to follow after installation.
 1. Clean up after the Installation.
    After the IBM i LSAM installation or upgrade procedure has been completed for as many different LSAM environments as may be required, the installation save file and the installation work library may be deleted from the system.
 
-   Optionally, these resources can be left in the partition if an additional upgrade will be performed after an initial test cycle is completed. However, be sure to verify that there is not a newer version of the install file available from SMA before repeating the install or upgrade process at a later date. Important software fixes might have been added to the install file.
+   Optionally, these resources can be left in the partition if an additional upgrade will be performed after an initial test cycle is completed. However, be sure to verify that there is not a newer version of the install file available from Continuous before repeating the install or upgrade process at a later date. Important software fixes might have been added to the install file.
 
    Delete the installation save file:
 
@@ -1007,7 +1015,7 @@ Provided here are the steps to follow after installation.
      SMAGPL/STRSMASYS ENV(SMADEFAULT)
      ```
 
-   - To accomplish the program changes, SMA recommends the WRKMBRPDM command for modifying source and compiling programs, however many production partitions do not include this programmer convenience tool.
+   - To accomplish the program changes, Continuous recommends the WRKMBRPDM command for modifying source and compiling programs, however many production partitions do not include this programmer convenience tool.
 
      - Alternative commands that can be used in most environments include:
         - CPYSRCF
@@ -1015,7 +1023,7 @@ Provided here are the steps to follow after installation.
         - EDTF (a simple text editor; see the IBM i Knowledge Center or the IBM developerWorks web site for instructions and hints about using EDTF to edit source members).
         - CRTCLPGM
 
-     - SMA recommends not overlaying the original system startup program, but instead creating the new program with a different name (if stored into the QSYS system root library, as IBM did), or storing the new program into the QGPL library (but QGPL contents may be lost during the next IBM i operating system upgrade, so another user library can be used, such as the SMAGPL library).
+     - Continuous recommends not overlaying the original system startup program, but instead creating the new program with a different name (if stored into the QSYS system root library, as IBM did), or storing the new program into the QGPL library (but QGPL contents may be lost during the next IBM i operating system upgrade, so another user library can be used, such as the SMAGPL library).
 
    - Upon completion of the program preparation, use the CHGSYSVAL command to register the new, replacement startup program. The value of this system value must be 20 characters long, and it must list the program name in columns 1 -- 10, followed by the library name in columns 11 -- 20. For example:
 
@@ -1035,14 +1043,14 @@ Provided here are the steps to follow after installation.
     - IBM i LSAM (version) simplified PTF instructions.
     - IBM i Agent (LSAM) instructions for partial PTF save files
 
-   - All the latest IBM i LSAM support resources, including the two PTF save files and the documents mentioned here, may be found at SMA's current ftp server that is accessed via the Support Portal from the SMA Technologies web site.
+   - All the latest IBM i LSAM support resources, including the two PTF save files and the documents mentioned here, may be found at SMA's current ftp server that is accessed via the Support Portal from the Continuous web site.
       - Currently, the ftp server may also be accessed directly from a browser or from a file transfer tool (such as FileZilla) at this URL: files.smatechnologies.com.
       - Here is the path to the IBM i Agent resources:  /OpCon Releases/Agents/IBM i/21.1/ ...
         - The previous Agent release resources are in sub-folder /18.1/.
         - Within the release number folder, explore the sub-folder /IBMiLSAMptf/ for LSAM PTF resources.
 
    :::tip
-   If the URL for SMA's secure ftp server changes, view the Support page of SMA's latest web site or contact the SMA Support team for assistance with accessing the current secure ftp server.
+   If the URL for SMA's secure ftp server changes, view the Support page of SMA's latest web site or contact the Continuous Support team for assistance with accessing the current secure ftp server.
    :::
 
 7. Review and update the LSAM Parameters and feature Configurations.
@@ -1051,11 +1059,11 @@ Provided here are the steps to follow after installation.
    Look especially for the following settings that may require attention:
 
    - The main menu LSAM Parameters:
-     - There is an option to "Bind? Y/N" for the IP Address. SMA recommends using this option instead of the default method of allowing the communications programs to choose any available IP address.
+     - There is an option to "Bind? Y/N" for the IP Address. Continuous recommends using this option instead of the default method of allowing the communications programs to choose any available IP address.
      - If the IBM i partition is a client partition that relies on a host partition to connect it to an external IP address, put the external IP address in the first IP Address field and then enter the local virtual LAN IP address of this Client partition in the Internal IP address field.
      - Verify the daily maintenance hour on page 2 of the LSAM Parameters. If there is more than one LSAM Environment within the same partition, it is critical that the two environments start their daily log purging at a different time (separated by at least 1 or 2 minutes), to assure that their daily backup save files are named differently, since they use the system clock time as part of the name.
      - Older LSAM installations that were upgraded may need to have their daily log purging values reviewed. Very old LSAM installations did not get useful values set automatically, although brand new installations of version 18.1 or newer come with reasonable purge criteria already set.
-   - Check each LSAM sub-menu configuration to make sure that the normal daily, or "debug" logging is activated. This is very helpful for diagnosing configuration errors, and it is also useful for supporting security and other audits of the automation. However, do NOT activate any log option that is called a "trace" log, since those options produce a large amount of data very quickly. Only use trace log options when requested by SMA Support.
+   - Check each LSAM sub-menu configuration to make sure that the normal daily, or "debug" logging is activated. This is very helpful for diagnosing configuration errors, and it is also useful for supporting security and other audits of the automation. However, do NOT activate any log option that is called a "trace" log, since those options produce a large amount of data very quickly. Only use trace log options when requested by Continuous Support.
      - The LSAM Management sub-menu 6 has an option 4 that can be used to review the settings for multiple logging options. All of the  logging should normally be set to "\*YES" on the main page, except that all the "Trace" logging options should be set to "\*NO". Observer the on-screen instructions for activating the settings.
        - Use function key **F2** from the logging management screen to see a summary of several LSAM daily logging options. All except for any "Trace" options should be set to "1" or "y", whatever is the active state.
     - The SMA File Transfer Configuration should be checked for the following settings.
@@ -1115,10 +1123,10 @@ To begin using the LSAM, refer to [IBM i LSAM Configuration](../configuration/co
 
 1. Log on to an IBM i workstation session as QSECOFR or as the user profile designated as the LSAM Administrator. Refer to [LSAM Security and Object Authority](../security/strategy.md) for more information about creating an LSAM Administrator user profile.
 
-2. From IBM i command entry, enter the command SMAGPL/STRSMA to access the LSAM Main Menu. (Qualifying the command with library SMAGPL may not be necessary, if QGPL is used.)
+2. From IBM i command entry, enter the command SMAGPL/STRContinuous to access the LSAM Main Menu. (Qualifying the command with library SMAGPL may not be necessary, if QGPL is used.)
 
    :::tip
-   To enter an alternate LSAM environment instead of the default environment, press <**F4**> = Prompt instead of <**Enter**> with the STRSMA command, and specify either the name of the LSAM environment, or the value *SELECT to pick an environment from the list.
+   To enter an alternate LSAM environment instead of the default environment, press <**F4**> = Prompt instead of <**Enter**> with the STRContinuous command, and specify either the name of the LSAM environment, or the value *SELECT to pick an environment from the list.
    :::
 
 3. From the LSAM Main Menu, use function 7. LSAM parameters to review and update the configuration values. Be sure to verify and take note of the LSAM Name, the IP Address and the communications port numbersthat will be used by OpCon to  communicate with this LSAM.
@@ -1172,7 +1180,7 @@ A helpful LSAM tool that can be used for modifying the object authority of any o
 
 ### Building a user profile matrix for SMANET without *ALLOBJ special authority
 
-Since SMA is not able to predict which user profiles will be selected for the jobs that are controlled by OpCon, it is necessary to grant to user profile SMANET authority of type \*USE to each user profile that will be specified as the user of jobs being submitted by OpCon. The GRTOBJAUT command can be used, as in the following example. Repeat this example for each job user profile, substituting the actual name of the user profile for "job_user_name":
+Since Continuous is not able to predict which user profiles will be selected for the jobs that are controlled by OpCon, it is necessary to grant to user profile SMANET authority of type \*USE to each user profile that will be specified as the user of jobs being submitted by OpCon. The GRTOBJAUT command can be used, as in the following example. Repeat this example for each job user profile, substituting the actual name of the user profile for "job_user_name":
 
 ```
 GRTOBJAUT OBJ(QSYS/job_user_name) OBJTYPE(*USRPRF) USER(SMANET) AUT(*USE)

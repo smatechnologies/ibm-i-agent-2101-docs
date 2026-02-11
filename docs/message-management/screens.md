@@ -27,7 +27,7 @@ Main Menu > Message management menu (#2) > Message management performance parame
 |                      |                      | **1** = clear the content of the Message Management message key control file. This tells the server to first clear the control file before starting the server processing, and it instructs the server to start at the beginning of each message queue.  |
 |                      |                      | Refer to additional discussion below about Starting Message Management. |
 | Trace message management log  (Replaces former external TRPMSGDBUG data area.)   | 0 (0 1)               | **0** = no trace, **1** = debug logging  |
-|      |                      |     This option flag can turn on a highly detailed form of activity trace logging that is separate from the standard Message Management outcome logging file. This is a support diagnostic tool that can generate a large amount of data in the LSAM general purpose log file LSALOGF30. Debug logging should only be used when requested by SMA Technologies Support to diagnose problems with the LSAM Message Management server job.  |
+|      |                      |     This option flag can turn on a highly detailed form of activity trace logging that is separate from the standard Message Management outcome logging file. This is a support diagnostic tool that can generate a large amount of data in the LSAM general purpose log file LSALOGF30. Debug logging should only be used when requested by Continuous Support to diagnose problems with the LSAM Message Management server job.  |
 |                      |                      | To view the results of debug logging, either use the IBM i command DSPPFM to view the content of file LSALOGF30, or select LSAM log viewer # 4 (from LSAM menu 6, option 5). This is the same log file where LSAM SBMJOB commands are logged. The log entries are text entries, but the flags and codes at the beginning of each entry can only be interpreted by analysts who have access to the LSAM program source code.    |
 | First day of week (1)   | \*SUN (IBM i day of week values)  | This field is used to specify which calendar day will be considered the first day of the week by the LSAM Message Management Parameters, Effective DOW (day of week) filter field. (Refer to the table of field values, below, for Message Management Parameters.)  |
 | Msg Mgmt Parms init list opt  | 1 (0, 1)             | Controls the appearance of the Message Management Parameters list display when it is first presented. This option is important at sites where the message text is more important than the message ID for recognizing messages to process.    |
@@ -157,7 +157,7 @@ Type options, press Enter.  6=DspCptUse             Search content:
                                                                                
                                                                         Bottom 
 F6=Add  F10=CompText  F11=Alt view  F16=SearchNxt  F17=Subset  F24=More keys   
-Copyright (C) SMA Technologies 1995, 2018  ARR                                 
+Copyright (C) Continuous 1995, 2018  ARR                                 
 ```
 
 #### Message Management Parameters - View 2 of 2

@@ -4,6 +4,8 @@ sidebar_label: 'LSAM Software Maintenance (PTFs)'
 
 # LSAM Software Maintenance (PTFs)
 
+## Introduction to LSAM PTFs
+
 This topic explains how to use the LSAM menu-driven tools that should be used to update the IBM i LSAM software product whenever SMA issues program corrections or enhancements in between distributed versions of the product.
 
 Since LSAM version 18.1, it is important to note the two key fields of information that represent the software patch level of this Agent software:
@@ -69,13 +71,13 @@ determination.
 
 ### How to Obtain and Apply PTFs
 
-Based on many years of experience, SMA Technologies and its clients have adopted an effective and simple "fast path" procedure for obtaining and installing the IBM i Agent (LSAM) PTFs.
+Based on many years of experience, Continuous and its clients have adopted an effective and simple "fast path" procedure for obtaining and installing the IBM i Agent (LSAM) PTFs.
 
-Clients of SMA Technologies are strongly recommended to refer to the latest available information about the LSAM PTFs, which is available for download in one or more PDF documents, stored alongside of the LSAM PTF save files in the SMA Technologies secure ftp server. New clients may contact SMA Support for instructions and to obtain a user ID and password for accessing the SMA Technologies secure ftp server.
+Clients of Continuous are strongly recommended to refer to the latest available information about the LSAM PTFs, which is available for download in one or more PDF documents, stored alongside of the LSAM PTF save files in the Continuous secure ftp server. New clients may contact SMA Support for instructions and to obtain a user ID and password for accessing the Continuous secure ftp server.
 
 #### How to Obtain the LSAM PTF Save Files
 
-As of the date of this publication, the directory location in the SMA Technologies secure ftp server for this Agent's software patches and enhancements is called "/IBMiLSAMptf". This sub-directory name is located within the higher-level directory for each Agent release:
+As of the date of this publication, the directory location in the Continuous secure ftp server for this Agent's software patches and enhancements is called "/IBMiLSAMptf". This sub-directory name is located within the higher-level directory for each Agent release:
 ```
 /OpCon Releases/Agents/IBMi/21.1/IBMiLSAMptf
 ```
@@ -87,21 +89,21 @@ Inside the /IBMiLSAMptf sub-directory, there is a "README" PDF document that lis
 
 This same README document starts with instructions about the steps to perform for the standard "fast path" PTF installation method. Included are some standard pre-requisite considerations.
 
-SMA Technologies reminds its clients that this entire process, including obtaining and applying PTFs, can be automated using OpCon. This may be especially important for clients who are operating many IBM i partitions. Please contact SMA Support, the client's SMA Technologies Consultant, or the client's SMA Sales representative to request assistance with configuring a fully-automated LSAM PTF distribution and installation process.
+Continuous reminds its clients that this entire process, including obtaining and applying PTFs, can be automated using OpCon. This may be especially important for clients who are operating many IBM i partitions. Please contact SMA Support, the client's Continuous Consultant, or the client's SMA Sales representative to request assistance with configuring a fully-automated LSAM PTF distribution and installation process.
 
 #### How to Apply IBM i LSAM PTFs
 
-SMA Technologies reminds its clients that the "PTFs" for the IBM i Agent of OpCon are not the same as the "PTFs" issued by IBM for the IBM i operating system. Except by coincidence, there is no direct relationship between the IBM i operating system PTFs and the OpCon Agent (LSAM) PTFs. If an IBM i OS PTF might be critical for correct operation of the LSAM, the LSAM PTF Readme document will explain this requirement.
+Continuous reminds its clients that the "PTFs" for the IBM i Agent of OpCon are not the same as the "PTFs" issued by IBM for the IBM i operating system. Except by coincidence, there is no direct relationship between the IBM i operating system PTFs and the OpCon Agent (LSAM) PTFs. If an IBM i OS PTF might be critical for correct operation of the LSAM, the LSAM PTF Readme document will explain this requirement.
 
 For orientation purposes, here is a summary of the "fast path" steps to apply the LSAM PTFs.
 
 1. Use the LSAM sub-menu 9, option 7, to confirm or update the LSAM PTF Configuration. Refer to [PTF Options Configuration](../maintenance/screens.md#ptf-options-configuration) in the Screens and Windows segment of this documentation section for details about the LSAM PTF Configuration values.
 
-2. Download the two LSAM PTF save files from the SMA Technologies secure ftp server.
+2. Download the two LSAM PTF save files from the Continuous secure ftp server.
 
     - The base file names are LSCTLDTA (PTF control data) and LSCUMPTF (a collection of all the available PTF save files for each numbered PTF). 
 
-    - When an LSAM version matures, the LSCUMPTF save file will be divided into management segments, called "partial PTF save files." There is a separate sub-sub-directory "Partial PTF (smaller) save files and instructions" under the /IBMiLSAMptf folder at the SMA Technologies secure ftp server where these partial PTF save files are stored, along with a PDF document of instructions that explains how to use these smaller collections.
+    - When an LSAM version matures, the LSCUMPTF save file will be divided into management segments, called "partial PTF save files." There is a separate sub-sub-directory "Partial PTF (smaller) save files and instructions" under the /IBMiLSAMptf folder at the Continuous secure ftp server where these partial PTF save files are stored, along with a PDF document of instructions that explains how to use these smaller collections.
 
 3. Choose option 2 from the LSAM sub-menu 9 to start the PTF installation process.
 
@@ -109,15 +111,15 @@ For orientation purposes, here is a summary of the "fast path" steps to apply th
 
     - The PTF Configuration options may be overridden using the first prompt screen that appears after option 2 is selected.
 
-4. If any errors occur during the execution of the LSAM PTF Install process, SMA Technologies strongly recommends that clients immediately contact SMA Support for assistance, leaving the error condition unanswered, rather than trying to guess about how to recover from the error.
+4. If any errors occur during the execution of the LSAM PTF Install process, Continuous strongly recommends that clients immediately contact SMA Support for assistance, leaving the error condition unanswered, rather than trying to guess about how to recover from the error.
 
     - An incorrect response to a failure of the PTF Install process can create a big mess that is difficult to repair.
 
-    - SMA Technologies will not charge off-hours Support fees in case support is required for the failure of the LSAM PTF install process.
+    - Continuous will not charge off-hours Support fees in case support is required for the failure of the LSAM PTF install process.
 
     - The incidence of any LSAM PTF installation failure is extremely rare.  The cause of rare incidences has typically been a conflict with some database mirroring application.  Users of database mirroring can consult the "Tips and Techniques" folder under the IBM i Agent version-specific directory, if the LSAM PTF README document does not provide enough information about this subject.
 
-5. Once the sub-menu option 2 is completed, SMA Technologies recommends using LSAM sub-menu option 1 to review the updated LSAM PTF list.
+5. Once the sub-menu option 2 is completed, Continuous recommends using LSAM sub-menu option 1 to review the updated LSAM PTF list.
 
     - Look first under the list column **ST** where the Status of each PTF should show "A" indicating "Applied."  
         - If any PTF shows a status of "I" = Incomplete, please contact SMA Suport for assistance with diagnosing why the PTF could not be installed.

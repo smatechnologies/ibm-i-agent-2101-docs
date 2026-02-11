@@ -1,6 +1,6 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'SMA Technologies Help',
+  title: 'Continuous Help',
   tagline: 'IBM i Agent 21.1',
   url: 'https://help.smatechnologies.com',
   baseUrl: '/opcon/agents/ibm-i-2101/',
@@ -13,7 +13,7 @@ module.exports = {
     navbar: {
       title: 'Help',
       logo: {
-        alt: 'SMA Technologies Help Logo',
+        alt: 'Continuous Help Logo',
         src: 'img/logo.svg',
         href: 'https://help.smatechnologies.com',
       },

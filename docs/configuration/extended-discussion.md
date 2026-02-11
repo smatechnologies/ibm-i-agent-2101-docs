@@ -158,7 +158,7 @@ In most cases, set Keep Socket Open = Y. Do not change this value unless instruc
 | Category        | Parameter                        | With Keep socket open  | With Close socket per TX |
 | --------        | ---------                        | ---------------------  | ------------------------ |
 | Buffer Settings | Max Consecutive Send Messages    | 100                    | 1                        |
-| Timer Settings  | Consecutive Send Sleep Time (ms) | 100                    | 200 -- 1000 SMA Technologies recommends testing the lowest reliable rate.   |
+| Timer Settings  | Consecutive Send Sleep Time (ms) | 100                    | 200 -- 1000 Continuous recommends testing the lowest reliable rate.   |
 
 ## Character Translation
 

@@ -18,7 +18,7 @@ The following settings are **critical** to the operation of the LSAM with OpCon.
 - Keep socket open (Y/N): For optimal LSAM performance, SMA recommends using the value Y (yes). This setting must match the setting on the OpCon machine record. For more information, refer to [Discussion of Keep Socket Open Parameter](extended-discussion#discussion-of-keep-socket-open-parameter).
 
 :::tip
-In the past, changing the value to N (no) was sometimes proposed as a solution when a site was experiencing unstable communication between the LSAM and SMANetCom, or if data was being lost. However, if either of these symptoms appear, please contact the Support team at SMA Technologies for assistance. SMA Technologies does not recommend trying to use this interface with the Keep socket open value set to N (no).
+In the past, changing the value to N (no) was sometimes proposed as a solution when a site was experiencing unstable communication between the LSAM and SMANetCom, or if data was being lost. However, if either of these symptoms appear, please contact the Support team at Continuous for assistance. Continuous does not recommend trying to use this interface with the Keep socket open value set to N (no).
 :::
 - **Screen Title**: LSAM Configuration Parameters (3 Pages)
 - **Screen ID**:

@@ -301,6 +301,30 @@ Remember that the APP() keyword of the SCANSPLF command is case-sensitive.
 
 For important additional information about the special character that is used to separate job parameters and the SCANSPLF command from the primary Call information line values, please review IBM i LSAM Configuration - \> Extended Discussion on Parameters -\> Job Parameters Separator-HEX.
 
+### How to Produce a Formatted Program Dump for Failure Diagnosis of SCANSPLF
+
+The LSAM report management utilities SCANSPLF and SCANOUTQ are enhanced with more carefully managed options to dump the program contents in case of an unexpected error, but only when the new data area LSAUTLU1 is set to a value of 'U1*YES'.
+
+This data area control is intended primary for use by Continuous Support personnel. The program dump reports that will be produced when the control data area is present and set for producing this report will not contain full program information unless a special copy of the program is compiled by Continuous with visibility, and then delivered to a client for manual, temporary installation in the LSAM program objects library (SMAPGM), temporarily replacing a renamed base version of either program SCANSPLFR or SCANOUTQR.
+
+The default value that the command programs use without the control data area is 'U1*NO '. The default settings are designed to protect product users from the potential of an error being reported when a very large program dump report exceeds the default maximum lines value for the IBM i Printer File named QPPGMDMP, which is 100,000 lines.  Dumps from the latest version of program SCANSPLFR produce about 3,000 pages, occupying more than 200,000 lines.  A client site that chooses, or is required to enable program dumps for problem diagnosis, is advised to use the IBM i command CHGPRTF to modify QSYS/QPPGMDMP using the parameter MAXRCDS(250,000).
+
+If the following control data area is not already created in the SMADTA database library, this command can be used by an LSAM administrator to create the data area.  The IBM i command CHGDTAARA can then be used to temporarily update the data area to its activated setting.  Be sure to change the data area back to the 'U1*NO ' value after problem diagnosis is completed.
+
+```
+CRTDTAARA  DTAARA(SMADTA/LSAUTLU1) TYPE(*CHAR) LEN(6) VALUE('U1*NO ') 
+              TEXT('U1-U9 dump control: Set Un *ON or *OFF') AUT(*EXCLUDE)         
+
+CHGDTAARA DTAARA(SMADTA/LSAUTLU1 *ALL) VALUE('U1*YES')
+
+CHGDTAARA DTAARA(SMADTA/LSAUTLU1 *ALL) VALUE('U1*NO ')
+```
+
+:::tip
+CONTINUOUS INTERNAL TECHNICAL TIP:
+Other programs could leverage this same debug control data area to also manage, on a temporary basis, the setting of any of the U1 - U9 user-defined program indicators.  For example, the VALUE('U2\*YES') would tell program logic (added by an internal company programmer) to turn on the *INU2 indicator, and in turn, that indicator could enable temporary debug actions that could then easily be turned off by reseting the data area to VALUE('U2\*NO ').
+:::
+
 ### SCANSPLF Command Syntax
 
 The SCANSPLF command entered in an IBM i command line, either from IBM i or from the Call information in an IBM i job on an OpCon schedule, requires the syntax illustrated in the following example:

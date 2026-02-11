@@ -12,7 +12,7 @@ IBM discontinued its Navigator Monitor support for Job Status monitoring as it b
 
 SMA has replaced the IBM solution with the Agent's own "Job Status Monitor" server job.  The LSAM server job name is JOBSTS.  This service is optional and it will only be started automatically if the LSAM Administrator sets the LSAM control that requests this service.
 
-This document section offers suggestions about ways that clients of SMA Technologies can engage the IBM i LSAM Job Status Monitors for the purpose of detecting any jobs in selected IBM i subsystems that are stuck in MSGW status. It describes how to configure a Job Status Monitor to generate a message that can be intercepted by the IBM i LSAM Message Management facility, from which many forms of notification and response can be generated, including OpCon Event commands. 
+This document section offers suggestions about ways that clients of Continuous can engage the IBM i LSAM Job Status Monitors for the purpose of detecting any jobs in selected IBM i subsystems that are stuck in MSGW status. It describes how to configure a Job Status Monitor to generate a message that can be intercepted by the IBM i LSAM Message Management facility, from which many forms of notification and response can be generated, including OpCon Event commands. 
 
 ### JOBSTS Server Implementation Outline
 

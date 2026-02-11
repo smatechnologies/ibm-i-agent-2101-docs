@@ -224,7 +224,7 @@ Unload command program at end  . UNLOAD         *YES  
 
 | Keyword        | Values         | Default        | Description    |
 | -------        | ------         | -------        | -----------    |
-| VARNAM Variable name | Any characters |          | The key identifier of each variable. For records of type L, this name must be the Captured Job ID or the Job Name of a tracked or queued job. For records of type V, this may be any meaningful name that will be used to create a token ID. Job names are limited to 10 characters, but a Captured Job ID or token ID can use up to the 12 characters allowed for this field.  |
+| VARNAM Variable name | Any characters |          | The key identifier of each variable. For records of type L, this name must be the Captured Job ID or the Job Name of a tracked or queued job. Job names are limited to 10 characters, but a Captured Job ID or token ID can use up to 12 characters. For records of type V, this may be any meaningful name that will be used to create a token ID.  Up to 435 characters are supported by this field to accommodate multi-instance variable qualifiers. |
 | VALUE Current value or numeric change amount | Any keyboard character; or signed digits for numeric value changes. Special value of '**\*BLANK**' to reset value to blanks. | - Blanks         | - To specify a fixed value for a dynamic variable, when a value calculate program is not being used, type in the value. If the required value cannot be typed on a workstation keyboard, then a value calculate program must be used to supply the value at run time.  If a value calculate program is specified, but the program cannot be found at run time, then any value specified in this field  will be used as the default. For type V tokens, a blank value will cause the token to be removed from the string where it was found and the string will be compressed to remove as many spaces as were occupied by the token. For type L variables, a final result of blanks for the variable will cause the LDA to be updated with space characters in the specified location/length. |
 |                |                |            | - **Note**: Blanks or spaces are not supported by this parameter. If the value is blank, the master record value will not be changed. However, the special value of '**\*BLANK**' can be used to reset a variable's value to blanks. |
 |                |                |                | - For Dynamic Variables defined as numeric, the VALUE keyword will accept a number that is preceded by a plus (+) or minus (-) sign as a request to increase or decrease an existing value by the amount in the VALUE parameter. |
@@ -301,24 +301,34 @@ WAITDYNVAR VARNAM(dyn_var_name) VALUE1('value_string')
 VALUE2('value_string') DELAY(10) NBRLOOPS(360) WAITVARNAM('WAITDYNVAR')
 ```
 :::
+:::note
+When calculating the value checking timer parameters, remember that the WAITDYNVAR command will always end immediately with a ‘PASS’ value returned as soon as a matching value is discovered. But do not use a very large (wait time X number of seconds) because this would cause the WAITDYNVAR command to hold up the calling program or script for a long time before reporting a failure. The best practice is to carefully estimate what is the maximum reasonable amount of time to wait for a value match, so that recovery from a ‘FAIL’ result can be initiated as soon as reasonably possible.
+:::
 
 **KEYWORD DESCRIPTIONS**:
-- **VARNAM:** Dynamic Variable name (refer to Constraint below)\*
-  - The name of an existing Dynamic Variable. If the Variable does not exist in the Dynamic Variable table file when the command executes it will return a '**FAIL**' result code.
+- **VARNAM:** Dynamic Variable name (refer to \*Constraint below)
+  - The name of an existing Dynamic Variable. This is the Variable that must have its value set by the remote application so that it matches either of the non-blank VALUE1 or VALUE2 command parameter values. 
+  - If the Variable does not exist in the Dynamic Variable table file when the command executes it will return a '**FAIL**' result code.
   - This parameter supports up to 435 characters to allow for a multi-instance Dynamic Variable name with long job or schedule qualifiers.
+  - This command parameter should not use the same Dynamic Variable name as the optional WAITVARNAM command parameter and it cannot use the reserved Dynamic Variable name of “WAITDYNVAR”.
 - **VALUE1:** Required value string or number, up to 1024 characters.
-  - At least this first Value string must be specified. The value returned from the Dynamic Variable must match exactly. (Hint: Use the DSPDYNVAR command to see the length and format of a Dynamic Variable.) If a number is specified it must be enclosed within a pair of single quotes, such as: '**1234**'
+  - At least this first Value string must be specified. The value returned from the Dynamic Variable must match exactly. 
+    - Hint: Use the DSPDYNVAR command to see the length and format of a Dynamic Variable.
+  - If a number is specified it must be enclosed within a pair of single quotes, such as: '**1234**'
 - **VALUE2:** Optional additional value string or number, up to 1024 characters
-  - An optional second value string. Leave this parameter blank if a second value is not required.
+  - Leave this parameter blank if a second value is not required.
+  - Do not specify a VALUE2 without a VALUE1 also being specified. But a single VALUE1 is allowed without a VALUE2.
 - **DELAY**: 1 to 999
-  - Used in the IBM i command DLYJOB, the number of seconds to wait between checks of the value of the Dynamic Variable.
+  - Used with the IBM i command DLYJOB, the number of seconds to wait between checks of the value of the Dynamic Variable.
 - **NBRLOOPS**: 1 to 99999
-  - The number of times to check the value of the Dynamic Variable, before each wait period, before the command will report 'FAIL' if the specified values are not found.
-- **WAITVARNAM**: "WAITDYNVAR" or an instance-qualified version of this or other variable name.
-  - Starting with Agent version 21.1, the previously pre-defined variable name of "WAITDYNVAR" is now replaced by a user-specified variable name.  This is the critical Dynamic Variable that must first be checked for a value of "PASS" or "FAIL", to determine if the specified VALUE(S) were found, or not found, or a program error occurred.  Adding this option for a user-defined variable name enables the option of parallel processing by supporting multi-instance variable qualifiers.  See also the detailed discussion below about this parameter.
-  - This parameter supports up to 435 characters to allow for a multi-instance Dynamic Variable name with long job or schedule qualifiers.
+  - The number of times to check the value of the Dynamic Variable, before the command will report 'FAIL' if the specified values are not found.
+- **WAITVARNAM**: "WAITDYNVAR" is the default variable name engaged by this utility. To override the default, specify a different variable name. This is the critical Dynamic Variable that must first be checked for a value of "PASS" or "FAIL", to determine if either of the specified VALUE(S) were found, or neither was found, or a program error occurred.  
+  - Parallel processing is supported by using multi-instance variable qualifiers.  See also the detailed discussion below about this parameter.
+  - An instance-qualified version of the default variable name or other variable name is supported by the 435 byte size of this field.
+  - Starting with Agent version 21.1, the previously pre-defined variable name of "WAITDYNVAR" is now replaced by a user-specified variable name.  
+  - This command parameter must not use the same Dynamic Variable name as the VARNAM command parameter.
 
-:::tip Constraint
+:::tip \*Constraint
 The Variable used in the VARNAM parameter must be a type-V Dynamic Variable. Type-L variables (for LDA manipulation) cannot be used.
 :::
 :::tip
@@ -329,11 +339,11 @@ Remember that both VALUE1 and VALUE2 parameters are case-sensitive.  For example
 
 #### Prior to LSAM Version 21.1                                          
                                                                         
-The original version of the WAITDYNVAR command required pre-registration of a reserved Dynamic Variable named WAITDYNVAR (same as the command name).  This variable was reserved exclusively for use by the command to report its PASS or FAIL result status.  That variable name could not be overridden by OpCon users.
+The original version of the WAITDYNVAR command required pre-registration of a reserved Dynamic Variable named WAITDYNVAR (same as the command name).  This variable was reserved exclusively for use by the command to report its **PASS** or **FAIL** result status.  That variable name could not be overridden by OpCon users.
                                                                         
 #### After upgrade to LSAM Version 21.1                                  
                                                                         
-The new, optional command parameter WAITVARNAM was added with a very long value length that could be used for a fully qualified multi-instance Dynamic Variable name, as would be required in large data centers that implement parallel processing.
+The new, optional command parameter WAITVARNAM was added with a very long value length (435) that could be used for a fully qualified multi-instance Dynamic Variable name, as would be required in large data centers that implement parallel processing.
                                                                       
 However, the initial 21.1 release had mistakenly replaced the default for this WAITVARNAM parameter with an incorrect variable named WAITVARNAM.  Thus, users who upgraded from LSAM version 18.1 suddenly lost their dependence upon the default variable name of WAITDYNVAR.
                                                                       
@@ -343,7 +353,7 @@ Accordingly, early adopters of LSAM Version 21.1 had to update any existing use 
                                            
 #### After update to LSAM PTF level 21.1.130
 
-LSAM PTF # 211130 corrects the error that disabled the default Dynamic Variable name of WAITDYNVAR.  After the PTF is applied, the following configurations are supported:                                         
+LSAM PTF # 211130 corrected the error that disabled the default Dynamic Variable name of WAITDYNVAR.  After the PTF is applied, the following configurations are supported:                                         
                                                                        
  - Uses of the WAITDYNVAR command that are upgraded from LSAM version 18.1 do not need any special attention to continue operating as in the 18.1 release.                                                         
                                                                        
@@ -353,13 +363,13 @@ LSAM PTF # 211130 corrects the error that disabled the default Dynamic Variable 
                                                                           
     - The LSAM automation will depend on testing the Dynamic Variable name of WAITDYNVAR to discover a PASS or FAIL completion value.
                                                                           
-    - The automation using the WAITDYNVAR command will not require multi-instance qualification because the automation will never be executed in parallel with another copy of the same automation at the same time.                                            
+    - The automation using the WAITDYNVAR command in this circumstance would not be able to utilize multi-instance qualification because the command keyword where that would be specified is intentionally omitted for this special case.  This is acceptable as long as the automation using the defaul "WAITDYNVAR" variable name will never be executed in parallel with another copy of the same automation at the same time.
                                                                        
 - The Dynamic Variable named in the WAITVARNAM command parameter may be instance-qualified according to any of the supported multi-instance Dynamic Variable rules.
                                                                        
     - For more information, see [Supporting WAITDYNVAR Utility with Multi-Instance Dynamic Variables](../dynamic-variables/multi-instance#supporting-waitdynvar-utility-with-multi-instance-dynamic-variables) 
                                                                           
-    - When using multi-instance Dynamic Variables, both the VARNAM and the WAITVARNAM should use multi-instance variable names in order to isolate their value management within the same job scope and avoid having either value overlaid by some parallel processing.
+    - When using multi-instance Dynamic Variables, both the VARNAM and the WAITVARNAM keyword values should use the same multi-instance qualifiers variable names in order to isolate their value management within the same job scope and avoid having either value overlaid by some parallel processing.
 
 
 ## WAITDYNVAR Example Applications
@@ -598,3 +608,75 @@ CPU avg: 15.2
 2. The example above assumes that the CPU utilization was captured from the DSPSYSSTS display on a screen format, and that its maximum value could be 999.9. The captured character string is converted to a Decimal value using the SQL DEC keyword and its associated numeric size parameters (4 digits, of which 1 is to the right of the decimal point).
 3. The LOGDYNVAR command and table support two other user-defined fields (table columns):
 4. The LSAM does not support any automatic purging of the LOGDYNVAR table. This is entirely up to the user. The table could be purged by using an SQL statement that deletes all records with timestamps older than a user-specified value.
+
+## GETDVRVALR: Program that Returns a Dynamic Variable Value to Caller
+
+GETDVRVALR is a program that is made available for calling from any other program that can call an IBM i ILE program object, or, optionally legacy RPG programs should be able to call this utility program.  Legacy program parameters required are listed below.  This program that is located in the SMAPGM library can only be used when the LSAM library list is in effect.  
+
+:::tip
+Since this is a program and not a command, the technique of automatically establishing the LSAM library list is not available.  Instead, prior to calling this program, the command SMAGPL/SMAADDLIBL can be used to temporarily add the names of the four libraries that define the LSAM instance being used.  By default, this command's keyword ENV(*DEFAULT) will use the LSAM Environment that has the Default flag (Y) set by the command SMAGPL/SMALIBMGT would be the four libraries that define the LSAM Environment named "SMADEFAULT".  Once the call to the GETDVRVALR program has been completed, the LSAM library names can be removed from the job using the command SMAGPL/SMARMVLIBL where again, the ENV() parameter can be used to identify the library names and then remove each one from the current job's library list.
+:::
+
+### GETDVRVALR program *ENTRY Parameters
+
+Values captured from messages, reports and workstation displays can be easily stored into Dynamic Variables using the "Store CAPT to->" field of an LSAM Response Rule that can be associated with any Capture Rule. If the Response Rule also executes the new LOGDYNVAR command, then a series of values for the same Dynamic Variable name can be stored with a time stamp (and optional additional CODE and DESC values) by specifying the Dynamic Variable as a token for the DVVALUE parameter of the LOGDYNVAR command (as illustrated below).
+
+Here is the layout of the LOGDYNVAR table:
+
+| Field       |    Type     | Length  | Description                                     |
+| ----------- | ----------- | ------: | ----------------------------------------------- |
+| QQVARNAMX   | CHAR        |    436  | A simple Dynamic Variable name (NOT in {TOKEN} format) or simple multi-instance prefixed variable name, or a fully-qualified Dynamic Variable instance name may be specified. NOTE:  The first 435 characters are always reserved for the variable name, regardless of the size of the actual name string.  The last character position at column 436 MUST be set to a value of 'X' in order to override some kinds of IBM i default parameter string managment rules, which could truncate a CL call parameter to 32 characters in some instances.  There are other programming techniques to overcome this exception, but this technique is supported as the most obviously compatible way to exchange a long parameter value string for legacy IBM i program types and most modern program or function calls.|
+| QQVALUEX    | CHAR        |   1025  | The maximum value length stored for Dynamic Variables is 1024 characters.  Just like the Variable Name field, column 1025 is reserved to contain a single character 'X' in order to prevent truncation of the value string in some situations. |
+| QQRETURN    | CHAR        |      7  | A return code, typically in the format of an IBM i message ID, would returned by this utility program to identify the cause of any failure to fetch a variable value.  If this return parameter is blank, then it may be assumed that the return value is valid, even if the Dynamic Variable has intentionally been designed to possibly return an all-blanks value. |
+
+### Example Program Call to GETDVRVALR
+
+The following Control Language program is offered as one example of calling this utility program.  The example source code is offered without an warranty of it's correctness, and without warranty of fitness for any purpose.  Continuous does not offer support for this program source code.  However, clients are welcome to submit observations if any deficiencies are perceived, although Continuous does not guarantee a response from its Client Support Team for this suggested sample program.
+
+The following Control Language demonstration program will display a completion message after calling GETDVRVALR, to report either the first 64 characters of the variable value, or to report an error code indicating the cause of a failure to fetch the value.  Errors reported with message IDs such as SMA1234 can be investigated by displaying the message ID from the message file SMAGPL/SMAMSGF.
+
+```
+0021.00 /*********************************************************************/
+0022.00                                                                        
+0023.00              PGM        PARM(&DYNVARX &DYNVALX &RETURN)                
+0024.00                                                                        
+0025.00              DCL        VAR(&DYNVAR) TYPE(*CHAR) LEN(12)               
+0026.00              DCL        VAR(&DYNVARX) TYPE(*CHAR) LEN(436)             
+0027.00              DCL        VAR(&DYNVAL) TYPE(*CHAR) LEN(1024)             
+0028.00              DCL        VAR(&DYNVALX) TYPE(*CHAR) LEN(1025)            
+0029.00              DCL        VAR(&RETURN) TYPE(*CHAR) LEN(7)                
+0030.00                                                                        
+0031.00              DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(138)   
+0032.00                                                                        
+                                                                    
+0037.00 /*********************************************************************/
+0038.00 /*  INITIALIZE PROGRAM VARIABLES                                     */
+0039.00 /*********************************************************************/
+0040.00                                                                        
+0041.00              CHGVAR     VAR(&COPYRIGHT) VALUE('COPYRIGHT (c) 2024 +    
+0042.00                           SMA  All rights reserved.')                  
+0043.00                                                                        
+0044.00              CHGVAR     VAR(&DYNVAR) VALUE(%SST(&DYNVARX 1 12))        
+0045.00              CHGVAR     VAR(&DYNVAL) VALUE(%SST(&DYNVALX 1 1024))      
+0046.00                                                                        
+0047.00 /*********************************************************************/
+0048.00 /*  Run test and return either error code or 64 chars of found value */
+0049.00 /*********************************************************************/
+0050.00                                                                        
+0051.00              CALL       PGM(GETDVRVALR) PARM(&DYNVARX &DYNVALX &RETURN)
+0052.00                                                                        
+0053.00              IF         COND(&RETURN *EQ ' ') THEN(DO)                 
+0054.00              CHGVAR     VAR(&MSGDTA) VALUE(&DYNVAR *TCAT ': ' *CAT +   
+0055.00                           %SST(&DYNVALX 1 64))                         
+0056.00              ENDDO                                                     
+0057.00              ELSE       CMD(DO)                                        
+0058.00                CHGVAR     VAR(&MSGDTA) VALUE('ERROR = ' +              
+0059.00                            *CAT &RETURN)                               
+0060.00              ENDDO                                                     
+0061.00                                                                        
+0062.00              SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +                 
+0063.00                           MSGDTA(&MSGDTA) MSGTYPE(*COMP)               
+0064.00                                                                        
+0065.00              ENDPGM                                                    
+0066.00 /*********************************************************************/           
+```

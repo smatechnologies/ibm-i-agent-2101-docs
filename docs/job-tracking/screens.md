@@ -596,6 +596,8 @@ The required procedure for changing the exit program number is to first stop job
 | Allow generic filter names | 0=No, 1=Yes          | 0          | This option tells the Job Tracking mainetenance program whether to show options for using generic names in the IBM i Job ID filter section, and then also whether to show F10=$VAR so that the $-system variables $PREFIX or $SUFFIX can be used with the Schedule Name and/or the Frequency Name. |
 | Generic prefix size | 1 - 9, 0 = not applicable | 0          | When support for generic filter names is enabled, this field specifies the size of the first few letters that should be replaced in the IBM i Job Name (or other filter object name) so that question marks can be used instead when searching the Agent's Job Tracking Parameters master file for a match. |
 | Generic suffix size | 1 - 9, 0 = not applicable | 0          | When support for generic filter names is enabled, this field specifies the size of the few trailing letters that should be replaced in the IBM i Job Name (or other filter object name) so that question marks can be used instead when searching the Agent's Job Tracking Parameters master file for a match. |
+| Job Tracking trace logging | 0=No, 1=Yes        | 0          | This option controls the on-demand detailed logging of every job start request (every use of the IBM i command SBMJOB) that is intercepted by the LSAM Job Tracking exit program.  When this option is set to 1=Yes, the log entries will include information about every job submitted to help diagnose why some jobs were not selected for Tracking by the LSAM. This type of logging creates a large number of log records in the table TRKLOGF10. Therefore, after a diagnosis task is completed, set this option back to 0=No, and after the SMASUP LSAM command is used to save a copy of the Job Tracking log files, use the F23 function key from this display format to clear the file TRKJOBF10.  Best practice would be to press F23 to clear the log file before starting a new diagnostic process as this option is set to 1=Yes. |
+|       |       |       | **NOTE:** There is no LSAM menu option to view this trace log file TRKLOGF10.  The IBM i command DSPPFM can be used to view the contents.  However, "trace logs" like this are intended to support rare diagnostic exercises that typically require the experience of Continuous engineering staff, often supported by access to program source code that is not available to the public. |
 
 
 #### Functions
@@ -605,6 +607,7 @@ The required procedure for changing the exit program number is to first stop job
 - **F7=STRJOBTRK**: Start job tracking, the same as menu option 3.
 - **F8=ENDJOBTRK**: End job tracking, the same as menu option 4.
 - **F12=Cancel**: Quits the display without update and return to the previous screen.
+- **F23=clear TRKLOGF10**: See the field description for "Job Tracking trace logging" for a description of how and when to use this function key. 
 
 ## Start Job Capture (STRCAPJOB)
 

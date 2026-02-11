@@ -72,9 +72,9 @@ The update is stored immediately in the LSAM Parameters control file, however, a
 | ----- | ----------- |
 | Environment | - This display field contains the name of the LSAM environment. |
 |             | - For new installations, the default value is SMADEFAULT and the LSAM Name is IBMILSAM, or the IBM i system/partition name may be used. Use all capital letters! |
-|             | - SMA Technologies recommends using the LSAM Environment name for the Host Name when there are multiple LSAM environments within the same IBM i partition. (Refer to below.) |
+|             | - Continuous recommends using the LSAM Environment name for the Host Name when there are multiple LSAM environments within the same IBM i partition. (Refer to below.) |
 | Version     | - This display field identifies the LSAM's version, stored in the data area LSAVERSION. |
-|             | - When contacting SMA Technologies Customer Support about the LSAM, please report the version. |
+|             | - When contacting Continuous Customer Support about the LSAM, please report the version. |
 
 ### LSAM Control Parameters
 
@@ -138,7 +138,7 @@ under the Extended Discussion of Parameters, below.
 | Current Library Name | *CURRENT  | IBM i Name Rules (Refer to [IBM i Name Rules](#ibm-i-name-rules)) | N        | - This field specifies the Current library within the library list of an IBM i job. |
 |              |           |              |          | - The system always searches the Current library first when looking for a requested program object or a file. |
 |              |           |              |          | - The Current library definition is not required, but is useful for quickly changing the library name that is  initially searched. |
-|              |           |              |          | - Instead of *CURRENT, any existing library name may be specified. SMA Technologies recommends using *CURRENT when there is no requirement for naming this library. |
+|              |           |              |          | - Instead of *CURRENT, any existing library name may be specified. Continuous recommends using *CURRENT when there is no requirement for naming this library. |
 | Initial Library List | *JOBD    | *CURRENT *JOBD *NONE *SYSVAL   | N        | - When unspecified by an OpCon job request, the library list of the requested job defaults to this value. |
 |              |           |              |          | - For jobs depending on the LSAM environment, use the value *CURRENT.  |
 |              |           |              |          | - Specifying this value is an effective way to control a job's library list when using multiple environments. |
@@ -147,10 +147,10 @@ under the Extended Discussion of Parameters, below.
 |              |           |              |          | - The default value of *JOBD is recommended because it is the most flexible – the printer device, including a value of *USRPRF, can be specified in each job description that is used. |
 | Job Priority | 5         | 1 - 9        | N        | - This field determines the priority of OpCon jobs in the specified job queue. |
 |              |           |              |          | - This value determines the run order of jobs waiting in the job queue. |
-|              |           |              |          | - SMA Technologies recommends using the moderate value 5 to keep from interfering with priorities defined in OpCon. |
+|              |           |              |          | - Continuous recommends using the moderate value 5 to keep from interfering with priorities defined in OpCon. |
 | Logging Level | 4         | 0 -- 4       | N        | - This field specifies the level of IBM i job logging. |
 |              |           |              |          | - Levels range from 0 (no logging) to 4 (detailed logging). |
-|              |           |              |          | - SMA Technologies recommends level 1 for effective troubleshooting. |
+|              |           |              |          | - Continuous recommends level 1 for effective troubleshooting. |
 |              |           |              |          | - Refer to the IBM i Help text regarding the LOG parameter for the commands CHGJOB and SBMJOB. |
 | Severity     | 00        | 00 - 99      | N        | - This field sets the filter for IBM i messages sent to the job log. |
 |              |           |              |          | - The job log records only messages with a severity equal to or higher than this value. |
@@ -159,19 +159,19 @@ under the Extended Discussion of Parameters, below.
 |              |           |                          |          | - *SECLVL logs the full message help text plus incident-specific parameter values. This logging type uses more system resources. |
 |              |           |                          |          | - *NOLIST does not log any message text. |
 | Log CL       | *YES      |  *YES *NO       | N        | - This field determines if the job log includes entries for executed lines of a control  language program. |
-|              |           |              |          | - Since this type of logging uses more system resources, SMA Technologies recommends only using this for debugging or for critical procedures requiring full documentation. |
+|              |           |              |          | - Since this type of logging uses more system resources, Continuous recommends only using this for debugging or for critical procedures requiring full documentation. |
 | Inq Msg Reply | *RQD     | *JOBD / *RQD / *DFT / *SYSRPYL | N        | - This field determines how un-handled information or error messages should be handled by the LSAM jobs. |
 |              |           |              |          | - To properly engage its exception handlers, OpCon expects the value *RQD. |
 |              |           |              |          | - For more information, use the prompted command SBMJOB to see the IBM Help text regarding the INQRPYMSG parameter. |
 | File Arrival Job Description | SMALSAJ00 | IBM i Name Rules (Refer to [IBM i Name Rules](#ibm-i-name-rules)) | Y        | File Arrival jobs require that the IBM i LSAM library list be included in the job description. The LSAM server job description is a good default value that can be used, unless the user needs to override some job attributes for the whole File Arrival job. Note that the OpCon User Interface job master record supports selection of a unique Job Queue,  so it is not necessary to define a separate job description just to change the job queue where File Arrival jobs will be submitted. |
 | File Arrival Job Description | SMADTA    | IBM i Name Rules (Refer to [IBM i Name Rules](#ibm-i-name-rules))   | Y        | Name the DB2 library where the File Arrival Job Description is stored. If the default job description of SMALSAJ00 is used, it would be necessary to change this library name from the default of SMADTA within a separate instance of the LSAM software, such as when two copies of the LSAM software (one for testing) are installed within the same IBM i partition. |
-| IFS LOG      |           |              |          | Please contact SMA Technologies Support for assistance before making changes to these three special override fields. They apply only to the QSHELL commands executed by (1) File Arrival jobs, or (2) the LSAM CHKIFSFIL command. The default values prevent excessive QPJOBLOG reports from being produced by QSHELL service jobs. |
-| IFS LOG -- job priority | 1         | 0 -- 4, *SAME | Y        | This field specifies the level of IBM i job logging. Levels range from 0 (no logging) to 4 (detailed logging). SMA Technologies recommends level 1 for this special-purpose override. Refer to the IBM i Help text regarding the LOG parameter for the commands CHGJOB and SBMJOB. |
-| IFS LOG -- logging level | 30        | 00 -- 99, *SAME | Y        | This field sets the filter for IBM i messages sent to the job log. The job log  records only messages with a severity equal to or higher than this value. SMA Technologies recommends a value of 30 for this special-purpose override. |
+| IFS LOG      |           |              |          | Please contact Continuous Support for assistance before making changes to these three special override fields. They apply only to the QSHELL commands executed by (1) File Arrival jobs, or (2) the LSAM CHKIFSFIL command. The default values prevent excessive QPJOBLOG reports from being produced by QSHELL service jobs. |
+| IFS LOG -- job priority | 1         | 0 -- 4, *SAME | Y        | This field specifies the level of IBM i job logging. Levels range from 0 (no logging) to 4 (detailed logging). Continuous recommends level 1 for this special-purpose override. Refer to the IBM i Help text regarding the LOG parameter for the commands CHGJOB and SBMJOB. |
+| IFS LOG -- logging level | 30        | 00 -- 99, *SAME | Y        | This field sets the filter for IBM i messages sent to the job log. The job log  records only messages with a severity equal to or higher than this value. Continuous recommends a value of 30 for this special-purpose override. |
 | IFS LOG -- text | *NOLIST  | \*SAME \*MSG \*SECLVL \*NOLIST| Y        | This field specifies the maximum character length of each message added to the job log. |
 |       |           |              |          | - *MSG logs a single line. |
 |       |           |              |          | - *SECLVL logs the full message help text plus incident-specific parameter values. This logging type uses more system resources. |
-|       |           |              |          | - *NOLIST does not log any message text. SMA Technologies recommends this value for this special-purpose override. |
+|       |           |              |          | - *NOLIST does not log any message text. Continuous recommends this value for this special-purpose override. |
 
 ## LSAM Database Maintenance
 
@@ -187,7 +187,7 @@ For more information, refer to [Log File and Database Management](../logs-databa
 |                         |         |                   |              | - This flag does not control job log and spool file purging, or the Backup and Reorganize process. |
 |                         |         |                   |              | - The LSAM server job LSAMNG manages log and file purging. |
 | Maintenance hour | 0400    | 0000 – 2359 (24- hour clock values) | Y            | - This is a 24-hour clock time after which the LSAM will attempt to perform periodic file maintenance once every day. |
-|                         |         |                   |              | - SMA Technologies recommends specifying the time of least activity on the system. |
+|                         |         |                   |              | - Continuous recommends specifying the time of least activity on the system. |
 |                         |         |                   |              | - There may be brief delays in starting jobs just following this hour, especially on the days specified for the backup and reorganize process. |
 | Days to keep daily LSAM logs | 5       | 1 - 99       | Y            | - This field specifies the number of days of data to retain in the daily  operations log files. |
 |                         |         |                   |              | - There is a separate control for the category of debug/audit log files (refer to [Operator Replay Scripts](../operator-replay/overview.md) about types of log files).  |
@@ -198,7 +198,7 @@ For more information, refer to [Log File and Database Management](../logs-databa
 | Days to keep debug BkUp | 30      | 1 - 999      | Y            | - The number of days to retain the type "D" save files in library SMALOG that contain a backup of the LSAM debug/audit logs before they are purged. |
 |              |         |              |              | - A value of 999 means do not delete. In this case the user is responsible for archiving and
 deleting the save files. |
-| Days (to) keep PTF RLBK SAVF | 30      | 1 - 999      | Y            | - The number of days to retain the PTF rollback save files in library SMAPTF. Only rollback save files for very recently installed PTFs would be useful. Older rollback save files are not required. (Users may request old rollback save files from SMA Technologies if they are needed.) |
+| Days (to) keep PTF RLBK SAVF | 30      | 1 - 999      | Y            | - The number of days to retain the PTF rollback save files in library SMAPTF. Only rollback save files for very recently installed PTFs would be useful. Older rollback save files are not required. (Users may request old rollback save files from Continuous if they are needed.) |
 |              |         |              |              | - Set this value to a short number of days in order to lower disk space utilized by the LSAM. |
 |              |         |              |              | - This control value does not support the special value of 999 to mean "do not delete." Instead, to prevent deletion of the rollback save files, set the LSAM automatic delete-global flag to 'N' = no. However, 999 days is a long time to keep unnecessary old PTF rollback save files. |
 | Days to keep SPLFs (spool files) | 5       | 1 -- 99      | Y            | - This field determines when the LSAM will automatically remove spool files that it has been asked to track. |
@@ -207,7 +207,7 @@ deleting the save files. |
 | Days to keep job logs | 5       | 1 -- 99      | Y            | - This field is the default value that determines when the LSAM will automatically remove the job logs of jobs that were scheduled by OpCon. The LSAM will delete the actual IBM i job log report spool file as well as any (optional) LSAM copy of the job log (refer to next field). |
 |              |         |              |              | - Retention of job logs may be controlled for each job master that is defined in the OpCon  OpCon User Interface. The OpCon User Interface job master number of days and number of occurrences (per SAM job name) overrides this LSAM default value. |
 | LSAM copy of job logs? | N       | Y=yes, N=no | Y            | - The LSAM can use a database file to store copies of the IBM i job log reports for jobs started by OpCon. This supports the OpCon option to View Output, and may be helpful if the system normally removes IBM i job log reports very quickly. |
-|              |         |              |              | - However, copying job logs requires much disk space, so SMA Technologies recommends leaving this option set to N = no. |
+|              |         |              |              | - However, copying job logs requires much disk space, so Continuous recommends leaving this option set to N = no. |
 |              |         |              |              | **Note**: The LSAM normally supports the OpCon View Output function by reading the actual IBM i job log spool file. It is also able to read the job logs of active jobs, and the reading of active job logs is not affected by this control flag. |
 | Backup/reorganize files - FREQ | M       | N=Never D=Daily W=Weekly M=Monthly  | Y            | - This field controls when the LSAM will automatically suspend LSAM server operations to execute a separate job that runs the SMARGZ command. When automatic scheduling is used, this process is initiated shortly after the specified Maintenance Hour. |
 |              |         |              |              | - The SMARGZ command (described in Commands and Utilities) uses the SMASUP command in (LIB) mode to create a backup of the entire SMADTA database library. It then suspends the LSAM server jobs while it reorganizes the LSAM's control and master files. |

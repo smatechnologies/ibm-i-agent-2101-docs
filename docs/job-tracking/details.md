@@ -110,10 +110,10 @@ The Job Tracking Configuration display:
  Allow generic filter names: 1           0=No, 1=Yes                            
    Generic prefix size . . : 3           1 - 9 (3 = ???XXXXXXX); 0 = N/A        
    Generic suffix size . . : 3           1 - 9 (3 = XXXXXXX???); 0 = N/A        
-                                                                                
+ Job Tracking trace logging: 0           0=No, 1=Yes   F23=clear TRKLOGF10     
                                                                                 
  F3=Exit  F5=Refresh  F7=STRJOBTRK  F8=ENDJOBTRK  F12=Cancel  F13=Unlock XNBR   
- Copyright (C) SMA Technologies 2005, 2024  ARR        
+ Copyright (C) Continuous 2005, 2024  ARR        
 ```                                   
 
 When generic name processing is allowed, then the Job Tracking Parameter IBM i fields can register question marks as either a Prefix value or a Suffix value.  Any of the six IBM i Job ID filter fields will support a Prefix or a Suffix string of question marks only if the field-level flag is set to a 'P' (Prefix) or an 'S' (Suffix).  When that flag is set, then the number of question marks must match the general Prefix or Suffix size that was specified in the Job Tracking Configuration. 

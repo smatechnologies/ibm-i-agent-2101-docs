@@ -247,20 +247,22 @@ To overcome this limitation, the Agent’s multi-instance variables management m
 
 #### Assumptions for Message Management server setting variable instance values
 
-1.	The Message Manager server job never needs to use Dynic Variables for its own operation.  It is dedicated to serving the jobs that issued the messages.
+1.	The Message Manager server job never needs to use Dynamic Variables for its own operation.  It is dedicated to serving the jobs that issued the messages.
 2.	Capture Data Rules themselves never use Dynamic Variables.  Only their connected Response Rules use Dynamic Variables.
 3.	The Message Manager server job always has access to the IBM i Job ID that issues each message.
     - Instance variables can be managed in the primary Event command.
     - Capture Data connected Response rules must also always direct their variable instances to the job that issued the message.
 4.	The Message Management server program has a built-in override that adds variable instance qualifying (key) fields as necessary to redirect all instances away from the server job itself and always towards the job that issued the message.
     - The Response Rules modules and sub-procedures test for their Capture Rule being for Message Management and then they insert the message job qualifying parameters.
-    - The IJ.DYNVAR needs the message job inserted into the primary instance qualifying keys, but the other instance types may use the optional trailing IBM i Job ID qualifiers.  (See the hints about diagnostic tools for multi-instance variables to understand the optional trailing IBM i Job ID qualifiers.)
+    - The IJ.DYNVAR needs the message issuing Job ID inserted into the primary instance qualifying keys, but the other instance types may use the optional trailing IBM i Job ID qualifiers.  See the hints in [Diagnostic Tools and Procedures for Multi-Instance Dynamic Variables](#diagnostic-tools-and-procedures-for-multi-instance-dynamic-variables) to understand the optional trailing IBM i Job ID qualifiers.
 
 ### Supporting WAITDYNVAR Utility with Multi-Instance Dynamic Variables
 
-An illustration is provided below to show vectors where the Message Management server job would insert the message sending Job ID parameters into the main qualifiers of the one or two variable(s) that the WAITDYNVAR is monitoring.  (Search the Agent documentation for more information about using the WAITDYNVAR command.)
+An illustration is provided below to show vectors where the Message Management server job would insert the message sending Job ID parameters into the main qualifiers of the one or two variable(s) that the WAITDYNVAR is using. See [WAITDYNVAR: Wait for Dynamic Variable Value](manipulation-commands.md/#waitdynvar-wait-for-dynamic-variable-value) for more information about using the WAITDYNVAR command.
 
-This example shows the WAITDYNVAR command being used within a job that generates a message which will be intercepted by the Agent’s Message Management server.  The WAITDYNVAR command can monitor for one or two different Dynamic Variable values.  In this example, the variables should be IJ. instance variables.  The Message Management server job inserts values into those variables using the IBM i Job ID parameters from the job that sent the message as the qualifiers of the variables that the WAITDYNVAR is monitoring.  In a typical example, one of the Agent’s scripting tools can test the value returned to the WAITDYNVAR command to vary the branching logic of the script, such as deciding to stop script execution based on the content of the message.
+This example shows the WAITDYNVAR command being used within a job that generates a message which will be intercepted by the Agent’s Message Management server.  The WAITDYNVAR command can monitor for one or two different Dynamic Variable values.  In this example, the variables used by the WAITDYNVAR command (in command parameters VARNAM and WAITVARNAM) should be IJ. instance variables.  The Message Management server job inserts a value into the Dynamic Variable named by the VARNAM command parameter using the IBM i Job ID parameters from the job that sent the message as the qualifiers of the variables that the WAITDYNVAR command is monitoring.  
+
+In a typical example, one of the Agent’s scripting tools, such as Operator Replay or Multi-Step Job Scripting, can test the values returned via the WAITDYNVAR command to vary the branching logic of the script, such as deciding to stop script execution based on the content of the message as communicated via the VARNAM command parameter, or based on the **PASS** or **FAIL** command result communicated via the WAITVARNAM command parameter.
 
 ![Example of the WAITDYNVAR Utility](../Resources/Images/IBM-i/Example-Of-The-WAITDYNVAR-Utility.png "Example of the WAITDYNVAR Utility")
 

@@ -12,6 +12,35 @@ It is possible to create test Dynamic Variables and to experiment with the setti
 
 The user is encouraged to experiment with setting different variable definitions until the DSPDYNVAR command returns a value in the format that is desired for the particular LSAM function where a {DVTOKEN} will be used. This experimentation is especially important when the variable will be defined as numeric. Remember that variables of type V must be used for this type of experiment, but that the variable values will work the same for type L variables that are used to change the LDA (local data area) contents of IBM i jobs. 
 
+### Prompted DSPDYNVAR Command
+```
+                  Display Dynamic Variable Value (DSPDYNVAR)
+
+Type choices, press Enter.
+
+Name of Dynamic Variable  . . . .  _____________________________________________
+________________________________________________________________________________
+________________________________________________________________________________
+________________________________________________________________________________
+________________________________________________________________________________
+________________________________________________________________________________
+_____________________________________________________________________
+Dynamic Variable type code . . .   V             V=General, U=(n/a), L=LDA     
+Variable type-L sequence nbr . .   000__         Sequence number for type-L    
+Display output format  . . . . .   0             0=*DFT 1=LINE24 2=FULLSCREEN  
+
+                                                                        Bottom
+```
+
+### Command Parameter Keywords
+
+| Keyword        | Values         | Default        | Description    |
+| -------        | ------         | -------        | -----------    |
+| DYNVAR Variable name | Any characters |          | The key identifier of each variable. For records of type L, this name must be the Captured Job ID or the Job Name of a tracked or queued job. Job names are limited to 10 characters, but a Captured Job ID or token ID can use up to 12 characters. For records of type V, this may be any meaningful name that will be used to create a token ID.  Up to 435 characters are supported by this field to accommodate multi-instance variable qualifiers. |
+| VARTYP Dynamic Variable type code | L, V           | V              | The record type is L for a dynamic variable that will be used to update the LDA content of a job. Type V records are dynamic variable tokens that can be inserted into job parameters or the job's call command line, as well as being used by many different LSAM automation tools and scripts.  |
+| VARSEQ Sequence number | 000 -- 999     | 000            | This record sequence number should be zeros for records of type V because it has no meaning for this record type. For records of type L, this sequence number is used to created unique records keys when there is more than one dynamic variable assigned to the same Variable Name = Job Name (there may be multiple updates specified for the LDA content of a single job).  |
+| OUTPUT Display output format | 0 = *Default, 1 = LINE24, 2 = FULLSCREEN |  0  | This command parameter was introduced later in the cycle of maintenance for the LSAM Version 21.1.  It's purpose is to override the LSAM Utilities Configuration setting for the DSPDYNVAR output option, controlled from LSAM menu 3, option 7.  Although FULLSCREEN is the preferred output option, sometimes an automation strategy is more easily configured in another LSAM tool if the formatted or trimmed value of a Dynamic Variable is display on line 24 of a workstation display.  The default for this command parameter (0=*DFT) indicates that the LSAM Utilities Configuration setting will be used.  Therefore, this OUTPUT command parameter does not have to be specified for the DSPDYNVAR command unless there is an exceptional purpose that is not met by the overall default for value displays. |
+
 ### DSPDYNVAR Support for Type-L Dynamic Variables
 
 Previously, the DSPDYNVAR command refused to display the value of Type-L variables.  Now, however, the DSPDYNVAR command will always show the entire LDA content for all the sequence numbers 
