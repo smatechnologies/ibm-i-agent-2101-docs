@@ -154,5 +154,14 @@ For additional information about some of these enhancements, after installing th
  | | | |
 | OCAG-447 | PTF211194 |  SMASUP utility save operations enhanced for *NOCMTBDY; add LSAVARF10 to SMASUP:  The \*NOCMTBDY option for saves of objects or libraries has been added to the SMASUP command. This "ragged save" supports file journaling added by clients for mirroring.  The SMASUP command was also fixed to save the Dynamic Variable auxiliary data file named LSAVARF10. |
  | | | |
-| OCAG-447 | PTF211195 | OCAG-447  Add *NOCMTBDY to save of daily logs:  The \*NOCMTBDY command option for save-while-active has been added to the daily LSAM log file backup performed before aged records are deleted.  This "ragged save" method allows the LSAM saves to accommodate file journalling added by sites using mirroring. |
+| OCAG-447 | PTF211195 |  Add *NOCMTBDY to save of daily logs:  The \*NOCMTBDY command option for save-while-active has been added to the daily LSAM log file backup performed before aged records are deleted.  This "ragged save" method allows the LSAM saves to accommodate file journalling added by sites using mirroring. |
 
+### Agent Enhancements by Project ID, LSAM PTFs at Version 21.1.199
+
+This continuation of the Enhancements List shows enhancements that were added to the OpCon Agent for IBM i as the LSAM was updated with a Cumulative PTF Cut-Off Release, as of version 21.1.199.
+
+| Project  | LSAM PTF   | Description  |
+| :------- | :--------- | :----------- |
+| OCAG-508 | PTF2111978 |  *See Post-Install Instructions*  |
+|          |            |  Additional messages are added to support Restricted Mode Configuration prompts and access to a window for viewing and managing the job logging parameters during execution of the Restricted Mode Script.  Messages match entries in the Activity Log display. |
+|          | PTF211198  |  A new prompting window is now displayed upon initial access to the IBM i Agent menu 5, option 2: Setup Restricted Mode Environment.  This PTF also adds writes to the SAVRSTMODE script execution job log, echoing LSAM logging of Activity History. |

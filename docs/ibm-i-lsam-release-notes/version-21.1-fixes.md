@@ -504,3 +504,21 @@ The *NOCMTBDY option for saves of objects or libraries has been added to the SMA
 - **Enhanced** (# PTF211195) OCAG-447  Add *NOCMTBDY to save of daily logs
 
 The *NOCMTBDY command option for save-while-active has been added to the daily LSAM log file backup performed before aged records are deleted.  This "ragged save" method allows the LSAM saves to accommodate file journalling added by sites using mirroring.
+
+### LSAM PTF release 21.1.199 
+
+- Fixed (# PTF211196) OCAG-530  Fix Dynamic Variable negative value math
+
+When using a negative value such as VALUE('-1') with the SETDYNVAR command, the variable value was being increased instead of descreased.  This started with LSAM version 21.1 (patch level not determined).  
+
+- **Enhanced** (# PTF211197) OCAG-508  Add IBM i LSAM Restricted Mode messages
+
+Additional messages are added to support Restricted Mode Configuration prompts and access to a window for viewing and managing the job logging parameters during execution of the Restricted Mode Script.  Messages match entries in the Activity Log display.
+
+- **Enhanced** (# PTF211198) OCAG-508  Prompt CHGJOBD SAVRSTJ00; add job logging	*See Post-Install Instructions*
+
+A new prompting window is now displayed upon initial access to the IBM i Agent menu 5, option 2: Setup Restricted Mode Environment.  This PTF also adds writes to the SAVRSTMODE script execution job log, echoing LSAM logging of Activity History.
+
+- **Enhanced** (# PTF211199) OCAG-508  Fix PTF211194 update to SMASUP command
+
+The previous PTF improved the SMASUP command so that it could retrieve LSAM logs and master files even while other system activity could have active locks on the requested files.  However, the added save command parameter was missing a ')' causing failure.

@@ -37,6 +37,9 @@ sidebar_label: 'Restricted Mode Operations'
         them to RDY **ready* status later.)
 13. Return to the Restricted Mode menu using <**F12**> (Cancel) or <**F3**> (Exit).
 14. Enter **2** to choose **Setup environment** in the Restricted Mode Menu.
+
+    a.  Upon the first display, a window will appear showing the jog logging parameters that will be used for Restricted Mode jobs, based on the IBM i Job Description that is assigned by this IBM i Agent to these jobs (SMADTA/SAVRSTJ00).  Use this window to update the logging to a desired level, where (4 00 *SECLVL) creates the most verbose logging.  Then press Enter to update the Job Description.  When not updating the Job Description, just press F3 or F12 to close the window and continue with the following steps.  The function key F16 can be used to access the Job Description update window at any time. 
+    
 15. Position the cursor into the **Environment** field and press <**F4**> to view a prompting list.
 16. Type **1** to select the environment that was created for use with  Restricted Mode operations.
 

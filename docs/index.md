@@ -5,9 +5,9 @@ sidebar_label: 'IBM i LSAM Administration'
 
 # IBM i LSAM Administration
 
-Version 21.1.195
+Version 21.1.199
 
-Copyright © 2022 Continuous (f/k/a SMA Technologies) All rights reserved.
+Copyright © 2022, 2026 Continuous (f/k/a SMA Technologies) All rights reserved.
 
 No part of this publication may be reproduced, transmitted, transcribed, stored in retrieval system or translated into any language or computer language, in any form or by any means, electronic, mechanical, optical, chemical, manual or otherwise, without specific prior written permission from SMA Technologies. 
 

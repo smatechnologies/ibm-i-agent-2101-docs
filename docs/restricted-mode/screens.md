@@ -212,6 +212,10 @@ The usual type of command that would be assigned to an ON_ERROR Action is an OpC
 
 In Setup Environment, define the environment for executing Restricted Mode operations by specifying an environment library list and an option for managing any exceptional messages that may arise.
 
+:::note
+Upon selecting the Restricted Mode menu option 2. Setup Restricted mode environment, the initial display will immediately be overlaid by a window that displays the current IBM i Job Logging control parameters as retrieved from the Job Description SMADTA/SAVRSTJ00.  See details about this display just below, for the window named SAVRSTW1.  If the job logging will not be updated, press Enter, F12 or F3 to close the window and proceed with the actions required to initialize the Agent's Restricted Mode controls.
+:::
+
 ### SAVRSTD21 - Restricted Mode Evnironment
 
 #### Menu Pathways
@@ -240,18 +244,50 @@ Main Menu > Restricted mode menu (#5) > Setup environment (#2)
 - **F3=Exit**: Quits the environment details display without updating and returns to the menu.
 - **F4=Prompt**: From the Environment field, the prompting function presents a new screen that lists all available environments. It is possible to view the library list that defines each environment. Select the environment and library list that has been created for use with Restricted Mode operations. If no environment and library list has been set up for Restricted Mode operations, use <**F6**> (Add/maint env) to perform environment maintenance now. Then repeat the <**F4**> (Prompt) to select the new environment for insertion into the Environment field.
 - **F5=Refresh**: Retrieves the latest information from the LSAM environment master files and updates the display.
-- **F6=Add/maint env**: This function key supports access to the LSAM Environment maintenance functions, where new environment records may be created and library lists may be constructed or updated. Refer to [LSAM Environment Management](../environment/index.md) for more information about managing LSAM environments.
+- **F6=Maint Env**: This function key supports access to the LSAM Environment maintenance functions, where new environment records may be created and library lists may be constructed or updated. Refer to [LSAM Environment Management](../environment/index.md) for more information about managing LSAM environments.
 - **F12=Cancel**: Quits the environment details display without updating and returns to the list of Actions.
 - **F15=Update SMASAV**: Access to a function required to prepare the user profile SMASAV and a control data area QGPL/RSTENVIRON for use with Restricted Mode operations.
+- **F16=CHGJOBD**: Update Job Description SMADTA/SAVRSTJ00. See the description for the window SAVRSTW1, just below.
 - **PageDown**: Use the Page control keys to view more libraries if the complete list is not displayed on the first page.
 
-### F15=Update SMASAV
+### F15 = Update SMASAV
 
 The instructions for preparing the LSAM to use Restricted Mode operations indicate that the following screen represents a step that is required to configure the LSAM software. The effect of using this screen to perform the update is that the system will know which LSAM environment should be used as a reference point to initiate Restricted Mode operations when the special user SMASAV signs on to the IBM i system for this purpose. This function will also update the SMASAV user profile with correct information about where to find the required Initial Program.
 
 It is recommended to always perform this function before using the Restricted Mode for the first time, or at any time after updating or changing the LSAM environment or programs. It is also required to complete this function by pressing <**Enter**> when this display shows that the Restricted Mode controlling environment is either blank or is not the same as the Current environment. However, it is not necessary to press <**Enter**> when viewing this display from a test environment and that environment should not be in control of Restricted Mode operations.
 
 As a general rule, the default LSAM environment should be the one that is set to control Restricted Mode. Note that this environment name will not be the same as the Restricted Mode environment itself, shown on the previous display format (above). This is because the environment name is only a label for the special library list which will be in effect during Restricted Mode operations. For more information, refer to [SMALIBMGT](../environment/commands.md#SMALIBMG). Regarding the discussion about Multiple Environment Management, refer to [LSAM Environment Management](../environment/index.md) and [Installing Multiple Environments](../reference/multiple-environments.md).
+
+### F16 = SAVRSTW1 - Update Restricted Mode Job Description SMADTA/SAVRSTJ00
+
+Upon selecting the Restricted Mode menu option 2. Setup Restricted mode environment, the initial display will immediately be overlaid by a window that displays the current IBM i Job Logging control parameters as retrieved from the Job Description SMADTA/SAVRSTJ00.  See details about this display just below, for the window named SAVRSTW1.  If the job logging will not be updated, press Enter, F12 or F3 to close the window and proceed with the actions required to initialize the Agent's Restricted Mode controls.
+
+```
+   F16 = Update Job Desc SAVRSTJ00  
+                                    
+ Current Values         Recommended 
+ Log level:  4          4           
+ Severity :  0          00          
+ Log text :  *SECLVL    *SECLVL     
+ LOGCLPGM :  *NO        *YES        
+                                    
+   Enter/F3/F12 = Exit window       
+```   
+
+#### Fields
+
+| Field       | Default   | Description        |
+| ------      | -----     | -----              |
+| Log level   | 4         | Specify the message logging level used for the job's messages.  The possible logging levels are:  0 - 4  |
+| Severity    | 00        | Specify the message logging severity that is used in conjunction with the logging level to determine which error messages are logged in the job log.  The possible logging levels are:  00 - 99 |
+| Log text    | *SECLVL   | \*SECLVL = Both the message text and the message help (cause and recovery) of the error message are written to the job log.  Other values: *MSG, *NOLIST.  (See IBM i help text when prompting a command such as CHGJOB, by pressing F1=Help when the cursor is in the subfields of the LOG( ) parameter.) |
+| LOGCLPGM    | *NO       | Include in the IBM i job log a report of Control Language commands executed.  This usually adds nothing to the Restricted Mode Script jobs, since the Script driver program performs writes of the Control Language commands to both the Restricted Mode application log (see LSAM menu 5, option 3) and to the IBM i Job Log of the Script execution job named SAVRSTMODE.  |
+
+#### Functions
+
+- **Enter**: Updates any changes made to the logging values.  But if no changes were made, then Enter simply exits the window and returns to the primary configuration display.
+- **F3=Exit**: Quits the window display and returns to the primary configuration display.
+- **F12=Cancel**: Quits the window display and returns to the primary configuration display.
 
 ### SAVRSTD21-2 - Restricted Mode Update SMASAV
 
@@ -276,6 +312,16 @@ Main Menu > Restricted mode menu (#5) > Setup environment (#2) > F15=Update SMAS
 ## Restricted Mode History
 
 Shows the Actions and other steps that were performed during the last Restricted Mode of operations with the associated dates, times, and messages.
+
+:::note
+As of the IBM i Agent version (at PTF level) 21.1.199, the Restricted Mode Script execution program also writes the Script Step information directly to the IBM i job log of the Script driver job named SAVRSTMODE.  The Agent's message ID SAV0015 is used to label each job log entry that is reporting the same data about Script Step execution as is viewd by the Restricted Mode Job History.  This feature enables the OpCon "View Job Output" action to show an IBM i job log report that already has the actual Script Step descriptions, so that it is no longer required to navigate to this workstation display of the Restricted Mode Job History.  
+
+However, the list display from the workstation menu function does show a list of all recent executions of the Restricted Mode.
+:::
+
+:::note
+When using the OpCon user interface function "View Job Output" for the IBM i Restricted Mode jobs, there will be a delay between when the original IBM i job that OpCon started first shows its IBM i job log report spool file (QPJOBLOG), and then after sometimes as much as two minutes or more, depending on the time required to actually execute the Restricted Mode Scripts.  However, upon using the Refresh View function, it will eventually also show a second QPJOBLOG report file that contains the logged actions of the Restricted Mode Script driver job named SAVRSTMODE.  The first job log that appears as soon as the Script startup procedure is intiated by an OpCon Job Start request will show whatever IBM i Job Name that was assigned when the OpCon Schedule was updated with the IBM i Restricted Mode batch job master record.
+:::
 
 ### Restricted Mode Job History
 
