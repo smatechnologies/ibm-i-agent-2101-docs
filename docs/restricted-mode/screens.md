@@ -280,8 +280,8 @@ Upon selecting the Restricted Mode menu option 2. Setup Restricted mode environm
 | ------      | -----     | -----              |
 | Log level   | 4         | Specify the message logging level used for the job's messages.  The possible logging levels are:  0 - 4  |
 | Severity    | 00        | Specify the message logging severity that is used in conjunction with the logging level to determine which error messages are logged in the job log.  The possible logging levels are:  00 - 99 |
-| Log text    | *SECLVL   | \*SECLVL = Both the message text and the message help (cause and recovery) of the error message are written to the job log.  Other values: *MSG, *NOLIST.  (See IBM i help text when prompting a command such as CHGJOB, by pressing F1=Help when the cursor is in the subfields of the LOG( ) parameter.) |
-| LOGCLPGM    | *NO       | Include in the IBM i job log a report of Control Language commands executed.  This usually adds nothing to the Restricted Mode Script jobs, since the Script driver program performs writes of the Control Language commands to both the Restricted Mode application log (see LSAM menu 5, option 3) and to the IBM i Job Log of the Script execution job named SAVRSTMODE.  |
+| Log text    | *SECLVL   | \*SECLVL = Both the message text and the message help (cause and recovery) of the error message are written to the job log.  Other values: \*MSG, \*NOLIST.  (See IBM i help text when prompting a command such as CHGJOB, by pressing F1=Help when the cursor is in the subfields of the LOG( ) parameter.) |
+| LOGCLPGM    | *NO       | Include in the IBM i job log a report of Control Language commands executed.  The Script driver program always performs writes of the Control Language commands that are registered to Script Steps, both to the Restricted Mode application log (see LSAM menu 5, option 3) and to the IBM i Job Log of the Script execution job named SAVRSTMODE.  But changing this CL logging option to *YES will add entries to the IBM i job logs of actions executed by the Control Language small programs that perform manipulation of the IBM i job log reports.  |
 
 #### Functions
 
@@ -320,7 +320,7 @@ However, the list display from the workstation menu function does show a list of
 :::
 
 :::note
-When using the OpCon user interface function "View Job Output" for the IBM i Restricted Mode jobs, there will be a delay between when the original IBM i job that OpCon started first shows its IBM i job log report spool file (QPJOBLOG), and then after sometimes as much as two minutes or more, depending on the time required to actually execute the Restricted Mode Scripts.  However, upon using the Refresh View function, it will eventually also show a second QPJOBLOG report file that contains the logged actions of the Restricted Mode Script driver job named SAVRSTMODE.  The first job log that appears as soon as the Script startup procedure is intiated by an OpCon Job Start request will show whatever IBM i Job Name that was assigned when the OpCon Schedule was updated with the IBM i Restricted Mode batch job master record.
+When using the OpCon user interface function "View Job Output" for the IBM i Restricted Mode jobs, at first access the Job Output will typically show only the QPJOBLOG report for the original IBM i job that OpCon started, showing the IBM i job name assigned by the OpCon administrator.  Then after the separate Script driver job has completed, it will eventually also show a second QPJOBLOG report file that contains the logged actions of the Restricted Mode Script driver job named SAVRSTMODE.  Use the View Job Output window's Refresh option to check for the arrival of the second QPJOBLOG report.  It would also be possible to exit the job output file list window, and then later repeat the View Job Output request for the original job in order to discover the second jog lob report for the SAVRSTMODE job.
 :::
 
 ### Restricted Mode Job History
