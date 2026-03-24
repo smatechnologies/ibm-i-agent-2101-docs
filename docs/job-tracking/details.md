@@ -342,10 +342,6 @@ The goal of automatic job tracking is to make it possible for OpCon to monitor o
 
 Automatic job tracking determines which OpCon schedule will show the job using various methods. All sub-jobs that were submitted by a primary job (or by its sub-jobs) will be assigned to the same OpCon schedule as the primary job. Primary jobs could be any job that OpCon started, and when OpCon starts the job, then the OpCon schedule name is recorded in the LSAM as part of that job's profile. But when the LSAM uses Job Tracking to notify OpCon about a primary job, the it is the LSAM Job Tracking Parameters record that determines which OpCon schedule shows both that job and any sub-jobs it submits. The primary job's schedule can be named in the LSAM Job Tracking Parameters record, or if that field is not updated specifically by the user, then the default OpCon schedule will be the automatically created (as necessary) "AdHoc" schedule.
 
-:::tip
-This LSAM feature requires a corresponding enhancement to the OpCon SAM central server program that was generally released with OpCon 15.1 and newer versions. An on-demand enhancement is available as a program replacement for OpCon version 5.20 SP1 and for OpCon 15. Although the IBM i LSAM software may show this option, the LSAM can still be used with older versions of OpCon, but in that case the Automatic Job Tracking feature will not be supported. Attempting to track a job that is not pre-configured in older versions of OpCon will result in the job tracking request being rejected with the IBM i LSAM error code SMA0014. Refer to the IBM i LSAM Configuration topic, "Extended Discussion of Parameter" section, for instructions about an override that is available for error code SMA0014.
-:::
-
 ### Positive Versus Negative Automatic Job Tracking
 
 Two different methods are available for controlling which jobs in the IBM i system will be automatically tracked by OpCon. These methods define the decision performed by the LSAM Job Tracking programs (either the registered exit program for the SBMJOB command, or the Alternate Job Notify job queue transaction processing program).
