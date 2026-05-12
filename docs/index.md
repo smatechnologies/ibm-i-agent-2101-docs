@@ -5,7 +5,7 @@ sidebar_label: 'IBM i LSAM Administration'
 
 # IBM i LSAM Administration
 
-Version 21.1.199
+Version 21.1.203
 
 Copyright © 2022, 2026 Continuous (f/k/a SMA Technologies) All rights reserved.
 
@@ -27,10 +27,5 @@ For further information about Continuous' documentation, please contact:
 | Website: [continuous.com](https://continuous.com/) |
 
 
-IBM PC is a trademark of International Business Machines.
-INFOConnect is a registered trademark of Attachmate Corp.
 Microsoft, Windows, MS, and MS-DOS are trademarks of Microsoft Corp.
-Crystal Reports is a trademark of Crystal Decisions.
-Unisys is a trademark of Unisys Corporation.
-Episys is a trademark of Jack Henry & Associates Inc.
 Other trademarks appearing in the guide are trademarks of their respective companies.

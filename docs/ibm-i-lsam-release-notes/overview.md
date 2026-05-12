@@ -19,13 +19,21 @@ The IBM i LSAM was managed as a single version 04.00.03 for as many years as the
 
 Any clients who might still be using LSAM version 04.00.03 should contact Continuous Support for special assistance to successfully upgrade to a newer version of the agent.  The minimum IBM i operating system level supported for version 18.1 of the agent is i7.1 (V7R1), and for version 21.1 it is i7.2 (V7R2).
 
+### Urgent Warnings and Cautions
+
 :::warning
 IBM i LSAM Version 04.00.03 (or patch level 04.00.04) is no longer supported by Continuous. Any use of this software version will be at your own risk and that is certainly not recommended.  (See note above about requesting assistance from Continuous Support if your site is still using this unsupported software.)
 
 IBM i LSAM Version 18.1 will no longer be updated with software fixes.  It is retired and is replaced by the newer LSAM version 21.1.  All clients still using this version are urged to upgrade to LSAM Version 21.1 as soon as possible, before this version cannot be physically supported by Continuous due to the evolution of the IBM i operating system.
 :::
 
-As of the publication of this document version, the current version of the IBM i LSAM was agent version 21.1. This version of the LSAM software was compiled over IBM i7.2.  (IBM only supports i7.2 under custom, extended support contracts.) Version 21.1 of the agent has been certified to operate correctly on currently supported versions of the IBM i operating system, through i7.5.  Continuous states its intention to soon certify this IBM i LSAM for IBM i version i7.6 (V7R6).
+As of the publication of this document version, the current version of the IBM i LSAM was agent version 21.1. This version of the LSAM software was compiled over IBM i7.2.  (IBM only supports i7.2 under custom, extended support contracts.) 
+
+Version 21.1 of the agent has been certified to operate correctly on currently supported versions of the IBM i operating system, through i7.6 (V7R6).
+
+:::caution
+Introduced at LSAM PTF Level 21.1.203, there is a new edit that protects the names of Dynamic Variables.  The OpCon Solution Manager (SM) user interface supports entry of Dyanmic Variable names into fields of information that define job master records, such as the Variables Tab (left column).  The SM user interface introduced some new restrictions that prevent entry of special characters that could be included in Dynamic Variable names.  Originally, Dynamic Variable names were allowed to include any kinds of special characters, excepting that alphabetic characters must always be all CAPITAL letters (lower case letters are not allowed).  To continue enablement of entering Dynamic Variable names into SM user interface fields, the Dynamic Variable master file maintenance program and the SETDYNVAR utility command have been enhanced with new edits preventing use of certain special characters.  New error message ID SMA0385 reports failures of this edit, which prevent adding (or copying to add) new Dynamic Variable master records.  Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](/dynamic-variables/maintaining#dynamic-variable-name-edit-considerations).
+:::
 
 :::tip
 New installs of the IBM i LSAM should use the install file named LI211043J (or newer LI211* file) install file.

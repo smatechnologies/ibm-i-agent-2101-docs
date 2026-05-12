@@ -84,7 +84,7 @@ The variable name cannot be changed when the screen format is shown in Change mo
 
 | Field          | Values         | Default        | Description    |
 | -----          | ------         | -------        | -----------    |
-| Variable name  | Any characters |                | The key identifier of each record. For records of type L, this name must be the Captured Job ID or the Job Name of a tracked or queued job. For records of type V, this may be any meaningful name that will be used to create a token ID. Job names are limited to 10 characters, but a Captured Job ID or token ID can use up to the 12 characters allowed for this field.|
+| Variable name  | Any characters |                | The key identifier of each record. For records of type L, this name must be the Captured Job ID or the Job Name of a tracked or queued job. For records of type V, this may be any meaningful name that will be used to create a token ID. Job names are limited to 10 characters, but a Captured Job ID or token ID can use up to the 12 characters allowed for this field.  Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](./maintaining#dynamic-variable-name-edit-considerations).|
 | Sequence number | 000 -- 999     | 000            | This record sequence number should be zeros for records of type V because it has no meaning for this record type. For records of type L, this sequence number is used to created unique records keys when there is more than one dynamic variable assigned to the same Variable Name (there may be multiple updates specified for the LDA content of a single job). A sequence number can be altered while the display is in option 2=Change mode, as long as no other Type L variable of the same Name is using the new sequence number.  (Changing the sequence of Type L variable records for a given Name might require careful strategy in adjusting more than one Sequence record of that same Variable Name.)  |
 | Variable type  | L, V           | V              | The record type is L for a dynamic variable that will be used to update the LDA content of a job. Type V records are dynamic variable tokens that can be inserted into job parameters or the job's call command line.|
 | Description    | Any printable character text | IBM i job ID, when the SETDYNVAR command was used and the DESC keyword is not specified. | IBM i job ID, when the SETDYNVAR command was used and the DESC keyword is not specified.  | 
@@ -111,9 +111,42 @@ The variable name cannot be changed when the screen format is shown in Change mo
 - **F12=Cancel**: Quits the display without update (unless an update was already completed by a prior <**Enter**> key) and returns to the previous screen.
 - **F13=More data**: The prompt for "**+ (F13)**" indicates that the data entry field can support up to 1024 characters of information, which will not all fit on the initial data entry screen.  When there is more data stored than will fit in the display format LSAVARR2, the Current Value field will be protected from data entry and the F13 function key must be used to work with the entire 1024 bytes of Value.
 
-### F4=Prompt (Select LDA image key)
+### Dynamic Variable Name edit considerations
 
-#### Select LDA Image Key
+The Dynamic Variable master file maintenance program and also the SETDYNVAR command will report error SMA0385 and reject a name that contains special characters that are not supported by some OpCon Solution Manager data entry fields.  This protective edit was introduced at LSAM PTF Level 21.1.203 (PTF211206).
+
+The set of characters that are allowed within a Dynamic Variable Name are these:
+**$@#1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ**
+
+The OpCon Solution Manager user interface supports inserting Dynamic Variable {TOKENS} in some places, such as various Job Master fields (especially under the Variables tab), but those data entry fields will reject Variable Names that contain certain special characters that have been reserved for OpCon server program execution features.
+                                                                      
+When the IBM i Agent master record maintenance program, or the SETDYNVAR command must reject a new Variable due to an illegal character in the Name field, error message SMA0385 will be reported, and the record addition function will be aborted.
+
+   
+
+#### Impact of new Variable Name edits
+
+The changes made by the LSAM PTF at level 21.1.203 were only to the function of adding a new Dynamic Variable. The character edits governing the naming of a Variable are executed only when the menu-driven maintenance program is adding a new record using F6=Add, or when the list option 3=Copy is adding a new record. The character edit is also imposed whenever the SETDYNVAR command is used to add a new record.
+
+Any existing Dynamic Variables will still get their {TOKENS} processed to replace them with a value because the existing LSAM module that performs this process does not care about what characters comprise the Name. This means that no existing automation where the Dynamic Variables are used should be impacted unless the original Dynamic Variable master records had to have their name changed.
+ 
+The only reason for using the following instructions about replacing Variables with characters that the Solution Manager data entry will not accept, is when a client might have already created one of the "illegally" named Variables (before these new edits are added by the PTF), and the client tries to insert one of these names into a Solution Manager data entry field - and discovers SM will not allow that. In this case, it's possible that a client might have some difficulty finding where the oddly named Variable might already be used within the IBM i Agent automation tools.
+
+#### How to Manage Changing a Dynamic Variable Name
+
+After applying LSAM PTF211206 (PTF level 21.1.203), if some existing Dynamic Variable Names are used in Solution Manager, but they are rejected due to unsupported    
+characters in the Variable name, then the IBM i Agent "Maintain Dynamic Variables" function found on many LSAM Menu pages can use the Copy function (list option 3) to create a new Variable master record with all the same capabilities, but using a legal name.
+
+If any problem is encountered during the Copy maintenance, another method that can be used is a direct master record update using SQL to change the Variable Name in the master record stored in the file named LSAVARF00.  Using the IBM i green screen "STRSQL" command provides access to methods for prompting SELECT statements so that   
+the correct master record can be identified by the field name VTOKNAM.
+
+If a Variable of Type L (used for LDA updates) must have its name changed, then be sure to use an SQL SELECT statement to find all the VTOKSEQ sequence numbers that are using this same VTOKNAM.  Then define an SQL UPDATE statement that changes the VTOKNAM for all those records at once.  Afterwards, repeat the SELECT query to verify that the collection of sequence numbers were all changed.
+
+#### Impact on Existing Automation Rules if a Dynamic Variable Name Must Be Changed
+
+As of the date of this PTF211206 (PTF level 21.1.203) release, the IBM i Agent does not have a utility that can search for all possible places where any Dynamic Variable might be used. Therefore, the LSAM administrator must recognize where the changed Dynamic Variable names are being used among the Agent’s automation features AND whether any of these Dynamic Variable names might have been entered into the OpCon Job Master records for IBM i jobs (that is, during previous implementation under the Enterprise Manager user interface), either as {TOKENS} in the Call Command box or in the Variables Tab of the job master record.
+
+### Select LDA Image Key
 ```
        Select LDA image key
 Type line number of LDA image key.

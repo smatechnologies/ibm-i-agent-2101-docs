@@ -16,6 +16,11 @@ It is possible, for example, to use a separately scheduled OpCon job or the pre-
 
 ### Recent Enhancements to Dynamic Variables
 
+#### Dynamic Variable name edits to protect from Solution Manager data entry rejection
+:::caution
+Introduced at LSAM PTF Level 21.1.203, there is a new edit that protects the names of Dynamic Variables.  The OpCon Solution Manager (SM) user interface supports entry of Dyanmic Variable names into fields of information that define job master records, such as the Variables Tab (left column).  The SM user interface introduced some new restrictions that prevent entry of special characters that could be included in Dynamic Variable names.  Originally, Dynamic Variable names were allowed to include any kinds of special characters, excepting that alphabetic characters must always be all CAPITAL letters (lower case letters are not allowed).  To continue enablement of entering Dynamic Variable names into SM user interface fields, the Dynamic Variable master file maintenance program and the SETDYNVAR utility command have been enhanced with new edits preventing use of certain special characters.  New error message ID SMA0385 reports failures of this edit, which prevent adding (or copying to add) new Dynamic Variable master records.  Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](./maintaining#dynamic-variable-name-edit-considerations).
+:::
+
 #### Dynamic Variable Values extended to 1024 characters
 
 The previous maximum length of a value returned for a Dynamic Variable token was 128 characters.  Now the Agent supports up to 1024 characters for character string values.

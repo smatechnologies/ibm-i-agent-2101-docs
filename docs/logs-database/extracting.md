@@ -4,9 +4,9 @@ sidebar_label: 'Extracting Log and Master Files'
 
 # Extracting Log and Master Files
 
-Whenever SMA Support may request that a client extract LSAM log or master file content for problem analysis, a client may use either the SMASUP command (from an IBM i command entry line, if that is permitted at a given site) or the function key F15=Extract files, wherever that function key is supported.
+Whenever SMA Support may request that a client extract LSAM log or master file content for problem analysis, a client may use either the SMASUP command (from an IBM i command entry line, if that is permitted at a given site) or the function key **F15=Extract files**, which appears on the display "Manage LSAM Server Logging", accesse from LSAM menu 6: LSAM Management Menu, option 4: Manage LSAM Logging."
 
-For technical support personnel: after the SMASUP command (or F15=Extract files) function has been executed at least once, the LSAM utility command DSPSUPDTA can be used to display the Agent profile information. This block of information is sent to the OpCon server each time an Agent allows a new connection with the OpCon server, and it is also included with the log files extracted by the SMASUP command. The SMASUP command must be run at least once in order to generate the data viewed by the DSPSUPDTA command. The SMASUP command must also be executed to update the DSPSUPDTA data with the latest information, such as the current LSAM PTF level.
+For technical support personnel: after the SMASUP command (or F15=Extract files) function has been executed at least once, the LSAM utility command **DSPSUPDTA** can be used to display the Agent profile information. This block of information is sent to the OpCon server each time an Agent allows a new connection with the OpCon server, and it is also included with the log files extracted by the SMASUP command. The SMASUP command must be run at least once in order to generate the data viewed by the DSPSUPDTA command. The SMASUP command must also be executed to update the DSPSUPDTA data with the latest information, such as the current LSAM PTF level.
 
 ## SMASUP Command Prompting
 
@@ -30,55 +30,56 @@ The keywords for each parameter shown in the following two figures are listed ab
 
 #### Prompted SMASUP Command (Default)
 ```
-                    Extract LSAM Logs and Files (SMASUP)
+                       Extract LSAM Logs and Files (SMASUP)
           
-Type choices, press Enter.
+ Type values and press Enter to continue, or press F10 for Select options.
           
-Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
-Save selected, logs or library     LOG           SEL, LOG, LIB
-Clear (not used) . . . . . . . .                 (No longer used)
-Restart (not used) . . . . . . .                 (No longer used)
-                                                   SEL log file options:     
-          
-          
-                                                                         Bottom
-F3=Exit   F4=Prompt   F5=Refresh   F12=Cancel   F13=How to use this display  
-F24=More keys
+Submit extract job? . . . . . : N          N=no, Y=yes
+Save selected, logs or library: SEL        SEL, LOG, LIB
+Clear (not used)  . . . . . . :            (No longer used)
+Restart (not used)  . . . . . :            (No longer used)
+
+ If you submit the extract job, the completion message with the name of the    
+ extracted save file will be sent to your user profile message queue and to    
+ the system operator message queue.  If you do not submit the job, it may take 
+ a few minutes to complete this task at your workstation, but the completion   
+ message with the save file name will be sent to your workstation as well as   
+ to the system operator message queue.                                         
+                                                                               
+ For the SEL (select logs) option, press F10 to work with the list of files.   
+
+
+F3=Exit   F10=SEL_OPTS   F12=Cancel 
 ```
 To view and manage the SEL (selection) parameters, type the letters "SEL" in the field "Save selected, logs or library" and then press <**Enter**>. When this LOGLIB() parameter has been changed from LOG or LIB to SEL, pressing Enter will not cause the command to execute but will only redisplay the command prompt with additional keywords.
 
 #### Prompted SMASUP Command (SEL Fields)
 ```
-                     Extract LSAM Logs and Files (SMASUP)
+                       Extract LSAM Logs and Files (SMASUP)
         
-Type choices, press Enter.
+ Type values and press Enter to continue.
         
-Submit SMASUP job? . . . . . . .   N             N=no, Y=yes
-Save selected, logs or library     SEL           SEL, LOG, LIB
-Clear (not used) . . . . . . . .                 (No longer used)
-Restart (not used) . . . . . . .                 (No longer used)
-                                                   SEL log file options:      
-Save Job Track/Capture logs? . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr 
-Save Message Management logs?  .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Utility/SCANSPLF logs?  . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Operator Replay logs? . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Restricted Mode logs? . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Job Schedule logs?  . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save JORS server logs? . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Job Status Monitor logs?  .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save SPLF server logs? . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save SMA File Transfer logs? . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save simple FTP job logs?  . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-                                                                       More...
-        
-(after pressing PageDown to see More...)
-
-Save GENEMLREQ logs? . . . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-Save Export/Import logs? . . . .   0             0=no, 1=Logs, 2=+Mstr, 3=Mstr
-                                                                        Bottom
-
- F3=Exit   F4=Prompt   F5=Refresh   F12=Cancel   F13=How to use this display
- F24=More keys
+Submit extract job? . . . . . : N          N=no, Y=yes
+Save selected, logs or library: SEL        SEL, LOG, LIB
+Clear (not used)  . . . . . . :            (No longer used)
+Restart (not used)  . . . . . :            (No longer used)
+  SEL log file options:           
+Save Job Track/Capture logs?  : 0          0=no, 1=yes, 2=+Mstr, 3=Mstr 
+Save Message Management logs? : 0         
+Save Utility/SCANSPLF logs? . : 0             0 = No files saved
+Save Operator Replay logs?  . : 0             1 = Save log files only
+Save Restrict.Mode/Multi-Step?: 0             2 = Save log files & master files
+Save Job Schedule logs? . . . : 0             3 = Save master file only
+Save JORS server logs?  . . . : 0             
+Save Job Status Monitor logs? : 0             
+Save SPLF server logs?  . . . : 0             
+Save SMA File Transfer logs?  : 0             
+Save simple FTP job logs? . . : 0             
+Save GENEMLREQ logs?  . . . . : 0
+Save Export/Import logs?  . . : 0
+                                                                         Bottom
+ F3=Exit   F5=Refresh   F12=Cancel
+ 
 ```
 
 ## F15 = Extract Log Files (SMASUP Command)
@@ -95,10 +96,10 @@ Save Export/Import logs? . . . .   0             0=no, 1=Logs, 2
 
 The IBM i command DSPSAVF can be used to see the content of the extract save file that will be created in the SMALOG library. This display will show exactly which files are saved for each combination of extract options and LSAM features, according to the following options selected for each LSAM feature:
 
-- **0=No files saved**: Any LSAM feature showing option 0 will have  none of its log or master files saved. It is common to leave all the fields set to 0 except for just one LSAM feature, in order to maintain a small size of the IBM i save file that will be produced. 
-- **1=Save log files only**: A pre-programmed list of log files that pertain to each LSAM feature will be saved in the extract save file. 
-- **2=Save log files & master files**: A pre-programmed list of log and master files that pertain to each LSAM feature will be saved in the extract save file.
-- **3=Save master files only**: A pre-programmed list of log and master files that pertain to each LSAM feature will be saved in the extract save file.
+- **0=No files saved**: Any LSAM feature showing option 0 will have  none of its log or master files saved. It is common to leave all the fields set to 0 except for just one or two LSAM features, in order to maintain a small size of the IBM i save file that will be produced. 
+- **1=Save log files only**: A pre-programmed list of log files that pertain to each selected LSAM feature will be saved in the extract save file. 
+- **2=Save log files & master files**: A pre-programmed list of log and master files that pertain to each selected LSAM feature will be saved in the extract save file.
+- **3=Save master files only**: A pre-programmed list of master files that pertain to each selected LSAM feature will be saved in the extract save file.
 
 #### Functions
 
@@ -127,35 +128,31 @@ It is usually necessary to turn on the LSAM logging functions, using the documen
 
 ## Delivering the LSAM File Extract to SMA Technical Support
 
-The LSAM file extract process produces an IBM i save file in library SMALOG. This save file can be transferred using FTP from the System i (or IBM Power server) disk to, for example, a Windows PC. It can then be attached to an eMail  message if it is not too large, or it can be transferred to an SMA FTP site. SMA Support can provide detailed instructions to assist with the process of transferring the save file.
+The LSAM file extract process produces an IBM i save file in library SMALOG. This save file can be transferred using FTP from the IBM i disk to, for example, a Windows PC. It can then be attached to an eMail message if it is not too large, or it can be transferred to an SMA FTP site. SMA Support can provide detailed instructions to assist with the process of transferring the save file.
 
-The extract save files have been improved to be smaller than in previous LSAM releases by using IBM i software data compression, and by an improved selective process that limits the number of files saved. The extract process produces IBM i save files that are marked for the same IBM i version under which the files are created. SMA Support can accommodate all currently supported versions of IBM i.
+The extract save files are kept as small as possible using IBM i software data compression, and by a selective process that limits the number of files saved. The extract process produces IBM i save files that are marked for the same IBM i version under which the files are created. SMA Support can accommodate all currently supported versions of IBM i.
 
 One typical method of using FTP to transfer the save file from IBM i to a PC Windows workstation is illustrated in the following example instructions.
 
-### FTP the Logs Save File
+### Use FTP to download the Logs Save File
 
-1. From a Microsoft Windows system, use FTP to transfer the logs save file to a personal computer hard disk directory from the IBM i library SMALOG. The save file is transferred to the MS Windows machine by a binary FTP transfer from IBM i acting as the FTP server, using the following steps.
+1. From a Microsoft Windows system, use FTP to transfer the logs save file to a personal computer disk directory from the IBM i library SMALOG. The save file is transferred to the MS Windows machine by a binary FTP transfer from IBM i acting as the FTP server, using the following steps.
 :::tip
 The ftp command format used in the following example assumes that the IBM i FTP Server attributes have been set to use the name formatting for the IBM i DB2 library system, that is, SITE NAMEFMT 0. To change the FTP Server attributes from the UNIX path name format (SITE NAMEFMT 1), use this command:```CHGFTPA NAMEFMT(*LIB) LISTFMT(*DFT)```It is possible to prompt the CHGFTPA command using function key F4 to view the current settings of the FTP Server. If changes are not needed to those settings, exit the command prompt using function key F3=Exit.
 :::
 2. Use menu path: **Start > Run**.
 3. Type **cmd**.
 4. Click **OK**.
-5. If desired, change the drive reference to a convenient location on the personal computer hard disk by entering the drive letter followed by a colon (:).
+5. As desired, change the directory to a location where it will be easy to find the transferred file, for example, the root directory of drive C(:)
 :::tip
 C:\other_directory>cd C:\
 :::
-6. As desired, change the directory to a location where it will be easy to find the transferred file, for example, the root directory of drive C(:)
-:::tip
-C:\other_directory>cd C:\
-:::
-7. At the prompt, enter **ftp** \<LSAM Machine Name or TCP/IP address>.
-8. Log in as **QSECOFR** with the appropriate \<QSECOFR password\> or it may be possible to log in and retrieve the logs save file with the user profile name that created the logs save file, such as an LSAM Administrator user profile.
-9. Enter **bin** to select a binary transfer type.
-10. Enter **GET SMALOG/L601101648** (using the actual log file name reported in the SMASUP command completion message) to retrieve the logs save file, using the actual log file name from the extract process completion message.
-11. Enter **quit** to exit the FTP utility.
-12. Enter **exit** to close the command entry window.
+6. At the prompt, enter **ftp** \<LSAM Machine Name or TCP/IP address>.
+7. Log in as **QSECOFR** with the appropriate \<QSECOFR password\> or it may be possible to log in and retrieve the logs save file with the user profile name that created the logs save file, such as an LSAM Administrator user profile.
+8. Enter **bin** to select a binary transfer type.
+9. Enter **GET SMALOG/L601101648** (using the actual log file name reported in the SMASUP command completion message) to retrieve the logs save file.
+10. Enter **quit** to exit the FTP utility.
+11. Enter **exit** to close the command entry window.
 
 :::info example
 ```
