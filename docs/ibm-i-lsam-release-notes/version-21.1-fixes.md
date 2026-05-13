@@ -522,3 +522,21 @@ A new prompting window is now displayed upon initial access to the IBM i Agent m
 - **Enhanced** (# PTF211199) OCAG-508  Fix PTF211194 update to SMASUP command
 
 The previous PTF improved the SMASUP command so that it could retrieve LSAM logs and master files even while other system activity could have active locks on the requested files.  However, the added save command parameter was missing a ')' causing failure.
+
+### LSAM PTF release 21.1.203 
+
+- Fixed (# PTF211200) OCAG-631 (PTF LVL: 200) Fix Multi-Step Job Script Step maintenance: Prevent CompDta overlaying CompRef.
+
+The Multi-Step Job Script Step maintenance program was incorrectly overlaying the CompDta field with content from the CompRef field during master record maintenance. These fields are optionally used to qualify execution of a Step's command.
+
+- Fixed (# PTF211204) OCAG-774 (PTF LVL: 201) Remove Max Idle Disconnect Count to restore connection recovery flexibility
+
+The IBM i Agent Job Scheduler communication program response to an expired Max Idle Disconnect Count has proven inconvenient as it introduced a requirement to manually stop and restart the SKTCMN LSAM server job.
+
+    :::note
+    The Sequence Number (1995) assigned to each PTF controls the order in which the LSAM PTFs must be applied (to maintain any inter-dependencies and to control potential rollback operations). The original “PTF Name” field (PTF211204) was, years ago, the only numbered attribute of a PTF. However, this name is now just a label for each PTF, since the “PTF LVL” (PTF Level) controls the LSAM Release version, while the Sequence Number controls the order of PTF application during the installation process. The LSAM displays and export information always refer to the PTF Level, so this PTF refers to the Agent Version as 21.1.201, even though the PTF Name is PTF211204. Future updates of the PTF List will show how a previously created PTFs (202was not ready for release, so PTF211201 through PTF211203 will appear as installed AFTER PTF211204, according to the Sequence Number, and then the PTF level would become 21.2.204, unrelated to this PTF211204.
+    :::
+
+- **Enhanced** (# PTF211205. PTF211206) OCAG-821 (OC-7170) Dynamic Variable maintenance and command new name edits. *See Post-Install Instructions.*
+
+The Dynamic Variable master file maintenance program and also the SETDYNVAR command will now report error SMA0385 and reject a name that contains special charaters that are not supported by some OpCon Solution Manager data entry fields. Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](/dynamic-variables/maintaining#dynamic-variable-name-edit-considerations). 

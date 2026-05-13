@@ -79,7 +79,7 @@ PTF # 403320 marked the patch level for the last installation file of the IBM i 
 
 LSAM version 04.00.03 remains available (on demand only, as-is) for IBM i versions V5R4 and V6R1 (i6.1), and it can also be used through IBM i version i7.3.  SMA has frozen version 04.00.03 as of the PTF level 403374. Due to IBM ending all support for the IBM i operating system version V5R4, where this LSAM version was constructed, it is no longer possible for SMA to produce any software fixes for the LSAM version 04.00.03.  Therefore, any clients of SMA that decide to continue running this LSAM version will do so at their own risk.  To obtain product support for the IBM i Agent, clients must be using a currently supported version of the Agent software.
 
-The oldest supported version of the IBM i LSAM is version 18.1, which requires IBM i OS veresion i7.1 or newer.  SMA encourages clients to upgrade to the latest available version of the IBM i LSAM software, which is 21.1 as of this document edition  Version 21.1 requires IBM i OS version i7.2 or newer.
+The oldest supported version of the IBM i LSAM is version 18.1, which requires IBM i OS veresion i7.1 or newer.  SMA encourages clients to upgrade to the latest available version of the IBM i LSAM software, which is 21.1 as of this document edition Version 21.1 requires IBM i OS version i7.2 or newer.
 
 If any clients remain at LSAM version 04.00.03, be advised that upgrading to version 21.1 requires that their LSAM first get the final LSAM PTFs for that version installed, then upgrade to version 18.1.  There is no direct upgrade path from 04.00.03 to version 21.1 - an intermediate upgrade to version 18.1 is required first. 
 :::

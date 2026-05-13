@@ -12,7 +12,8 @@ Some of these enhancements were introduced as part of the new Agent version, so 
 ### Enhancements to Dynamic Variables
 The following list of enhancements is discussed in detail within the Dynamic Variables chapter at [Recent Enhancements to Dynamic Variables](/dynamic-variables/overview.md#recent-enhancements-to-dynamic-variables).
 
-- New multi-instance Dynamic Variables support parallel processing.
+- An edit that protects the names of Dynamic Variables to assure acceptance by the OpCon Solution Manager (SM) user interface.
+- Multi-instance Dynamic Variables support parallel processing.
 - Dynamic Variable value field extended from 128 bytes to 1024 bytes.
 - Character string trimming is separated from the Local Data Area Start/Length controls.
     - Improved support for retaining or trimming both leading and trailing spaces.
@@ -162,6 +163,15 @@ This continuation of the Enhancements List shows enhancements that were added to
 
 | Project  | LSAM PTF   | Description  |
 | :------- | :--------- | :----------- |
-| OCAG-508 | PTF2111978 |  *See Post-Install Instructions*  |
+| OCAG-508 | PTF211197  |  *See Post-Install Instructions*  |
 |          |            |  Additional messages are added to support Restricted Mode Configuration prompts and access to a window for viewing and managing the job logging parameters during execution of the Restricted Mode Script.  Messages match entries in the Activity Log display. |
 |          | PTF211198  |  A new prompting window is now displayed upon initial access to the IBM i Agent menu 5, option 2: Setup Restricted Mode Environment.  This PTF also adds writes to the SAVRSTMODE script execution job log, echoing LSAM logging of Activity History. |
+
+### Agent Enhancements by Project ID, LSAM PTFs at Version 21.1.203
+
+This continuation of the Enhancements List shows enhancements that were added to the OpCon Agent for IBM i as the LSAM was updated with a Cumulative PTF Cut-Off Release, as of version 21.1.203.
+
+| Project   | LSAM PTF   | Description  |
+| :-------- | :--------- | :----------- |
+| OCAG-821   OC-7170 | PTF211205, PTF211206 | PTF Names do not match the LSAM PTF release level achieved = 21.1.203. *See Post-Install Instructions in PTF211206.*  |
+|                    |                      | PTF211205 adds the new error message ID SMA0395.  PTF211206 updates the Dynamic Variable master file maintenance program and also the SETDYNVAR command that will now report error SMA0385 and reject a name that contains special charaters that are not supported by some OpCon Solution Manager data entry fields. Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](/dynamic-variables/maintaining#dynamic-variable-name-edit-considerations). |
