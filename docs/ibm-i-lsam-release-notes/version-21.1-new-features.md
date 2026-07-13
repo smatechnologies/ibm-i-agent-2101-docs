@@ -173,5 +173,54 @@ This continuation of the Enhancements List shows enhancements that were added to
 
 | Project   | LSAM PTF   | Description  |
 | :-------- | :--------- | :----------- |
-| OCAG-821   OC-7170 | PTF211205, PTF211206 | PTF Names do not match the LSAM PTF release level achieved = 21.1.203. *See Post-Install Instructions in PTF211206.*  |
+| OCAG-821, OC-7170 | PTF211205, PTF211206 | PTF Names do not match the LSAM PTF release level achieved = 21.1.203. *See Post-Install Instructions in PTF211206.*  |
 |                    |                      | PTF211205 adds the new error message ID SMA0395.  PTF211206 updates the Dynamic Variable master file maintenance program and also the SETDYNVAR command that will now report error SMA0385 and reject a name that contains special charaters that are not supported by some OpCon Solution Manager data entry fields. Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](/dynamic-variables/maintaining#dynamic-variable-name-edit-considerations). |
+
+### Agent Enhancements by Project ID, LSAM PTFs at Version 21.1.209
+
+This continuation of the Enhancements List shows enhancements that were added to the OpCon Agent for IBM i as the LSAM was updated with a Cumulative PTF Cut-Off Release, as of version 21.1.209.
+
+| Project   | LSAM PTF   | Description  |
+| :-------- | :--------- | :----------- |
+| OCAG-508  | PTF211207, PTF211208 | Restricted Mode fixes and enhancements |
+|           | PTF211211, PTF211212 | *See Post-Install Instructions in PTF211212.*  |
+|           |                      | A detailed description of this broad collection of fixes and enhancements to the Restricted Mode automation programs is provided here.|
+
+The Restricted Mode process is fixed to support the full 20 characters of a Script Name (previously included in PTF211208).  It is also enhanced to show a failed job status for the Initiator Job if the Script Driver job fails (and Job Tracking option not used). See detailed instructions in this IBM i Agent User Help under [Restricted Mode Operations - Using Job Tracking](../restricted-mode/operations#using-job-tracking-to-reveal-the-script-driver-batch-job-on-an-opcon-schedule).
+
+The Restricted Mode programs have been enhanced with better error reporting to this feature's log display, to the IBM i job logs and to the OpCon user interface Detailed Job Messages.  Jobs that fail are now reported with a failure status in the OpCon user interface, correcting a false report of a successful completion after the job actually failed.  Whenever the Restricted Mode Initiator Job has completed normally, but the Script Driver job has failed, and if Job Tracking is not used to add the Script Driver job to the OpCon Schedule, then the solo Initiator Job will be set to "Marked Failed" by an external event transaction that the Script Driver sends to the OpCon server (once the IBM i LSAM server jobs are restarted after Restricted Mode processing completes).
+
+The Restricted Mode setup display is refined and now supports Job Description updates to assist with controlling the job log report content.  
+
+:::note
+There are two job log reports produced by the Restricted Mode pair of jobs.  One report is for the IBM i job name that OpCon initiates which sets up the controls and then submits the separate job that is always named “SMARSTMODE”.  Unless Job Tracking is used (see HINT below), special dedicated logic that is part of this IBM i Agent feature finds the job log report from the SMARSTMODE job and presents it in the list of job log reports that appear when the OpCon User Interface requests to “View Job Output.”  However, the SMARSTMODE job log report will be delayed because that separate job which survives during the IBM i system restricted state will continue processing after the Restricted Mode Initiator Job has completed its process.
+:::
+
+:::note HINT
+The separately submitted job SMARSTMODE can be tracked as a separate job in any desired OpCon Schedule (perhaps configured to be added right after the Restricted Mode Initiation Job) using the Agent’s Job Tracking feature.  Once the SMARSTMODE job is being tracked in OpCon, any failure of this critical Script Driver job can be monitored by the Notification Manager, and the actual job log from this critical job can then be retrieved and transmitted along with the Notification Manager communication to an operator or administrator.
+:::
+
+From the Post-Install Instructions, here is a summary of improvements delivered by a combination of all four PTFs:                       
+                                                                     
+> Fixed:  The Script name was being truncated to 10 characters, but it is now corrected to support up to the allowed 20 characters.
+>                                                                       
+> Fixed/enhanced:  When the Restricted Mode Script Driver job has logged a failure (see the LSAM Menu 5, option 3: Script Job History) the Initiator job that the OpCon server submitted to start the whole process would still show a normal, successful job completion. This was preventing OpCon Notification of the actual failure in the Script Driver job.                                                            
+>                                                                       
+> Enhanced: New User Help documentation will guide the user through an option to use Job Tracking to create a separate job on the OpCon Schedule(ideally next to the Initiator job) for the Script Driver job, making it possible to isolate the OpCon Job Failure status to each Restricted Mode job separately, for a more accurate report.  To this end, note the naming convention being added to this automation feature:
+>                                                                       
+> The "Initiator Job" is the job that an OpCon Schedule submits to begin processing of the Restricted Mode automation process. 
+> The "Script Driver Job" is submitted by the Initiator job, designed to function during the phases of the operating system restriction, as it executes the Script Steps defined by the IBM i Agent OpCon administrator. This job is always named "SMARSTMODE".
+> :::note 
+> The Agent's Job Tracking feature can add rules to detect the SMARSTMODE job and then cause it to appear in any designated OpCon Schedule, so that Script Step failures can be more obviously detected as OpCon Notification methods can be assigned to this separate job.
+> :::
+>                                                                       
+> Enhanced:  Additional error and status messages are now added to support both jobs.  These messages can be discovered and analyzed by   any or all of three different sources where they will be registered:
+>                                                                      
+> From the OpCon user interface, Detailed Job messages are now being being sent.  There will not be a comprehensive presentation of all possible error messages reported by the two jobs.  However, in many cases, a rule could be established in the OpCon job master record that will recognize, for example, message ID SAV0017 which is being used to report a failure of the Script Driver program to the Initiator Job's Detailed Job messages.                                                
+>                                                                     
+> The job log reports from both jobs can now record many more messages that document progress of each job as well as IBM i errors that often triggered one of the SAV* messages from the IBM i Agent.  Study the IBM i Agent User Help information about Restricted Mode jobs for more information about where to discover the IBM i job log reports since the Script Driver job log report might appear in either job, depending on whether Job Tracking was used to register a separate job in the OpCon Schedule (ideally, next to the Initiator Job).
+>                                                                      
+> The IBM i Restricted Mode menu options (on sub-menu 5) include a display of the Restricte Mode History log, as menu option 3.  This log includes registration of critical error messages that typically indicate why the Script Driver job will stop, report a failure, and then register an "AutoRecovr" (hard coded) program-generated Action, which is designed to restart the IBM i Agent server jobs so that job status information can be delivered to the OpCon server.  These are not comprehensive messages about all job actions, but only a report of the Script Steps and when they began (B) and ended (E), or failed (F).  To support these entries, study the IBM i job log reports. 
+>                                                                     
+> In the first two LSAM PTFs previously issued, the Restricted Mode environment setup procedure (LSAM menu 5, option 2) was enhanced to show a pop-up window each time this menu option is selected.  The window shows the job logging settings currently in effect for the Restricted Mode jobs, and it supports data entry that can be used to either supress or enhance the level of job log detail.  It is recommended to use verbose logging:  
+> **LOG(4 00  \*SECLVL) LOGCLPGM(\*YES)**.

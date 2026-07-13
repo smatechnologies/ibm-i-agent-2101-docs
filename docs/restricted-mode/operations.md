@@ -213,12 +213,167 @@ It is the responsibility of the system operations or administration staff to tak
 
 IBM i now supports executing restricted mode operations from other sources besides just the DSP01 console device. It's possible to use a different interactive display device, and it's also possible to run in batch mode without any display device. The LSAM setup for Restricted Mode script processing supports choosing any of these three methods.
 
+For the Batch Job method, it is important to consider engaging the Agent's Job Tracking feature in order to add the Script Driver job to the same OpCon Schedule that had launched the Restricted Mode Initiator Job.  Adding Job Tracking enables more obvious ways to manage any potential failure of the Script Driver job, as defined below.
+
 ### Run a Restricted Mode Process in Batch Mode
 
 1. Ensure that the LSAM is communicating with SAM and supporting services (SAM-SS).
 2. It is NOT necessary to log in to the IBM i console or an alternate display device as **SMASAV** in order to use the batch mode.
 3. Add an IBM i job master to an OpCon schedule and choose the IBM i  job sub-type as Restricted Mode. Specify the name of the Restricted Mode Script to use for this job.
 4. When the script completes execution, the procedures used to restore normal system operations are the same as when a display device is used. The steps performed by the Restricted Mode Script and any error information can be viewed using the LSAM sub-menu option to display "Restricted mode history" (previously called "History of the last use").
+
+### Using Job Tracking to Reveal the Script Driver Batch Job on an OpCon Schedule
+
+#### Restricted Mode Automation Process Analysis
+The OpCon Agent for IBM i automates the process of putting the IBM i operating into its restricted state, where it can then perform the following typical system maintenance functions:
+ - Stopping as many system functions as possible so that a complete “Full System Save” can be performed, without being obstructed by IBM i object locks that would prevent those objects from being saved in a clean form.
+ - Conducting a full system save operation.
+ - Purging and reconstructing operating system control tables, plus various logs and aged journals and journal receivers.
+ - Recovering disk space by removing damaged objects that can no longer be controlled by the normal operating system’s programmed functions.
+ - Optionally, perform an IBM i IPL (Initial Program Load = re-booting the operating system).
+ - One of the sub-procedures during an IPL would be performing functions required by the IBM i PTF (OS software patches) that might have previously been loaded, but were not finally applied to the operating system until the system IPL process is performed.
+
+To accomplish automation of this process, two IBM i jobs are required:  
+ - The first job (**Initiator Job**) is started from an OpCon Schedule, and its purpose is to audit the Agent and the system for all the requirements that Restricted Mode automation needs to succeed.  
+
+ - Then it submits a separate, second job (**Script Driver**) that will run in the operating system’s designated subsystem that will remain as the only active subsystem during restricted mode operations.  
+
+:::note
+That subsystem’s description is designated by an IBM i System Value (QCTLSBSD), and by default it is QCTL in library QSYS.  So the second OpCon/IBM i Agent job that actually executes the Restricted Mode Script Steps will typically be executing in the QCTL subsystem.
+:::
+
+Once the Script Driver job confirms that it is running and all controls are in order, it sends a message back to the Initiator Job, via a data queue allocated to this Agent process, and the first job then stops the IBM i Agent Server Jobs subsystem (by default, named SMASBS).  
+
+Finally, the Initiator Job logs its completion status and ends normally…but, the actual completion status of the Initiator Job is not reported immediately to the OpCon server because the Agent’s Server jobs subsystem is already suspended by this time.  
+
+Instead, the overall status of the Automated Restricted Mode process will depend on the results of the Script Driver that is executing the Agent’s Script Steps.  It will send either a Job Failed or a Job Completed message to the data queue (CMNOUTT00) that is holding any messages that will be forwarded to the OpCon Server to report job status and other information, whenever the IBM i Agent Server jobs are restarted by one of the methods documented in the IBM i Agent’s User Help. 
+
+#### Flow Chart of Using Job Tracking for the Script Driver
+This flow chart illustrates the components involved with managing the two IBM i jobs required to automate Restricted Mode operations in the IBM i operating system.  Below the flow chart image there is a legend with colored and numbered [1] labels corresponding to the arrows in this flow chart.
+
+![Flow Chart for Using Job Tracking](../Resources/Images/IBM-i/Flow-Chart-for-Using-Job-Tracking.png "Flow Chart for Using Job Tracking")
+
+#### Legend of Flow Chart for Using Job Tracking to Reveal the Script Driver Job
+The flow chart provides a picture diagram that might help to understand decisions that can be made about how to get the most reliable results from the IBM i Agent’s Restricted Mode automation.  This legend identifies step-by-step (by the numbers) each part of the process that the IBM i Agent’s automation strategy can execute, when a decision is made to engage Job Tracking.
+
+The goal of engaging Job Tracking with the Restricted Mode automation is to produce two different job records on the OpCon Schedule.  When this is accomplished, it becomes possible, for example, to configure the Notification Manager to report separately only any failures that occurred in either job.  And, as a failure notification is reported, then the appropriate IBM i job log report can be delivered with the Notification.
+
+This solution overcomes the objection that the Notification Manager is only able to deliver the first IBM i job log report from the primary Initiator Job, while meanwhile there is a greater potential for errors as the Script Steps are being executed by the separate Script Driver job that runs during the operating system’s restricted mode.
+
+**<span style={{color: 'green', fontWeight: 'bold', border: '2px solid green', borderRadius: '4px', padding: '2px 8px'}}>1</span> OpCon Schedule starts the Restricted Mode Initiator Job.**
+
+The Restricted Mode Initiator Job is started from an OpCon Schedule. This job may sometimes referred to as the “primary job” in this document. This is an “IBM i” job in an OpCon Schedule, with the IBM i sub-type of “Restricted Mode.”  The Job Name may be any valid name for the IBM i operating system.  The Agent’s Restricted Mode Script name is entered into that box, up to 20 characters.
+
+**<span style={{color: 'orange', fontWeight: 'bold', border: '2px solid orange', borderRadius: '4px', padding: '2px 8px'}}>2</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
+
+The SBMJOB command executed by the Initiator Job, to submit the SMARSTMODE Script Driver jopb, is intercepted by the Agent’s Job Tracking exit program.  This exit program gets registered in the system’s exit program registry when the Agent’s menu 1 option 3: Start Job Track, has previously been selected.
+
+**<span style={{color: 'red', fontWeight: 'bold', border: '2px solid red', borderRadius: '4px', padding: '2px 8px'}}>3</span>  The Agent’s Job Tracking Parameters table is consulted.** 
+
+The Exit Program determines if the Job being submitted (always named SMARSTMODE) was registered for Tracking.  If there is a match, then the Exit Program sends a $JOB:TRACK “external event” transaction to this Agent’s communications program (implied by red arrow # 3, but not shown in the flow chart) for transmission to the OpCon “Message-In” processor for externally submitted Event requests.  If the OpCon Server’s SAM recognizes the Schedule Name and Job Name provided from the Agent’s Job Tracking Parameters, then it returns a “Job Start Request” transaction (TX1) to the Agent. (See the Agent’s User Help about Job Tracking for more information.)
+
+**<span style={{color: 'gold', fontWeight: 'bold', border: '2px solid gold', borderRadius: '4px', padding: '2px 8px'}}>4</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
+
+By recovering the definition of the secondary Restricted Mode Script Driver program that had been intercepted and stored by Job Tracking, the Agent's Job Scheduler is able to reconstruct the original SBMJOB command.  It then uses the reconstructed SBMJOB command to submit this job to the QCTL subsystem’s job queue.  (*The actual name of the IBM i subsystem designated for restricted mode processing is stored in the IBM i system value QCTLSBSD.*)  Once the Script Driver job starts processing, it is able to: 
+
+>(a) Store progress entries into the Agent’s Restricted Mode History log
+>
+>(b) Send entries to the IBM i job log for this Script Driver job (SMARSTMODE)
+>
+>(c) Execute the SMAJOBMSG Agent’s utility command that stores Detailed Job Messages into the data queue (CMNOUTT00) so that these (TC 61) job status messages can be forwarded to the OpCon Server whenever the IBM i Agent’s Server jobs are restarted, following the end (normal or failed) of this Script Driver job.
+>
+>(d) Register either a successful completion or a failed job status transaction in the CMNOUTT00 data queue that will be processed as the Agent’s Server jobs are restarted.  (See flow chart turquoise arrow # 6.)  This job’s status will be reported separately from the status of the primary Restricted Mode Initiator Job.   (See following NOTE.)  The flow chart shows the yellow arrow # 4 series generating an IBM i job log report at job end time, separately from the primary Restricted Mode Initiator Job (managed as the green arrow # 1 series connects to the IBM i job log processing and queueing in the system output queue named QEZJOBLOG).
+>
+>(e) Be responsible for restarting the IBM i Agent’s Server job, by one of three methods:
+	>>(1) Using the PWRDWNSYS command to initiate an IPL (initial program load = re-booting the IBM i partition), which relies on the system startup program registered in the IBM i system value QSTRUPPGM to execute the SMAGPL/SMASTRSYS ENV(SMADEFAULT) command for the Agent.
+    >>
+	>>(2) Using a script step to execute the command SMAGPL/SMASTRSYS ENV(SMADEFAULT), where the library name for SMAGPL and the LSAM Environment Name of SMADEFAULT could be different, if the default LSAM values were overridden, or if a second instance of the LSAM is installed within the same IBM i partition (e.g., for testing).
+    >>
+    >>(3) After a fatal script step error condition is encountered, and the Step record flag indicates “Y” = do fail the job, then a program-defined ACTION(AutoRecovr) will be executed that includes restarting the LSAM server jobs. 
+>
+:::note
+See the “Restricted Mode Job Completion Reporting Methods” topic, below, to understand the options for using the original single Restricted Mode Initiator Job in the OpCon Schedule for reporting the job completion status.  If Job Tracking creates a separate job for the script execution job SMARSTMODE, then the primary job could show a successful completion, while the script execution job might show a failed status.  When there are two jobs, care should be taken when assigning job completion dependencies and Notification Manager reactions, in order to produce the desired activity following failure of either job.
+:::
+>
+>When there is only the one primary Initiator Job appearing in the OpCon Schedule, then a failure of the SMARSTMODE Script Driver job will force the Initiator Job to show a “Marked Failed” status, regardless of an IBM i normal job completion status.  
+>
+>Whether the job finishes normally, or is Marked Failed, the View Job Output function of the OpCon UI will (eventually) show two different job log reports for the Initiator Job, but the second job log report from the SMARSTMODE Script Driver job will be delayed until it finally finishes its processing.  This original, default behavior of gathering two QPJOBLOG reports under the single Initiator Job “view output” display unfortunately prevents a failed job Notification action from delivering the second job log report, which most often would contain details about the Script Driver job’s failure.  This limitation can be overcome by adopting the Job Tracking strategy defined in this document.
+>
+>Remember that if the Initiator Job itself has failed, then in many cases it will not have submitted the Script Driver job (SMARSTMODE), and there will be only one job log report associated with the Initiator Job.  In this case, it is expected that the job log report distributed by a Notification event would contain details about the failure of the Initiator.
+
+**<span style={{color: 'purple', fontWeight: 'bold', border: '2px solid purple', borderRadius: '4px', padding: '2px 8px'}}>5</span> Management of job completion messages.**
+
+The Agent’s primary Restricted Mode Initiator Job, using a Job Name specified in the OpCon Job Master record, will always have its IBM i job completion status reported to the Agent’s reserved message queue at SMADTA/SMAMSGQ, implied by the Agent Job Completion Message server job (named MSGMNG in the LSAM subsystem).  Remember, though, that when there is only one Restricted Mode job in the OpCon Schedule, then this Initiator Job’s final status will be affected by the completion status of the SMARSTMODE script driver job.
+
+The flow chart shows that the Job Completion server program forwards the job status transaction to the Communications program, and that is how the status information gets posted in the OpCon User Interface.
+
+**<span style={{color: 'lightblue', fontWeight: 'bold', border: '2px solid lightblue', borderRadius: '4px', padding: '2px 8px'}}>6</span> Reporting of job completion status of both jobs.**
+
+When the Agent’s Restricted Mode Script Driver program finishes, if it was not a separate job on the OpCon Schedule, then it’s completion status will be communicated to the OpCon server by using the IBM i Job ID of the primary Intiator Job, so that single Initiator Job on the OpCon schedule will reflect the ultimate status of both jobs.  (See the NOTE above, under flow chart yellow # 4.)
+
+Similar to purple arrows # 5, the turquoise arrows # 6 show that the Job Completion server program forward the job status transaction to the Communications program, and that is how the status information gets posted in the OpCon User Interface.
+
+**<span style={{color: 'darkblue', fontWeight: 'bold', border: '2px solid darkblue', borderRadius: '4px', padding: '2px 8px'}}>7</span> Viewing Job Output.**
+
+The blue arrows # 7 represent that the OpCon User Interface may request to “View Job Output.”  The Agent server programs dedicated to JORS (Job Output Retrieval Services) can pull an IBM i job log report from the IBM i QEZJOBLOG output queue, or if a job is still active, the Agent server can extract the job log messages from a live job’s own message queue and then construct a job log report format of the data.   Either way, a separate job log is available for each of the primary and secondary Agent Restricted Mode jobs.  See the “Restricted Mode Job Completion Reporting Methods” topic, below, for details about where each job log report might appear for viewing, and how each could be retrieved by the OpCon Notification Manager.
+
+#### Restricted Mode Job Completion Reporting Methods
+Information in this section took effect with the installation of the IBM i Agent’s PTF211208 (with PTF211207 for message IDs that were added), followed by improvements in PTF211210 and PTF211211.  These PTFs elevated the LSAM PTF Level to 21.1.209.
+
+There are three different ways that The Agent’s Restricted Mode automation procedures could report a final status, whether it is successful or if a failure has occurred.
+
+ - **ONE OPCON JOB – LIMITED ERROR REPORTING:**  
+ Prior to PTF211208 (21.1.205), the normal behavior of the IBM i Agent’s automation of Restricted Mode operations was to list only one IBM i Job in an OpCon Schedule.  This single job was intended to report either normal job completion (message ID SMA0036), or else to report a job failure status (message ID SMA0037).
+
+ > In practice, there was a potential that certain unexpected errors could have been ignored, causing the OpCon Job’s status to remain as normal completion.
+ >
+ > Even worse was that the Initiator Job would report its normal completion even when the separate Script Driver job could have failed due to errors in Step command processing.  The Script Driver errors were logged in the Agent’s database, but the overall process of the Restricted Mode automation could actually have failed without triggering any notice that could be processed by the OpCon server. 
+ >
+ > In addition, the IBM i job logs associated with the two Restricted Mode jobs were not reporting most error conditions, though they reported attributes of the jobs that had been attempted.  This made error diagnosis difficult to complete.
+
+ - **ONE OPCON JOB – EXTENSIVE ERROR REPORTING:**  
+ PTFs # 211208 and # 211211 introduced an array of LSAM-standard error detection and reporting methods.  Without adding the Job Tracking support that is explained in this document, there would still be a single Job on an OpCon Schedule, representing both of the IBM i jobs that had been executed.  The PTF improvements added the following support for error detection and reporting.
+
+  > The primary Restricted Mode Initiator Job will now report one of the following job completion statuses:
+  >
+  >> If both the primary and secondary jobs complete normally, the original Initiator Job will show a normal completion status.
+  >>
+  >> If the primary Initiator Job has detected an error that would prevent successful process completion, such as an invalid Script name, the original Initiator Job will show a failed status.
+  >>
+  > If the primary Initiator Job is successful, but the secondary Script Driver job encounters an error, the OpCon Schedule will report a failed status via the single Initiator Job registered to the OpCon Schedule.  This is managed by the Script Driver job generating a $JOB:BAD external event, sent to the OpCon server, which in turn forces the Initiator Job to end up with the status of “Marked Failed.”  There will still be indications in the Initiator Job and also the IBM i Agent’s job master log, that the Initiator job itself completed without error, and this should serve as valuable evidence during diagnosis of any Restricted Mode failure.
+  >
+  > Almost all types of errors detected in either the Initiator Job or the Script Driver job will report the error code and some explanatory text by the following methods:
+  >
+  >> Detailed Job Messages will be sent to the OpCon registered job (or jobs).  These are viewed by selecting from the UI the “Configuration” job data, within which there is an option to view Detailed Job Messages.
+  >>
+  >> The same type of information reported via Detailed Job Message should, in most cases, now be registered in the Agent’s Restricted Mode menu (# 5) option 3: View Job History log.  However, some types of potential errors might occur at a point in program logic where they cannot be supported by adding them to the Agent’s job history log.  In those cases, the IBM i job logs will now usually provide critical information that identifies the failure.
+  >>
+  >> The IBM i job logs are now receiving as much detail as the Agent programs can capture in case of any failure.  This places added emphasis on how the IBM i job logs can be accessed, and that convenience has been augmented, as described next.
+
+ - **TWO OPCON JOBS  – EXTENSIVE ERROR REPORTING**:  
+ PTF211208 introduced an array of LSAM-standard error detection and reporting methods, further augmented by PTF211211.  After adding the Job Tracking support that is explained in this document, there will be two Jobs on an OpCon Schedule, although the second Script Driver job will not appear until the Job Tracking process has been successfully processed and validated against the “do not build” pre-definition of an IBM i Tracked Job. The PTF improvements added the following support for error detection and reporting.
+
+ > The primary Restricted Mode Initiator Job will now report one of the following job completion statuses:
+ >
+ >> If both the Initiator Job and the Script Driver job complete normally, the original Initiator Job will show a normal completion status.
+ >>
+ >> Each job will show only its own QPJOBLOG spool file, containing that job’s IBM i job logging information.  Thus, an OpCon Notification rule can be configured in the Script Driver (Tracked Job) definition in the OpCon Schedule, and optionally deliver the QPJOBLOG report along with the Notice. 
+ >
+ > Notice that the Initiator Job can, and should also be configured to deliver a notice of failure, accompanied by its own job log report.  But when Job Tracking is used to add the Script Driver to the OpCon Schedule, then the job log from this critical job where the Script Steps might fail can be attached to its own Notification delivery (as opposed to the absence of delivery for this Script Driver when only the original Initiator Job had appeared in the UI view of the OpCon Schedule).
+ >>
+ >> If the Initiator Job completes normally, but the Script Driver job fails, then the Initiator Job might show a normal completion status temporarily, until the Script Driver job is able to send a $JOB:BAD External Event through a restored LSAM Server job subsystem, after which the OpCon server will force the Initiator Job to change its displayed status to “Marked Failed.”  
+ >>
+ >> In this case, the Detailed Job messages should include at least one message that reports a simple form of the error message generated by the Script Driver program as it detected the fatal error.
+ >>
+ >> If the Initiator Job fails, then in almost all cases, it will not have succeeded in  submitting the SMARSTMODE Script Driver job.  So there will be no Detailed Job messages nor any IBM i job log for the Script Driver job.  Without this SBMJOB action, there will be no Job Tracking action initiated to cause the Script Driver job to appear in the OpCon active Job Schedule.
+
+#### Configuring Job Tracking for the SMARSTMODE Script Driver Job
+
+This documentation about the Restricted Mode jobs management options does not duplicate information about how to set up the Tracked Job that would add the SMARSTMODE job to the OpCon user interface view of jobs in the Restricted Mode Schedule.  
+
+The only constraint for this application of Job Tracking to the Restricted Mode process is that the Script Driver job will always be named “SMARSTMODE”. Therefore, the Job Tracking record must use this exact name for that sedcondary IBM i Job Name of the Script Driver.  
+
+At the same time, that Job Tracking Parameters master record should register the same OpCon Schedule name as was used to start the Initiator Job. This is not required, but it certainly is more obvious if the OpCon Schedule shows both of these IBM i jobs next to each other within the same OpCon Schedule.
 
 ### Run a Restricted Mode Process Using the Console or an Alternate Display Device
 

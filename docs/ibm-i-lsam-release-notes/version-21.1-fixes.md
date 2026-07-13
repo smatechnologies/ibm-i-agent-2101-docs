@@ -537,6 +537,32 @@ The IBM i Agent Job Scheduler communication program response to an expired Max I
 The Sequence Number (1995) assigned to each PTF controls the order in which the LSAM PTFs must be applied (to maintain any inter-dependencies and to control potential rollback operations). The original “PTF Name” field (PTF211204) was, years ago, the only numbered attribute of a PTF. However, this name is now just a label for each PTF, since the “PTF LVL” (PTF Level) controls the LSAM Release version, while the Sequence Number controls the order of PTF application during the installation process. The LSAM displays and export information always refer to the PTF Level, so this PTF refers to the Agent Version as 21.1.201, even though the PTF Name is PTF211204. Future updates of the PTF List will show how a previously created PTFs (202was not ready for release, so PTF211201 through PTF211203 will appear as installed AFTER PTF211204, according to the Sequence Number, and then the PTF level would become 21.2.204, unrelated to this PTF211204.
 :::
 
-- **Enhanced** (# PTF211205. PTF211206) OCAG-821 (OC-7170) Dynamic Variable maintenance and command new name edits. *See Post-Install Instructions.*
+- **Enhanced** (# PTF211205. PTF211206) OCAG-821 (OC-7170)  (PTF LVL: 203) Dynamic Variable maintenance and command new name edits. *See Post-Install Instructions.*
 
 The Dynamic Variable master file maintenance program and also the SETDYNVAR command will now report error SMA0385 and reject a name that contains special charaters that are not supported by some OpCon Solution Manager data entry fields. Restrictions on characters allowed in the Name field are described at [Dynamic Variable Name edit considerations](/dynamic-variables/maintaining#dynamic-variable-name-edit-considerations). 
+
+### LSAM PTF release 21.1.209
+
+- **Enhanced** (# PTF211207) OCAG-508  (SMAGPL PTF LVL: 204)  Restricted Mode - new error messages
+
+The Restricted Mode programs have been enhanced to provide new error message reporting into this feature's log display, into the two IBM i jobs that manage feature operations, and in many cases also sent as Detailed Job Messages to the OpCon user interface.
+
+- **Enhanced** (# PTF211208) OCAG-508 (PTF LVL: 205)  Restricted Mode add error reporting; fix Script Name truncation
+    *See Post-Install Instructions*
+A summary description of the fixes and enhancements provided by the four Restricted Mode enhancements (PTF211207, PTF211208 and PTF211211, PTF211212) is provided under [Agent Enhancements at version 21.1.209](./version-21.1-new-features#agent-enhancements-by-project-id-lsam-ptfs-at-version-211209).
+
+- **Enhanced** (# PTF211209) OCAG-878  (SMAGPL PTF LVL: 206)  Add to SMARGZ files with REUSEDLT(*YES)
+
+Although files with the attribute REUSEDLT(*YES) (re-use deleted records) help to conserve disk space, periods of high volume activity can expand the file to a larger size that will never be reduced after records are purged without running the SMARGZ command. These files will now be reorganized during the periodic execution of the SMARGZ utility command.
+
+- Fixed (# PTF211210) OCAG-878  (SMAGPL PTF LVL: 207)  Fix PTF211168 for wild card file names
+
+Wild card file names could not be searched by the CHKIFSFIL command (IBM i File Arrival jobs) after PTF211168 was applied. The CHKIFSLST utility now uses CD to isolate the path name from the file name. (Program CHKIFSR00 updated by emergency fix in ACMS.)
+
+ - **Enhanced** (# PTF211211, PTF211212) OCAG-508B, OCAG-508C  (PTF LVL: 209)  Restricted Mode fixes and enhancements
+    *See Post-Install Instructions*
+
+A summary description of the fixes and enhancements provided by the four Restricted Mode enhancements (PTF211207, PTF211208 and PTF211211, PTF211212) is provided under [Agent Enhancements at version 21.1.209](./version-21.1-new-features#agent-enhancements-by-project-id-lsam-ptfs-at-version-211209).
+
+
+
