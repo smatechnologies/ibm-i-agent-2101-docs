@@ -260,19 +260,19 @@ The goal of engaging Job Tracking with the Restricted Mode automation is to prod
 
 This solution overcomes the objection that the Notification Manager is only able to deliver the first IBM i job log report from the primary Initiator Job, while meanwhile there is a greater potential for errors as the Script Steps are being executed by the separate Script Driver job that runs during the operating system’s restricted mode.
 
-**<span style={{color: 'green', fontWeight: 'bold', border: '2px solid green', borderRadius: '4px', padding: '2px 8px'}}>1</span> OpCon Schedule starts the Restricted Mode Initiator Job.**
+**<span style="color: green; font-weight: bold; border: 2px solid green; border-radius: 4px; padding: 2px 8px;">1</span> OpCon Schedule starts the Restricted Mode Initiator Job.**
 
 The Restricted Mode Initiator Job is started from an OpCon Schedule. This job may sometimes referred to as the “primary job” in this document. This is an “IBM i” job in an OpCon Schedule, with the IBM i sub-type of “Restricted Mode.”  The Job Name may be any valid name for the IBM i operating system.  The Agent’s Restricted Mode Script name is entered into that box, up to 20 characters.
 
-**<span style={{color: 'orange', fontWeight: 'bold', border: '2px solid orange', borderRadius: '4px', padding: '2px 8px'}}>2</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
+**<span style="color: orange; font-weight: bold; border: 2px solid orange; border-radius: 4px; padding: 2px 8px;">2</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
 
 The SBMJOB command executed by the Initiator Job, to submit the SMARSTMODE Script Driver jopb, is intercepted by the Agent’s Job Tracking exit program.  This exit program gets registered in the system’s exit program registry when the Agent’s menu 1 option 3: Start Job Track, has previously been selected.
 
-**<span style={{color: 'red', fontWeight: 'bold', border: '2px solid red', borderRadius: '4px', padding: '2px 8px'}}>3</span>  The Agent’s Job Tracking Parameters table is consulted.** 
+**<span style="color: red; font-weight: bold; border: 2px solid red; border-radius: 4px; padding: 2px 8px;">3</span>  The Agent’s Job Tracking Parameters table is consulted.** 
 
 The Exit Program determines if the Job being submitted (always named SMARSTMODE) was registered for Tracking.  If there is a match, then the Exit Program sends a $JOB:TRACK “external event” transaction to this Agent’s communications program (implied by red arrow # 3, but not shown in the flow chart) for transmission to the OpCon “Message-In” processor for externally submitted Event requests.  If the OpCon Server’s SAM recognizes the Schedule Name and Job Name provided from the Agent’s Job Tracking Parameters, then it returns a “Job Start Request” transaction (TX1) to the Agent. (See the Agent’s User Help about Job Tracking for more information.)
 
-**<span style={{color: 'gold', fontWeight: 'bold', border: '2px solid gold', borderRadius: '4px', padding: '2px 8px'}}>4</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
+**<span style="color: gold; font-weight: bold; border: 2px solid gold; border-radius: 4px; padding: 2px 8px;">4</span> The Agent’s Job Scheduler processes the TX1 Job Start request.**
 
 By recovering the definition of the secondary Restricted Mode Script Driver program that had been intercepted and stored by Job Tracking, the Agent's Job Scheduler is able to reconstruct the original SBMJOB command.  It then uses the reconstructed SBMJOB command to submit this job to the QCTL subsystem’s job queue.  (*The actual name of the IBM i subsystem designated for restricted mode processing is stored in the IBM i system value QCTLSBSD.*)  Once the Script Driver job starts processing, it is able to: 
 
@@ -301,19 +301,19 @@ See the “Restricted Mode Job Completion Reporting Methods” topic, below, to 
 >
 >Remember that if the Initiator Job itself has failed, then in many cases it will not have submitted the Script Driver job (SMARSTMODE), and there will be only one job log report associated with the Initiator Job.  In this case, it is expected that the job log report distributed by a Notification event would contain details about the failure of the Initiator.
 
-**<span style={{color: 'purple', fontWeight: 'bold', border: '2px solid purple', borderRadius: '4px', padding: '2px 8px'}}>5</span> Management of job completion messages.**
+**<span style="color: purple; font-weight: bold; border: 2px solid purple; border-radius: 4px; padding: 2px 8px;">5</span> Management of job completion messages.**
 
 The Agent’s primary Restricted Mode Initiator Job, using a Job Name specified in the OpCon Job Master record, will always have its IBM i job completion status reported to the Agent’s reserved message queue at SMADTA/SMAMSGQ, implied by the Agent Job Completion Message server job (named MSGMNG in the LSAM subsystem).  Remember, though, that when there is only one Restricted Mode job in the OpCon Schedule, then this Initiator Job’s final status will be affected by the completion status of the SMARSTMODE script driver job.
 
 The flow chart shows that the Job Completion server program forwards the job status transaction to the Communications program, and that is how the status information gets posted in the OpCon User Interface.
 
-**<span style={{color: 'lightblue', fontWeight: 'bold', border: '2px solid lightblue', borderRadius: '4px', padding: '2px 8px'}}>6</span> Reporting of job completion status of both jobs.**
+**<span style="color: lightblue; font-weight: bold; border: 2px solid lightblue; border-radius: 4px; padding: 2px 8px;">6</span> Reporting of job completion status of both jobs.**
 
 When the Agent’s Restricted Mode Script Driver program finishes, if it was not a separate job on the OpCon Schedule, then it’s completion status will be communicated to the OpCon server by using the IBM i Job ID of the primary Intiator Job, so that single Initiator Job on the OpCon schedule will reflect the ultimate status of both jobs.  (See the NOTE above, under flow chart yellow # 4.)
 
 Similar to purple arrows # 5, the turquoise arrows # 6 show that the Job Completion server program forward the job status transaction to the Communications program, and that is how the status information gets posted in the OpCon User Interface.
 
-**<span style={{color: 'darkblue', fontWeight: 'bold', border: '2px solid darkblue', borderRadius: '4px', padding: '2px 8px'}}>7</span> Viewing Job Output.**
+**<span style="color: darkblue; font-weight: bold; border: 2px solid darkblue; border-radius: 4px; padding: 2px 8px;">7</span> Viewing Job Output.**
 
 The blue arrows # 7 represent that the OpCon User Interface may request to “View Job Output.”  The Agent server programs dedicated to JORS (Job Output Retrieval Services) can pull an IBM i job log report from the IBM i QEZJOBLOG output queue, or if a job is still active, the Agent server can extract the job log messages from a live job’s own message queue and then construct a job log report format of the data.   Either way, a separate job log is available for each of the primary and secondary Agent Restricted Mode jobs.  See the “Restricted Mode Job Completion Reporting Methods” topic, below, for details about where each job log report might appear for viewing, and how each could be retrieved by the OpCon Notification Manager.
 
