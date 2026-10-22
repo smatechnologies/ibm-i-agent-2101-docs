@@ -5,6 +5,7 @@ module.exports = {
   url: 'https://help.smatechnologies.com',
   baseUrl: '/opcon/agents/ibm-i-2101/',
   onBrokenLinks: 'throw',
+  onBrokenAnchors: 'throw',
   onBrokenMarkdownLinks: 'warn',
   markdown: {
     format: 'detect',

@@ -258,7 +258,7 @@ To overcome this limitation, the Agent’s multi-instance variables management m
 
 ### Supporting WAITDYNVAR Utility with Multi-Instance Dynamic Variables
 
-An illustration is provided below to show vectors where the Message Management server job would insert the message sending Job ID parameters into the main qualifiers of the one or two variable(s) that the WAITDYNVAR is using. See [WAITDYNVAR: Wait for Dynamic Variable Value](manipulation-commands.md/#waitdynvar-wait-for-dynamic-variable-value) for more information about using the WAITDYNVAR command.
+An illustration is provided below to show vectors where the Message Management server job would insert the message sending Job ID parameters into the main qualifiers of the one or two variable(s) that the WAITDYNVAR is using. See [WAITDYNVAR: Wait for Dynamic Variable Value](manipulation-commands.md#waitdynvar-wait-for-dynamic-variable-value) for more information about using the WAITDYNVAR command.
 
 This example shows the WAITDYNVAR command being used within a job that generates a message which will be intercepted by the Agent’s Message Management server.  The WAITDYNVAR command can monitor for one or two different Dynamic Variable values.  In this example, the variables used by the WAITDYNVAR command (in command parameters VARNAM and WAITVARNAM) should be IJ. instance variables.  The Message Management server job inserts a value into the Dynamic Variable named by the VARNAM command parameter using the IBM i Job ID parameters from the job that sent the message as the qualifiers of the variables that the WAITDYNVAR command is monitoring.  
 

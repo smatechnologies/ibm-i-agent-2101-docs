@@ -236,7 +236,7 @@ For details about Cloning an LSAM environment see [Clone an Existing Environment
 ### [ ] Preparing an LSAM Environment for Upgrade
 
 :::warning
-An audit program is available that must be executed before starting an upgrade of the LSAM from version 18.1 to 21.1.  This audit checks for an unsupported connection between any Operator Replay Script Step that has been linked to more than one unique Capture Data Applications.  Failing to correct data identified by the audit report will result in corrupted automation rules for the affected Operator Replay Scripts.  Please follow the instructions below to [Auditing the LSAM for Data That Cannot Be Converted](#auditing-the-lsam-for-data-that-cannot-be-converted).
+An audit program is available that must be executed before starting an upgrade of the LSAM from version 18.1 to 21.1.  This audit checks for an unsupported connection between any Operator Replay Script Step that has been linked to more than one unique Capture Data Applications.  Failing to correct data identified by the audit report will result in corrupted automation rules for the affected Operator Replay Scripts.  Please follow the instructions below to [Auditing the LSAM for Data That Cannot Be Converted](#--auditing-the-lsam-for-data-that-cannot-be-converted).
 :::
 
 #### [ ] Purging the LSAM database log files and deleted records
@@ -595,7 +595,7 @@ CRTUSRPRF USRPRF(SMASAV) PASSWORD(smasav_password) INLPGM(*NONE)
   SPCAUT(*JOBCTL *SPLCTL *SAVSYS)
 ```
 :::tip
-The *ALLOBJ special authority granted to user SMANET is discussed below under the topic of [Introduction to Installation Strategies](#Introduc) as well as in the [LSAM Security and Object Authority](../security/strategy.md) section of the **IBM i LSAM** documentation.
+The *ALLOBJ special authority granted to user SMANET is discussed below under the topic of [Introduction to Installation Strategies](#introduction-to-installation-strategies) as well as in the [LSAM Security and Object Authority](../security/strategy.md) section of the **IBM i LSAM** documentation.
 :::
 
 ### Prepare the Installation Library
